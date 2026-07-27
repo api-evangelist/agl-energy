@@ -1,0 +1,69 @@
+# AGL Energy
+
+> AGL Energy Limited (ASX:AGL) is Australia's oldest listed company and one of its largest integrated
+> energy businesses — the country's biggest electricity generation portfolio plus roughly four million
+> retail customer accounts. AGL publishes no developer portal and no self-serve API programme. Every
+> machine-readable surface it has exists because the Consumer Data Right compels it. Three API surfaces
+> follow, and only two of them can be called without accreditation.
+
+Generated 2026-07-27 by the API Evangelist enrichment pipeline. No provider-published llms.txt exists
+(probed: www.agl.com.au/llms.txt 403, public.cdr.agl.com.au/llms.txt 404).
+
+## What you can call right now, anonymously
+
+- [AGL CDR status](https://public.cdr.agl.com.au/cds-au/v1/discovery/status): Live availability of AGL's Consumer Data Right implementation. Send header `x-v: 1`. Returns `{"data":{"status":"OK",...}}`. Verified HTTP 200 on 2026-07-27.
+- [AGL CDR outages](https://public.cdr.agl.com.au/cds-au/v1/discovery/outages): Scheduled maintenance windows for the AGL CDR consent flow. Send header `x-v: 1`. Verified HTTP 200.
+- [AGL energy plans](https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans): 1,343 AGL retail electricity and gas plans as Product Reference Data. Send header `x-v: 1`. Anonymous, CORS-open. Note this is hosted by the Australian Energy Regulator, NOT by AGL.
+- [AGL plan detail](https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGL1067320MRE2@EME): Full tariff detail for one plan. Send header `x-v: 3`.
+
+## What you cannot call without accreditation
+
+Consumer usage, service point, DER, account, balance, invoice, billing, payment-schedule and concession
+data is available only to an Accredited Data Recipient under the Consumer Data Right, over mutual TLS,
+with CDR Register-issued certificates, after the individual consumer authorises your software product
+through AGL's own consent flow. The base URI for that surface is not published — it is distributed to
+accredited participants through the CDR Register. There is no sandbox, no trial key and no partner form.
+
+## APIs
+
+- [AGL CDR Discovery (Common) API](https://consumerdatastandardsaustralia.github.io/standards/): Unauthenticated status and outages. Base URL https://public.cdr.agl.com.au/cds-au/v1
+- [AGL Energy Product Reference Data (PRD) API](https://www.aer.gov.au/energy-product-reference-data): Anonymous plan and tariff catalogue. Base URL https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+- [AGL CDR Energy API](https://consumerdatastandardsaustralia.github.io/standards/): Consumer-authorised energy data. No published base URL.
+
+## Specs
+
+- [CDR Energy API OpenAPI 3.0.3 v1.36.0](openapi/agl-energy-cds-energy-openapi.json): 23 operations. Harvested verbatim from the Data Standards Body; not AGL-authored.
+- [CDR Common API OpenAPI 3.0.3 v1.36.0](openapi/agl-energy-cds-common-openapi.json): 4 operations.
+- [Enhancement overlay — energy](overlays/agl-energy-cds-energy-overlay.yaml)
+- [Enhancement overlay — common](overlays/agl-energy-cds-common-overlay.yaml)
+
+## Artifacts
+
+- [Authentication profile](authentication/agl-energy-authentication.yml): three postures — anonymous, anonymous, and FAPI 1.0 Advanced over mTLS.
+- [OAuth scopes](scopes/agl-energy-scopes.yml): the eleven CDR consent scopes and which operation each unlocks.
+- [API conventions](conventions/agl-energy-conventions.yml): x-v / x-min-v versioning, x-fapi-interaction-id tracing, page/page-size pagination, data/links/meta envelope.
+- [Error catalogue](errors/agl-energy-problem-types.yml): sixteen CDR URN error codes across 27 operations. Not RFC 9457.
+- [Lifecycle](lifecycle/agl-energy-lifecycle.yml): DSB future-dated obligations, live status and outage feeds.
+- [Conformance](conformance/agl-energy-conformance.yml): what AGL conforms to, and the standards it does not implement.
+- [Data model](data-model/agl-energy-data-model.yml): accountId and servicePointId carry the whole graph.
+- [MCP candidate tools](mcp/agl-energy-mcp.yml): 27 candidate tools derived from the specs. No server is published.
+- [Agent skills](skills/_index.yml): grounded operating instructions for the flows an agent can actually run.
+- [Domain security](security/agl-energy-domain-security.yml), [vulnerability disclosure](security/agl-energy-vulnerability-disclosure.yml), [well-known probes](well-known/agl-energy-well-known.yml)
+- [Agentic access contracts](agentic-access/agl-energy-agentic-access.yml): all 27 operations classified for agent execution.
+
+## Docs
+
+- [Consumer Data Standards](https://consumerdatastandardsaustralia.github.io/standards/): the actual contract AGL implements.
+- [CDR energy sector rollout](https://www.cdr.gov.au/rollout/cdr-energy-sector)
+- [Become an accredited data recipient](https://www.cdr.gov.au/for-providers)
+- [AEMO as secondary data holder](https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr)
+- [AGL Consumer Data Right Policy](https://www.agl.com.au/consumer-data-right-policy)
+- [AGL Responsible Disclosure Policy](https://www.agl.com.au/terms-conditions/responsible-disclosure-policy)
+
+## Gotchas
+
+- Every request needs `x-v`. Omit it and you get HTTP 400 `urn:au-cds:error:cds-all:Header/InvalidVersion`; ask for a version AGL does not serve and you get HTTP 406 `urn:au-cds:error:cds-all:Header/UnsupportedVersion`. The x-v value is per endpoint, not per API — plans is v1 but plan detail is v3.
+- `page-size` maxes at 1000; asking for more is a 400, and paging past the last page is a 422, not a 404.
+- The AGL public base URI returns HTTP 404 for `/cds-au/v1/energy/plans`. AGL does not serve its own product data — the AER does, per brand, at cdr.energymadeeasy.gov.au. This is the structural break from CDR banking, where every bank serves its own PRD.
+- www.agl.com.au returns HTTP 403 to every non-browser client behind Akamai, including robots.txt. Do not expect to scrape it.
+- There is no idempotency contract, no webhooks and no rate-limit headers. The whole surface is read-only.

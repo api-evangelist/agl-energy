@@ -1,0 +1,70 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  Live anonymous HTTP probes on 2026-07-27 of every host AGL's APIs are served
+  from, plus the corporate and developer-portal hosts. No /.well-known/ document
+  of any kind was found. Recorded as evidence — absence is a real result, not a
+  gap in the harvest.
+description: >-
+  AGL publishes no /.well-known/ discovery surface. This is expected under the
+  Consumer Data Right: a data holder's OIDC / authorisation-server metadata is
+  distributed to Accredited Data Recipients through the CDR Register (and
+  retrieved with CDR Register-issued certificates), not exposed anonymously on
+  the open internet. The AGL public CDR base URI serves only the two
+  unauthenticated Consumer Data Standards discovery endpoints under /cds-au/v1,
+  and returns nginx 404 for everything else. www.agl.com.au is bot-blocked at the
+  Akamai edge and returns 403 to every machine client, including for
+  /.well-known/security.txt.
+documents_found: 0
+hosts:
+- host: https://public.cdr.agl.com.au
+  role: AGL CDR public base URI (data holder operated)
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  contract_discovery:
+  - {path: /openapi.json, status: 404}
+  - {path: /swagger.json, status: 404}
+  - {path: /api-docs, status: 404}
+  - {path: /docs, status: 404}
+  - {path: /graphql, status: 404}
+  reachable_surface:
+  - {path: /cds-au/v1/discovery/status, status: 200, note: 'CDS Get Status — {"status":"OK"}'}
+  - {path: /cds-au/v1/discovery/outages, status: 200, note: CDS Get Outages — six scheduled AGL CDR consent-flow windows}
+- host: https://cdr.energymadeeasy.gov.au
+  role: AER-operated central energy Product Reference Data host serving AGL's plans
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  contract_discovery:
+  - {path: /agl/openapi.json, status: 404}
+  - {path: /agl/cds-au/v1/openapi.json, status: 404}
+- host: https://www.agl.com.au
+  role: corporate website
+  documents:
+  - {path: /.well-known/security.txt, status: 403, note: Akamai edge denies all non-browser clients; a 403 is not evidence of absence.}
+- host: https://agl.com.au
+  role: apex domain
+  documents:
+  - {path: /.well-known/security.txt, status: 403}
+- host: https://apideveloper.agl.com.au
+  role: internal/partner API developer portal behind Akamai
+  documents:
+  - {path: /.well-known/security.txt, status: 403}
+  contract_discovery:
+  - {path: /openapi.json, status: 403}
+- host: https://neighbourhood.agl.com.au
+  role: customer community forum
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+security_txt:
+  published: false
+  note: >-
+    No RFC 9116 security.txt was served. AGL does, however, publish a human
+    Responsible Disclosure Policy — see security/agl-energy-vulnerability-disclosure.yml.

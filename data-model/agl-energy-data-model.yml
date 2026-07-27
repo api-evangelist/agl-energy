@@ -1,0 +1,127 @@
+generated: '2026-07-27'
+method: derived
+source: >-
+  openapi/agl-energy-cds-energy-openapi.json (133 component schemas) and
+  openapi/agl-energy-cds-common-openapi.json (27 component schemas) — entities,
+  keys and relationships read from required[] id fields, $ref links and the
+  operations that resolve each id.
+description: >-
+  The entity-relationship graph of the CDR energy data model as AGL serves it.
+  Two identifiers carry the whole graph: accountId (the billing relationship) and
+  servicePointId (the physical connection point, the NMI). Everything else hangs
+  off one of those two, and planId links the consumer's account back into the
+  open Product Reference Data catalogue. Note that the ids are opaque and
+  consent-scoped — under the CDR a data holder MUST NOT expose a permanent
+  cross-consent identifier, so accountId and servicePointId are only stable
+  within a consent arrangement.
+identifiers:
+- id: accountId
+  schema: EnergyAccountId
+  scope: consent arrangement
+  resolved_by: listEnergyAccounts
+  note: Opaque, tokenised. Not the customer-facing account number (accountNumber is a separate, maskable field).
+- id: servicePointId
+  schema: EnergyServicePointId
+  scope: consent arrangement
+  resolved_by: listElectricityServicePoints
+  note: Tokenised NMI. The real National Metering Identifier is carried separately as nationalMeteringId.
+- id: planId
+  schema: EnergyPlanId
+  scope: public
+  resolved_by: listEnergyPlans
+  note: >-
+    The only public identifier in the model. Example verified live —
+    AGL1067320MRE2@EME resolved 200 at
+    https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGL1067320MRE2@EME
+    on 2026-07-27.
+entities:
+- name: Customer
+  schema: CommonCustomer / CommonCustomerDetail
+  source: openapi/agl-energy-cds-common-openapi.json
+  key: none (implied by the consent)
+  operations: [getCustomer, getCustomerDetail]
+  fields: [customerUType, person, organisation]
+- name: EnergyAccount
+  schema: EnergyAccountBaseV2 / EnergyAccountV2 / EnergyAccountDetailV4
+  key: accountId
+  operations: [listEnergyAccounts, getEnergyAccountDetail]
+  fields: [accountId, accountNumber, displayName, openStatus, creationDate, plans]
+- name: EnergyServicePoint
+  schema: EnergyServicePointV2 / EnergyServicePointDetailV2
+  key: servicePointId
+  operations: [listElectricityServicePoints, getElectricityServicePointDetail]
+  fields: [servicePointId, nationalMeteringId, servicePointClassification, servicePointStatus, jurisdictionCode, isGenerator, validFromDate, lastUpdateDateTime, consumerProfile]
+  detail_fields: [distributionLossFactor, relatedParticipants, location, meters, registers, specifications]
+- name: EnergyUsageRead
+  schema: EnergyUsageRead
+  key: composite (servicePointId + registerSuffix + readStartDate)
+  operations: [getElectricityServicePointUsage, listElectricityUsageBulk, listElectricityUsageForServicePoints]
+  fields: [servicePointId, registerId, registerSuffix, meterId, controlledLoad, readStartDate, readEndDate, unitOfMeasure, readUType, basicRead, intervalRead]
+  note: readUType selects basicRead (accumulation) or intervalRead (30-minute or finer interval data).
+- name: EnergyDerRecord
+  schema: EnergyDerRecord
+  key: servicePointId
+  operations: [getElectricityDERForServicePoint, listElectricityDERBulk, listElectricityDERForSpecificServicePoints]
+  fields: [servicePointId, approvedCapacity, availablePhasesCount, installedPhasesCount, islandableInstallation, hasCentralProtectionControl, protectionMode, acConnections, derDevices]
+  note: The solar/battery/inverter register — the DER graph that makes this data interesting beyond billing.
+- name: EnergyBalance
+  schema: EnergyBalanceListResponse.data.balances
+  key: accountId
+  operations: [getEnergyAccountBalance, listEnergyAccountBalancesBulk, listEnergyAccountBalancesSpecificAccounts]
+  fields: [accountId, balance]
+- name: EnergyInvoice
+  schema: EnergyInvoice
+  key: composite (accountId + invoiceNumber)
+  operations: [getEnergyAccountInvoices, listEnergyAccountInvoicesBulk, listEnergyInvoicesForSpecificAccounts]
+  fields: [accountId, invoiceNumber, issueDate, dueDate, period, invoiceAmount, gstAmount, payOnTimeDiscount, balanceAtIssue, servicePoints, gas, electricity, accountCharges, paymentStatus]
+- name: EnergyBillingTransaction
+  schema: EnergyBillingTransactionV3
+  key: composite (accountId + executionDateTime)
+  operations: [getBillingForEnergyAccount, listEnergyAccountBillingBulk, listEnergyAccountBillingForSpecificAccounts]
+  fields: [accountId, executionDateTime, gst, transactionUType, usage, demand, onceOff, otherCharges, payment]
+  note: transactionUType discriminates usage / demand / onceOff / otherCharges / payment transaction shapes.
+- name: EnergyConcession
+  schema: EnergyConcession
+  key: accountId (parent)
+  operations: [getEnergyAccountConcessions]
+  fields: [type, displayName, additionalInfo, additionalInfoUri, startDate, endDate, discountFrequency, amount, percentage, appliedTo]
+- name: EnergyPaymentSchedule
+  schema: EnergyPaymentSchedule
+  key: accountId (parent)
+  operations: [getEnergyAccountPaymentSchedule]
+  fields: [amount, paymentScheduleUType, cardDebit, directDebit, digitalWallet, manualPayment]
+- name: EnergyPlan
+  schema: EnergyPlan / EnergyPlanDetailV3
+  key: planId
+  operations: [listEnergyPlans, getEnergyPlanDetail]
+  public: true
+  fields: [planId, effectiveFrom, effectiveTo, lastUpdated, displayName, description, type, fuelType, brand, brandName, applicationUri, additionalInformation, customerType, geography]
+  detail_fields: [meteringCharges, electricityContract, gasContract]
+- name: EnergyPlanContract
+  schema: EnergyPlanContractFullV3
+  key: none (embedded in EnergyPlanDetail)
+  fields: [pricingModel, tariffPeriod, solarFeedInTariff, controlledLoad, discounts, incentives, fees, eligibility, greenPowerCharges, intrinsicGreenPower]
+  note: Where the actual tariffs live — single rate, time-of-use, demand charges, banded daily supply charges, solar feed-in.
+relationships:
+- {from: Customer, to: EnergyAccount, type: has_many, via: 'consent (no explicit foreign key in the payload)'}
+- {from: EnergyAccount, to: EnergyServicePoint, type: has_many, via: 'EnergyAccountDetailV4.plans[].servicePointIds'}
+- {from: EnergyAccount, to: EnergyPlan, type: has_many, via: 'EnergyAccountV2.plans[].planOverview / planDetail'}
+- {from: EnergyAccount, to: EnergyBalance, type: has_one, via: accountId}
+- {from: EnergyAccount, to: EnergyInvoice, type: has_many, via: accountId}
+- {from: EnergyAccount, to: EnergyBillingTransaction, type: has_many, via: accountId}
+- {from: EnergyAccount, to: EnergyConcession, type: has_many, via: 'accountId (path parent)'}
+- {from: EnergyAccount, to: EnergyPaymentSchedule, type: has_one, via: 'accountId (path parent)'}
+- {from: EnergyServicePoint, to: EnergyUsageRead, type: has_many, via: servicePointId}
+- {from: EnergyServicePoint, to: EnergyDerRecord, type: has_one, via: servicePointId}
+- {from: EnergyInvoice, to: EnergyServicePoint, type: has_many, via: 'EnergyInvoice.servicePoints[]'}
+- {from: EnergyPlan, to: EnergyPlanContract, type: has_one, via: 'EnergyPlanDetailV3.electricityContract / gasContract'}
+- {from: EnergyServicePoint, to: MarketParticipant, type: has_many, via: 'EnergyServicePointDetailV2.relatedParticipants (distributor, financially responsible market participant)'}
+cross_holder:
+  secondary_data_holder: AEMO
+  supplies: [nationalMeteringId and NMI standing data, metering data / interval reads]
+  note: >-
+    Part of the service point and usage graph is not AGL's data at all — AGL
+    requests it from AEMO under the same consumer consent. Errors propagated from
+    AEMO carry isSecondaryDataHolderError: true.
+render: null
+render_note: No subway/ or ERD visual exists in this repo yet.

@@ -1,0 +1,164 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  Derived from the 4xx responses of every operation in
+  openapi/agl-energy-cds-common-openapi.json and
+  openapi/agl-energy-cds-energy-openapi.json (each response description names the
+  CDS error anchors it MUST support), then resolved to the normative URN, title
+  and description in the Consumer Data Standards error-code registry —
+  https://raw.githubusercontent.com/ConsumerDataStandardsAustralia/standards/master/slate/source/includes/standards/_errors.md
+  (HTTP 200, fetched 2026-07-27).
+docs: https://consumerdatastandardsaustralia.github.io/standards/#error-codes
+format: cdr-urn
+rfc9457: false
+description: >-
+  AGL returns Consumer Data Standards errors, not RFC 9457 problem+json. The
+  failure envelope is an errors[] array of objects carrying a CDR URN code, a
+  constant human-readable title, a specific detail string, an optional
+  isSecondaryDataHolderError flag (set when the error was propagated from AEMO as
+  secondary data holder), and an optional meta object. Sixteen distinct error
+  codes are mandated across AGL's 27 operations; the code set is fixed by the
+  standard, so a client can code against it once for every Australian energy data
+  holder.
+envelope:
+  content_type: application/json
+  shape: |
+    {
+      "errors": [
+        {
+          "code": "urn:au-cds:error:cds-all:Field/Invalid",
+          "title": "Invalid Field",
+          "detail": "page-size",
+          "isSecondaryDataHolderError": false,
+          "meta": {"urn": "..."}
+        }
+      ]
+    }
+  schemas:
+  - {name: ResponseErrorListV2, source: openapi/agl-energy-cds-common-openapi.json}
+  - {name: PrimaryResponseErrorListV1, source: openapi/agl-energy-cds-energy-openapi.json}
+  - {name: ErrorV2, note: code + title + detail + meta}
+  - {name: PrimaryErrorV1, note: ErrorV2 plus isSecondaryDataHolderError}
+secondary_data_holder_errors:
+  flag: isSecondaryDataHolderError
+  detail: >-
+    Set true when the error originated at AEMO (secondary data holder for NMI
+    standing data and metering data) rather than at AGL. This lets an ADR tell an
+    AGL failure apart from an AEMO failure on the same request.
+problem_count: 16
+problems:
+- status: 400
+  code: urn:au-cds:error:cds-all:Field/Invalid
+  title: Invalid Field
+  detail: A URL or body parameter has an invalid type or violates the field constraint. The error detail is the offending parameter name.
+  operations: 27
+  applies_to: all operations
+- status: 400
+  code: urn:au-cds:error:cds-all:Field/Missing
+  title: Missing Required Field
+  detail: A mandatory query parameter or body field is absent. The error detail is the missing parameter name.
+  operations: 27
+  applies_to: all operations
+- status: 400
+  code: urn:au-cds:error:cds-all:Header/InvalidVersion
+  title: Invalid Version
+  detail: x-v or x-min-v was supplied but is not a positive integer.
+  operations: 27
+  applies_to: all operations
+- status: 400
+  code: urn:au-cds:error:cds-all:Field/InvalidDateTime
+  title: Invalid Date
+  detail: A DateString/DateTimeString/TimeString parameter carries an invalid or out-of-range date.
+  operations: 10
+  applies_to: usage, billing and invoice operations that accept oldest-date/newest-date/oldest-time/newest-time
+- status: 400
+  code: urn:au-cds:error:cds-all:Field/InvalidPageSize
+  title: Invalid Page Size
+  detail: page-size exceeds the CDS maximum of 1000.
+  operations: 16
+  applies_to: every paginated list operation
+- status: 404
+  code: urn:au-cds:error:cds-all:Resource/Invalid
+  title: Invalid Resource
+  detail: The resource id in the URI is permanently unavailable. Used for an unknown planId.
+  operations: 1
+  applies_to: [getEnergyPlanDetail]
+- status: 404
+  code: urn:au-cds:error:cds-energy:Authorisation/InvalidEnergyAccount
+  title: Invalid Energy Account
+  detail: The requested energy account is permanently unavailable; the account id came from the URI.
+  operations: 6
+  applies_to: [getEnergyAccountDetail, getEnergyAccountPaymentSchedule, getEnergyAccountConcessions, getEnergyAccountBalance, getEnergyAccountInvoices, getBillingForEnergyAccount]
+- status: 404
+  code: urn:au-cds:error:cds-energy:Authorisation/UnavailableEnergyAccount
+  title: Unavailable Energy Account
+  detail: The requested energy account is temporarily unavailable; a later request may succeed.
+  operations: 6
+  applies_to: [getEnergyAccountDetail, getEnergyAccountPaymentSchedule, getEnergyAccountConcessions, getEnergyAccountBalance, getEnergyAccountInvoices, getBillingForEnergyAccount]
+- status: 404
+  code: urn:au-cds:error:cds-energy:Authorisation/InvalidServicePoint
+  title: Invalid Service Point
+  detail: The requested service point (NMI) is permanently unavailable; the id came from the URI.
+  operations: 3
+  applies_to: [getElectricityServicePointDetail, getElectricityServicePointUsage, getElectricityDERForServicePoint]
+- status: 404
+  code: urn:au-cds:error:cds-energy:Authorisation/UnavailableServicePoint
+  title: Unavailable Service Point
+  detail: The requested service point is temporarily unavailable; a later request may succeed.
+  operations: 3
+  applies_to: [getElectricityServicePointDetail, getElectricityServicePointUsage, getElectricityDERForServicePoint]
+- status: 406
+  code: urn:au-cds:error:cds-all:Header/UnsupportedVersion
+  title: Unsupported Version
+  detail: >-
+    x-v (or the x-v/x-min-v range) requests an endpoint version the data holder
+    does not support. This is the single most common integration failure against
+    a CDR data holder — every one of AGL's 27 operations can return it.
+  operations: 27
+  applies_to: all operations
+- status: 422
+  code: urn:au-cds:error:cds-all:Field/InvalidPage
+  title: Invalid Page
+  detail: page is beyond the last available page. The error detail SHOULD carry the maximum page number.
+  operations: 16
+  applies_to: every paginated list operation
+- status: 422
+  code: urn:au-cds:error:cds-energy:Authorisation/InvalidEnergyAccount
+  title: Invalid Energy Account
+  detail: An account id supplied in the POST request body is permanently unavailable.
+  operations: 3
+  applies_to: [listEnergyAccountBalancesSpecificAccounts, listEnergyInvoicesForSpecificAccounts, listEnergyAccountBillingForSpecificAccounts]
+- status: 422
+  code: urn:au-cds:error:cds-energy:Authorisation/UnavailableEnergyAccount
+  title: Unavailable Energy Account
+  detail: An account id supplied in the POST request body is temporarily unavailable.
+  operations: 3
+  applies_to: [listEnergyAccountBalancesSpecificAccounts, listEnergyInvoicesForSpecificAccounts, listEnergyAccountBillingForSpecificAccounts]
+- status: 422
+  code: urn:au-cds:error:cds-energy:Authorisation/InvalidServicePoint
+  title: Invalid Service Point
+  detail: A service point id supplied in the POST request body is permanently unavailable.
+  operations: 2
+  applies_to: [listElectricityUsageForServicePoints, listElectricityDERForSpecificServicePoints]
+- status: 422
+  code: urn:au-cds:error:cds-energy:Authorisation/UnavailableServicePoint
+  title: Unavailable Service Point
+  detail: A service point id supplied in the POST request body is temporarily unavailable.
+  operations: 2
+  applies_to: [listElectricityUsageForServicePoints, listElectricityDERForSpecificServicePoints]
+also_defined_by_the_standard:
+  note: >-
+    Codes the CDS defines for authenticated data holders that are not enumerated
+    in the response descriptions of these two documents but that an Accredited
+    Data Recipient will encounter against AGL's consumer endpoints.
+  codes:
+  - {status: 401, code: 'urn:au-cds:error:cds-all:Authorisation/Invalid', title: Invalid Authorisation}
+  - {status: 403, code: 'urn:au-cds:error:cds-all:Authorisation/AdrStatusNotActive', title: ADR Status Is Not Active}
+  - {status: 403, code: 'urn:au-cds:error:cds-all:Authorisation/RevokedConsent', title: Consent Is Revoked}
+  - {status: 403, code: 'urn:au-cds:error:cds-all:Authorisation/InvalidConsent', title: Consent Is Invalid}
+  - {status: 404, code: 'urn:au-cds:error:cds-all:Resource/NotFound', title: Resource Not Found}
+  - {status: 404, code: 'urn:au-cds:error:cds-all:Resource/NotImplemented', title: Resource Not Implemented}
+  - {status: 422, code: 'urn:au-cds:error:cds-all:Authorisation/InvalidArrangement', title: Invalid Consent Arrangement}
+  - {status: '4xx', code: 'urn:au-cds:error:cds-all:GeneralError/Expected', title: Expected Error Encountered}
+  - {status: '5xx', code: 'urn:au-cds:error:cds-all:GeneralError/Unexpected', title: Unexpected Error Encountered}
+  - {status: 503, code: 'urn:au-cds:error:cds-all:Service/Unavailable', title: Service Unavailable, note: 'used during the scheduled outages AGL publishes at /discovery/outages'}

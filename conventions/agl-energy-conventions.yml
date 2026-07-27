@@ -1,0 +1,183 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  Consumer Data Standards v1.36.0 — https://consumerdatastandardsaustralia.github.io/standards/
+  (HTTP headers, versioning, pagination and error-payload sections), plus the
+  components.parameters / components.headers blocks of the two harvested
+  OpenAPI documents in openapi/, plus live response headers observed on
+  https://public.cdr.agl.com.au/cds-au/v1/discovery/status and
+  https://cdr.energymadeeasy.gov.au/agl/cds-au/v1 on 2026-07-27.
+description: >-
+  The cross-cutting request/response semantics of every AGL API. Because AGL
+  implements the Consumer Data Right rather than a product of its own, these
+  conventions are the Data Standards Body's conventions verbatim: header-based
+  per-endpoint versioning with x-v/x-min-v, FAPI correlation headers, a
+  data/links/meta success envelope, an errors[] failure envelope with CDR URN
+  error codes, and page/page-size pagination. Confirmed against live traffic, not
+  only read from the standard.
+api_style: REST over HTTPS, JSON request and response bodies (application/json)
+
+authentication:
+  summary: >-
+    Three postures — anonymous on discovery and Product Reference Data,
+    FAPI 1.0 Advanced OAuth2/OIDC over mutual TLS on consumer data.
+  detail: authentication/agl-energy-authentication.yml
+  scopes: scopes/agl-energy-scopes.yml
+
+versioning:
+  scheme: per-endpoint integer versioning carried in HTTP headers, not in the URL
+  request_headers:
+  - name: x-v
+    required: true
+    detail: Version of the endpoint the client wants. Must be a positive integer.
+  - name: x-min-v
+    required: false
+    detail: >-
+      Lowest version the client will accept. The data holder returns the highest
+      version it supports between x-min-v and x-v. If x-min-v >= x-v it is
+      treated as absent.
+  response_headers:
+  - name: x-v
+    required: true
+    detail: >-
+      The version of the payload actually returned. Observed as `x-v: 1` on the
+      live AGL status endpoint.
+  path_version:
+    segment: /cds-au/v1
+    detail: >-
+      The /v1 in the base path is the CDR *standard* major version, not the
+      endpoint version. Endpoint versions move independently via x-v.
+  current_endpoint_versions:
+    note: x-version per operation, taken from the harvested specs.
+    common:
+      getCustomer: 1
+      getCustomerDetail: 2
+      getStatus: 1
+      getOutages: 1
+    energy:
+      listEnergyPlans: 1
+      getEnergyPlanDetail: 3
+      listElectricityServicePoints: 2
+      getElectricityServicePointDetail: 2
+      getElectricityServicePointUsage: 1
+      listElectricityUsageBulk: 1
+      listElectricityUsageForServicePoints: 1
+      getElectricityDERForServicePoint: 1
+      listElectricityDERBulk: 1
+      listElectricityDERForSpecificServicePoints: 1
+      listEnergyAccounts: 2
+      getEnergyAccountDetail: 4
+      getEnergyAccountPaymentSchedule: 1
+      getEnergyAccountConcessions: 1
+      getEnergyAccountBalance: 1
+      listEnergyAccountBalancesBulk: 1
+      listEnergyAccountBalancesSpecificAccounts: 1
+      getEnergyAccountInvoices: 1
+      listEnergyAccountInvoicesBulk: 1
+      listEnergyInvoicesForSpecificAccounts: 1
+      getBillingForEnergyAccount: 3
+      listEnergyAccountBillingBulk: 3
+      listEnergyAccountBillingForSpecificAccounts: 3
+  lifecycle: lifecycle/agl-energy-lifecycle.yml
+  docs: https://consumerdatastandardsaustralia.github.io/standards/#versioning
+
+request_tracing:
+  header: x-fapi-interaction-id
+  format: RFC 4122 UUID
+  behaviour: >-
+    Optional on the request. When supplied the data holder MUST play the same
+    value back on the response; when absent the data holder MUST generate one.
+    It is the correlation id for support and for CDR audit.
+  related_headers:
+  - {name: x-fapi-auth-date, detail: time the consumer last authenticated to the ADR software product}
+  - {name: x-fapi-customer-ip-address, detail: consumer's original IP when the consumer is present}
+  - {name: x-cds-client-headers, detail: base64-encoded copy of the consumer's original HTTP headers}
+  docs: https://consumerdatastandardsaustralia.github.io/standards/#http-headers
+
+pagination:
+  style: page-number
+  request_params:
+  - {name: page, in: query, type: integer, default: 1}
+  - {name: page-size, in: query, type: integer, default: 25, maximum: 1000}
+  response_links: [self, first, prev, next, last]
+  response_meta: [totalRecords, totalPages]
+  errors:
+  - {condition: page-size greater than 1000, status: 400, code: 'urn:au-cds:error:cds-all:Field/InvalidPageSize'}
+  - {condition: page beyond the last page, status: 422, code: 'urn:au-cds:error:cds-all:Field/InvalidPage'}
+  observed:
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans?page-size=10
+    totalRecords: 1343
+    totalPages: 135
+    date: '2026-07-27'
+  docs: https://consumerdatastandardsaustralia.github.io/standards/#pagination
+
+response_envelope:
+  success:
+    shape: '{ "data": {...}, "links": {...}, "meta": {...} }'
+    example_live: >-
+      {"data":{"status":"OK","updateTime":"2026-07-27T20:23:56Z","explanation":"All services operational"},
+      "links":{"self":"https://public.cdr.agl.com.au/cds-au/v1/discovery/status"},"meta":{}}
+  error:
+    shape: '{ "errors": [ { "code", "title", "detail", "isSecondaryDataHolderError", "meta" } ] }'
+    content_type: application/json
+    rfc9457: false
+    detail: errors/agl-energy-problem-types.yml
+
+filtering:
+  note: Query filters are per-resource-family, defined in the standard.
+  params:
+  - {name: open-status, values: [ALL, OPEN, CLOSED], default: ALL, applies_to: energy accounts}
+  - {name: interval-reads, values: [NONE, MIN_30, FULL], default: NONE, applies_to: electricity usage}
+  - {name: oldest-date / newest-date, applies_to: usage, billing, invoices}
+  - {name: oldest-time / newest-time, applies_to: usage}
+
+bulk_and_specific_requests:
+  pattern: >-
+    Every consumer resource family exposes three shapes — a per-resource GET, a
+    "bulk" GET across all of the consumer's resources, and a POST that takes an
+    explicit id list in the request body. The POST is a read, not a write: it
+    exists because the id list can exceed a practical query-string length.
+  post_read_operations:
+  - listElectricityUsageForServicePoints
+  - listElectricityDERForSpecificServicePoints
+  - listEnergyAccountBalancesSpecificAccounts
+  - listEnergyInvoicesForSpecificAccounts
+  - listEnergyAccountBillingForSpecificAccounts
+  request_bodies: [RequestServicePointIdListV1, RequestAccountIdListV1]
+
+idempotency:
+  supported: false
+  detail: >-
+    The Consumer Data Standards define no idempotency-key header, and no
+    Idempotency-Key parameter appears in either harvested specification. It is
+    not a gap in the implementation: the entire AGL surface is read-only. All 27
+    operations are reads — 22 GET, and 5 POST operations that are id-list reads
+    rather than state changes — so there is no non-idempotent operation for an
+    idempotency contract to protect.
+  verified: grep of openapi/ for idempoten* returns no match
+
+rate_limiting:
+  documented: false
+  detail: >-
+    No rate-limit headers were returned on any observed response, and the
+    Consumer Data Standards define traffic thresholds as a data holder
+    performance/availability obligation rather than as a published per-client
+    quota with response headers. No X-RateLimit-* or RateLimit-* header was seen
+    on https://public.cdr.agl.com.au or on the AER PRD host on 2026-07-27.
+  status_codes_available: [429 (Too Many Requests) is a permitted CDS status]
+
+cors:
+  public_prd: 'Access-Control-Allow-Origin: *'
+  agl_discovery:
+    allow_origin: '*'
+    allow_headers: Range, x-v, x-min-v
+    expose_headers: Content-Length, x-v, x-min-v
+    max_age: 3600
+  observed: '2026-07-27'
+
+transport_security:
+  observed_headers:
+  - {host: public.cdr.agl.com.au, header: 'strict-transport-security: max-age=63072000; includeSubDomains;'}
+  - {host: public.cdr.agl.com.au, header: 'x-content-type-options: nosniff'}
+  - {host: public.cdr.agl.com.au, header: 'x-frame-options: DENY'}
+  detail: security/agl-energy-domain-security.yml

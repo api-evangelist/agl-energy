@@ -1,0 +1,75 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AGL CDR Common API
+  version: 1.0.0
+extends: openapi/agl-energy-cds-common-openapi.json
+x-generated: '2026-07-27'
+x-method: generated
+x-source: >-
+  API Evangelist enrichment pipeline. Captures our enhancements as an Overlay so
+  the harvested Data Standards Body document in openapi/ stays byte-faithful.
+  Every status below was observed by live anonymous HTTP probe on 2026-07-27.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: AGL Energy
+    x-apievangelist-slug: agl-energy
+    x-apievangelist-review: review.yml
+    x-apievangelist-note: >-
+      The Data Standards Body's shared CDR Common API v1.36.0. AGL implements the
+      unauthenticated discovery half of this contract at its CDR public base URI.
+      The /common/customer endpoints in the same document are consumer-authorised
+      and return HTTP 404 on the public base URI, which is correct behaviour.
+- target: $.servers
+  update:
+  - url: https://public.cdr.agl.com.au/cds-au/v1
+    description: >-
+      AGL's CDR public base URI, listed on the ACCC CDR Register for brand "AGL"
+      (data holder brand id d177e382-b12d-ed11-a832-000d3a8830d6). Serves the two
+      discovery operations anonymously.
+    x-apievangelist-auth: none
+    x-apievangelist-operated-by: AGL Energy
+    x-apievangelist-verified: '2026-07-27'
+- target: $.paths['/discovery/status'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-verified:
+      status: 200
+      date: '2026-07-27'
+      requiredHeader: 'x-v: 1'
+      body: '{"data":{"status":"OK","explanation":"All services operational"},"links":{"self":"https://public.cdr.agl.com.au/cds-au/v1/discovery/status"},"meta":{}}'
+    x-apievangelist-role: >-
+      This is AGL's status page. It is machine-readable and has no human
+      equivalent — AGL publishes no status.agl.com.au.
+- target: $.paths['/discovery/outages'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-verified:
+      status: 200
+      date: '2026-07-27'
+      requiredHeader: 'x-v: 1'
+      scheduledWindows: 6
+      sampleExplanation: >-
+        "AGL CDR Consent flow will be unavailable. Customer will be unable to
+        register and create new arrangements for CDR."
+    x-apievangelist-role: >-
+      AGL-authored operational notices. The strongest available evidence that the
+      CDR consent flow is an operated service rather than a designation on paper.
+- target: $.paths['/common/customer'].get
+  update:
+    x-apievangelist-access: adr-consent
+    x-apievangelist-scope: common:customer.basic:read
+    x-apievangelist-verified: {url: 'https://public.cdr.agl.com.au/cds-au/v1/common/customer', status: 404, date: '2026-07-27', note: 'correctly absent from the public base URI'}
+- target: $.paths['/common/customer/detail'].get
+  update:
+    x-apievangelist-access: adr-consent
+    x-apievangelist-scope: common:customer.detail:read
+- target: $.info
+  update:
+    x-apievangelist-artifacts:
+      authentication: authentication/agl-energy-authentication.yml
+      scopes: scopes/agl-energy-scopes.yml
+      conventions: conventions/agl-energy-conventions.yml
+      errors: errors/agl-energy-problem-types.yml
+      lifecycle: lifecycle/agl-energy-lifecycle.yml
+      well_known: well-known/agl-energy-well-known.yml

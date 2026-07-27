@@ -1,0 +1,73 @@
+generated: '2026-07-27'
+method: generated
+source: >-
+  Generated from openapi/agl-energy-cds-energy-openapi.json and
+  openapi/agl-energy-cds-common-openapi.json. Every operationId referenced in
+  every skill was verified verbatim against the specs; every x-v version, query
+  parameter, schema field and error URN was read from the spec or from the
+  Consumer Data Standards error registry, not recalled. No provider-published
+  agent skill or AGENTS.md exists — AGL publishes no developer material of any
+  kind.
+description: >-
+  Four packaged Agent Skills over AGL's Consumer Data Right surface, split along
+  the line that actually matters to an agent: two that run today with no
+  credential at all, and two that cannot run without ACCC accreditation, CDR
+  Register certificates and a live consumer consent. Skills state that gate up
+  front rather than letting an agent discover it as a 401.
+skills:
+- file: agl-energy-check-cdr-availability.md
+  name: Check AGL CDR availability before a data request
+  api: openapi/agl-energy-cds-common-openapi.json
+  auth: none
+  runnable_today: true
+  operations: [getStatus, getOutages]
+- file: agl-energy-compare-retail-plans.md
+  name: Compare AGL retail energy plans and tariffs
+  api: openapi/agl-energy-cds-energy-openapi.json
+  auth: none
+  runnable_today: true
+  operations: [listEnergyPlans, getEnergyPlanDetail]
+- file: agl-energy-consumer-usage-and-der.md
+  name: Read a consenting consumer's AGL electricity usage and DER
+  api: openapi/agl-energy-cds-energy-openapi.json
+  auth: adr-consent
+  runnable_today: false
+  operations:
+  - listElectricityServicePoints
+  - getElectricityServicePointDetail
+  - getElectricityServicePointUsage
+  - listElectricityUsageBulk
+  - listElectricityUsageForServicePoints
+  - getElectricityDERForServicePoint
+  - listElectricityDERBulk
+  - listElectricityDERForSpecificServicePoints
+- file: agl-energy-account-billing-review.md
+  name: Review a consenting consumer's AGL accounts, bills and concessions
+  api: openapi/agl-energy-cds-energy-openapi.json
+  auth: adr-consent
+  runnable_today: false
+  operations:
+  - getCustomer
+  - listEnergyAccounts
+  - getEnergyAccountDetail
+  - getEnergyAccountBalance
+  - listEnergyAccountBalancesBulk
+  - getEnergyAccountInvoices
+  - listEnergyAccountInvoicesBulk
+  - getBillingForEnergyAccount
+  - listEnergyAccountBillingBulk
+  - getEnergyAccountPaymentSchedule
+  - getEnergyAccountConcessions
+coverage:
+  operations_total: 27
+  operations_covered: 21
+  uncovered:
+  - listEnergyAccountBalancesSpecificAccounts
+  - listEnergyInvoicesForSpecificAccounts
+  - listEnergyAccountBillingForSpecificAccounts
+  - listElectricityDERForSpecificServicePoints
+  - getCustomerDetail
+  uncovered_note: >-
+    The id-list POST variants are mentioned inside the relevant skills as
+    alternatives to their bulk GET siblings rather than given skills of their
+    own; getCustomerDetail is named in the account skill as an optional step.

@@ -20,6 +20,17 @@ tags:
 created: '2026-07-27'
 modified: '2026-07-27'
 specificationVersion: '0.19'
+x-enrichment:
+  round: '2026-07-27'
+  note: >-
+    No WellKnown pointer is emitted: every /.well-known/ probe across every AGL
+    and AER host returned 404 or 403 (see well-known/agl-energy-well-known.yml).
+    No SDKs/Packages pointer: AGL ships no client libraries in any registry and
+    its GitHub org holds one unrelated repository. No Idempotency pointer: the
+    whole surface is read-only and the Consumer Data Standards define no
+    idempotency key. No Compliance pointer: AGL publishes no trust centre or
+    certification programme. No AsyncAPI/Webhooks pointer: there is no event
+    surface — the CDR is pull-only. Absence recorded rather than papered over.
 description: >-
   AGL Energy Limited (ASX:AGL) is Australia's oldest listed company — founded in
   Sydney in 1837 as the Australian Gas Light Company — and one of the country's
@@ -81,6 +92,10 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/agl-energy-cds-energy-openapi.json
+  - type: Overlay
+    url: overlays/agl-energy-cds-energy-overlay.yaml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
   - type: Documentation
     url: https://consumerdatastandardsaustralia.github.io/standards/
   - type: Documentation
@@ -114,6 +129,12 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/agl-energy-cds-common-openapi.json
+  - type: Overlay
+    url: overlays/agl-energy-cds-common-overlay.yaml
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
   - type: Documentation
     url: https://consumerdatastandardsaustralia.github.io/standards/
   - type: Documentation
@@ -144,6 +165,8 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/agl-energy-cds-energy-openapi.json
+  - type: Overlay
+    url: overlays/agl-energy-cds-energy-overlay.yaml
   - type: Documentation
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: Documentation
@@ -151,12 +174,50 @@ apis:
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
 common:
+- type: DomainSecurity
+  url: security/agl-energy-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/agl-energy-agentic-access.yml
+- type: Authentication
+  url: authentication/agl-energy-authentication.yml
+- type: OAuthScopes
+  url: scopes/agl-energy-scopes.yml
+- type: Conventions
+  url: conventions/agl-energy-conventions.yml
+- type: ErrorCatalog
+  url: errors/agl-energy-problem-types.yml
+- type: DataModel
+  url: data-model/agl-energy-data-model.yml
+- type: Lifecycle
+  url: lifecycle/agl-energy-lifecycle.yml
+- type: StatusPage
+  url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+- type: Deprecation
+  url: https://consumerdatastandardsaustralia.github.io/standards/#endpoint-version-schedule
+- type: ChangeLog
+  url: changelog/agl-energy-changelog.yml
+- type: Conformance
+  url: conformance/agl-energy-conformance.yml
+- type: MCPServer
+  url: mcp/agl-energy-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/agl-energy-llms.txt
+- type: VulnerabilityDisclosure
+  url: security/agl-energy-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.agl.com.au/terms-conditions/responsible-disclosure-policy
+- type: APIReference
+  url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
 - type: Website
   url: https://www.agl.com.au/
 - type: Documentation
   url: https://www.agl.com.au/consumer-data-right-policy
 - type: PrivacyPolicy
-  url: https://www.agl.com.au/consumer-data-right-policy
+  url: https://www.agl.com.au/privacy-policy
+- type: TermsOfService
+  url: https://www.agl.com.au/terms-conditions/online-services
 - type: Support
   url: https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right
 - type: Forum

@@ -1,0 +1,74 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  https://github.com/ConsumerDataStandardsAustralia/standards/releases — the Data
+  Standards Body's dated release history for the Consumer Data Standards, fetched
+  2026-07-27 via the GitHub API.
+description: >-
+  AGL publishes no changelog, no release notes and no API version history of its
+  own — it has no developer portal to publish them on. The contract AGL serves is
+  versioned entirely by the Data Standards Body, whose releases are dated, tagged
+  and semver-numbered, and whose binding decisions carry sector-wide obligation
+  dates. That release stream is the only changelog this API has, so it is
+  captured here with its provenance stated plainly.
+provenance:
+  provider_publishes_changelog: false
+  publisher: Data Standards Body (Treasury), Australia
+  applies_to: every designated CDR energy data holder, identically
+  agl_specific_notices: >-
+    The one AGL-authored operational feed is
+    https://public.cdr.agl.com.au/cds-au/v1/discovery/outages, which announces
+    scheduled unavailability of the AGL CDR consent flow. It is a live outage
+    feed, not a change history.
+scheme: semver
+current_version: 1.36.0
+current_version_date: '2025-12-04'
+url: https://github.com/ConsumerDataStandardsAustralia/standards/releases
+docs: https://consumerdatastandardsaustralia.github.io/standards/#changelog-and-archives
+entries:
+- version: 1.36.0
+  date: '2025-12-04'
+  highlights: Changes from Decision 376 — white label brand arrangements.
+  breaking: false
+  note: The version implemented by both OpenAPI documents harvested into openapi/.
+- version: 1.35.1
+  date: '2025-10-08'
+  highlights: Changes from Decision 377 — amendments to the certificate management section.
+  breaking: false
+- version: 1.35.0
+  date: '2025-07-29'
+  highlights: >-
+    Decision 364 (Maintenance Iteration 22), Decision 367 (March 2025 Rules
+    amendment including non-bank lending and BNPL), Decision 369 (Redirect to
+    App), Decision 370 (amendment of the Decision 338 obligation date).
+  breaking: false
+- version: 1.34.1
+  date: '2025-04-11'
+  highlights: Update to the Candidate Standards for the banking and non-bank lending sector.
+  breaking: false
+- version: 1.34.0
+  date: '2025-03-13'
+  breaking: false
+- version: 1.33.1
+  date: '2025-03-06'
+  breaking: false
+- version: 1.33.0
+  date: '2024-12-18'
+  breaking: false
+- version: 1.32.0
+  date: '2024-10-21'
+  breaking: false
+- version: 1.31.0
+  date: '2024-07-03'
+  breaking: false
+- version: 1.30.0
+  date: '2024-04-24'
+  breaking: false
+breaking_change_mechanism:
+  detail: >-
+    The Consumer Data Standards do not break a released endpoint version. A
+    breaking change ships as a NEW integer endpoint version, negotiated per
+    request via x-v / x-min-v, with a published Future Dated Obligation naming
+    the date data holders MUST implement the new version and the date they MAY
+    retire the old one. See lifecycle/agl-energy-lifecycle.yml.
+  future_dated_obligations: https://consumerdatastandardsaustralia.github.io/standards/#future-dated-obligations

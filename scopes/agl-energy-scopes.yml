@@ -1,0 +1,105 @@
+generated: '2026-07-27'
+method: derived
+source: >-
+  x-scopes extensions on every operation in
+  openapi/agl-energy-cds-energy-openapi.json and
+  openapi/agl-energy-cds-common-openapi.json (CDR Energy API + CDR Common API
+  v1.36.0), cross-checked against the Consumer Data Standards authorisation
+  scopes documentation.
+docs: https://consumerdatastandardsaustralia.github.io/standards/#authorisation-scopes
+description: >-
+  The eleven CDR consent scopes that govern AGL's consumer energy data. These are
+  not declared in an OpenAPI securityScheme — the harvested Consumer Data
+  Standards documents ship an empty components.securitySchemes — they are carried
+  per operation in the DSB's x-scopes extension and defined normatively in the
+  standards. A consumer authorises a subset of these scopes through AGL's CDR
+  consent flow; the Accredited Data Recipient's access token then carries only
+  what was consented, for the duration the consumer chose.
+scheme:
+  type: oauth2
+  flow: authorizationCode
+  profile: FAPI 1.0 Advanced (CDR Security Profile)
+  authorizationUrl: null
+  tokenUrl: null
+  endpoint_note: >-
+    AGL's authorisation and token endpoints are not published anonymously. They
+    are distributed to Accredited Data Recipients through the CDR Register. No
+    URL is recorded here rather than guessed.
+scope_count: 11
+scopes:
+- scope: common:customer.basic:read
+  description: Name and occupation for an individual, or agent name and role for a non-individual customer.
+  sources: [openapi/agl-energy-cds-common-openapi.json]
+  operations: [getCustomer]
+- scope: common:customer.detail:read
+  description: Customer contact details — phone, email, mail address, residential address.
+  sources: [openapi/agl-energy-cds-common-openapi.json]
+  operations: [getCustomerDetail]
+- scope: energy:accounts.basic:read
+  description: Account identifiers, display name, open/closed status and plan overview for the consumer's energy accounts.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [listEnergyAccounts]
+- scope: energy:accounts.detail:read
+  description: Full account detail including plan detail, tariffs, authorised contacts and associated service points.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [getEnergyAccountDetail]
+- scope: energy:accounts.paymentschedule:read
+  description: The agreed payment schedule for an account — direct debit, card debit, digital wallet or manual payment arrangements.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [getEnergyAccountPaymentSchedule]
+- scope: energy:accounts.concessions:read
+  description: Concessions and rebates applied to the consumer's energy account.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [getEnergyAccountConcessions]
+- scope: energy:billing:read
+  description: Account balances, invoices and billing transactions — the money side of the account.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations:
+  - getEnergyAccountBalance
+  - listEnergyAccountBalancesBulk
+  - listEnergyAccountBalancesSpecificAccounts
+  - getEnergyAccountInvoices
+  - listEnergyAccountInvoicesBulk
+  - listEnergyInvoicesForSpecificAccounts
+  - getBillingForEnergyAccount
+  - listEnergyAccountBillingBulk
+  - listEnergyAccountBillingForSpecificAccounts
+- scope: energy:electricity.servicepoints.basic:read
+  description: The NMIs (service points) associated with the consumer, with basic status and classification.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [listElectricityServicePoints]
+- scope: energy:electricity.servicepoints.detail:read
+  description: Service point detail — meters, registers, distribution loss factor, related market participants, technical specifications.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations: [getElectricityServicePointDetail]
+- scope: energy:electricity.usage:read
+  description: Interval and basic meter reads for a service point — the consumption data itself.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations:
+  - getElectricityServicePointUsage
+  - listElectricityUsageBulk
+  - listElectricityUsageForServicePoints
+- scope: energy:electricity.der:read
+  description: Distributed Energy Resource register detail — solar PV, batteries, inverters, AC connections and protection modes.
+  sources: [openapi/agl-energy-cds-energy-openapi.json]
+  operations:
+  - getElectricityDERForServicePoint
+  - listElectricityDERBulk
+  - listElectricityDERForSpecificServicePoints
+unscoped_operations:
+  note: >-
+    Four operations carry no x-scopes because they are unauthenticated under the
+    Consumer Data Standards.
+  operations:
+  - {operationId: getStatus, surface: AGL CDR Discovery, auth: none}
+  - {operationId: getOutages, surface: AGL CDR Discovery, auth: none}
+  - {operationId: listEnergyPlans, surface: Product Reference Data (AER-hosted), auth: none}
+  - {operationId: getEnergyPlanDetail, surface: Product Reference Data (AER-hosted), auth: none}
+secondary_data_holder:
+  party: AEMO
+  role: >-
+    Secondary data holder for NMI standing data and metering data. AGL requests
+    it from AEMO on the consumer's behalf under the same consent; errors
+    propagated from AEMO are flagged with isSecondaryDataHolderError on the CDS
+    error object.
+  docs: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr

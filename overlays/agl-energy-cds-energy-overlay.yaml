@@ -1,0 +1,88 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the AGL CDR Energy API
+  version: 1.0.0
+extends: openapi/agl-energy-cds-energy-openapi.json
+x-generated: '2026-07-27'
+x-method: generated
+x-source: >-
+  API Evangelist enrichment pipeline. Captures our enhancements as an Overlay so
+  the harvested Data Standards Body document in openapi/ stays byte-faithful. All
+  facts asserted below were verified by live anonymous HTTP probes on 2026-07-27
+  or read from artifacts in this repo.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: AGL Energy
+    x-apievangelist-slug: agl-energy
+    x-apievangelist-review: review.yml
+    x-apievangelist-note: >-
+      This document is the Data Standards Body's shared CDR Energy API v1.36.0,
+      not an AGL-authored specification. AGL implements it as a designated energy
+      data holder. Two of its 23 operations are served anonymously for AGL by the
+      Australian Energy Regulator; the other 21 are consumer-authorised and
+      reachable only by Accredited Data Recipients.
+- target: $.servers
+  update:
+  - url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+    description: >-
+      AER-operated Product Reference Data host serving AGL's plans. Anonymous.
+      Only /energy/plans and /energy/plans/{planId} resolve here. Verified HTTP
+      200 on 2026-07-27 (1,343 plans, 135 pages).
+    x-apievangelist-auth: none
+    x-apievangelist-operated-by: Australian Energy Regulator
+    x-apievangelist-verified: '2026-07-27'
+  - url: https://public.cdr.agl.com.au/cds-au/v1
+    description: >-
+      AGL's own CDR public base URI. Serves only the CDR Common discovery
+      endpoints; returns HTTP 404 for every /energy/* path.
+    x-apievangelist-auth: none
+    x-apievangelist-operated-by: AGL Energy
+- target: $.paths['/energy/plans'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-host: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+    x-apievangelist-verified: {status: 200, date: '2026-07-27', totalRecords: 1343, totalPages: 135, requiredHeader: 'x-v: 1'}
+- target: $.paths['/energy/plans/{planId}'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-host: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+    x-apievangelist-verified: {status: 200, date: '2026-07-27', requiredHeader: 'x-v: 3', samplePlanId: AGL1067320MRE2@EME}
+- target: $.tags
+  update:
+  - name: Energy Plans
+    description: >-
+      Anonymous Product Reference Data. For AGL these two operations are served
+      centrally by the AER, not by AGL — the structural break from CDR banking.
+    x-apievangelist-access: public
+  - name: Electricity Service Points
+    description: Consumer-authorised. Requires energy:electricity.servicepoints.*:read.
+    x-apievangelist-access: adr-consent
+  - name: Electricity Usage
+    description: Consumer-authorised. Requires energy:electricity.usage:read. Interval metering data is sourced from AEMO as secondary data holder.
+    x-apievangelist-access: adr-consent
+  - name: Distributed Energy Resources
+    description: Consumer-authorised. Requires energy:electricity.der:read. Solar, battery and inverter register.
+    x-apievangelist-access: adr-consent
+  - name: Energy Accounts
+    description: Consumer-authorised. Requires energy:accounts.*:read.
+    x-apievangelist-access: adr-consent
+  - name: Energy Account Balances
+    description: Consumer-authorised. Requires energy:billing:read.
+    x-apievangelist-access: adr-consent
+  - name: Energy Account Billing
+    description: Consumer-authorised. Requires energy:billing:read.
+    x-apievangelist-access: adr-consent
+- target: $.info
+  update:
+    x-apievangelist-artifacts:
+      authentication: authentication/agl-energy-authentication.yml
+      scopes: scopes/agl-energy-scopes.yml
+      conventions: conventions/agl-energy-conventions.yml
+      errors: errors/agl-energy-problem-types.yml
+      lifecycle: lifecycle/agl-energy-lifecycle.yml
+      conformance: conformance/agl-energy-conformance.yml
+      data_model: data-model/agl-energy-data-model.yml
+      agentic_access: agentic-access/agl-energy-agentic-access.yml
+      mcp: mcp/agl-energy-mcp.yml
+      skills: skills/_index.yml

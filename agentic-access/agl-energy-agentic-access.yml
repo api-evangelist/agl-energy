@@ -1,0 +1,319 @@
+generated: '2026-07-27'
+method: generated
+source: openapi/agl-energy-cds-common-openapi.json, openapi/agl-energy-cds-energy-openapi.json
+description: Recommended x-agentic-access execution contracts, classified heuristically from
+  the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
+  audience per deployment. See research/curity/agentic-governance/.
+summary:
+  operations: 27
+  by_action_class:
+    connected: 22
+    acting: 5
+  by_consequence:
+    read: 22
+    write: 4
+    physical: 1
+  human_in_the_loop_required: 0
+operations:
+- path: /common/customer
+  method: get
+  operationId: getCustomer
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /common/customer/detail
+  method: get
+  operationId: getCustomerDetail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /discovery/status
+  method: get
+  operationId: getStatus
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /discovery/outages
+  method: get
+  operationId: getOutages
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/plans
+  method: get
+  operationId: listEnergyPlans
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/plans/{planId}
+  method: get
+  operationId: getEnergyPlanDetail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints
+  method: get
+  operationId: listElectricityServicePoints
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/{servicePointId}
+  method: get
+  operationId: getElectricityServicePointDetail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/{servicePointId}/usage
+  method: get
+  operationId: getElectricityServicePointUsage
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/usage
+  method: get
+  operationId: listElectricityUsageBulk
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/usage
+  method: post
+  operationId: listElectricityUsageForServicePoints
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /energy/electricity/servicepoints/{servicePointId}/der
+  method: get
+  operationId: getElectricityDERForServicePoint
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/der
+  method: get
+  operationId: listElectricityDERBulk
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/electricity/servicepoints/der
+  method: post
+  operationId: listElectricityDERForSpecificServicePoints
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /energy/accounts
+  method: get
+  operationId: listEnergyAccounts
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/{accountId}
+  method: get
+  operationId: getEnergyAccountDetail
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/{accountId}/payment-schedule
+  method: get
+  operationId: getEnergyAccountPaymentSchedule
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/{accountId}/concessions
+  method: get
+  operationId: getEnergyAccountConcessions
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/{accountId}/balance
+  method: get
+  operationId: getEnergyAccountBalance
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/balances
+  method: get
+  operationId: listEnergyAccountBalancesBulk
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/balances
+  method: post
+  operationId: listEnergyAccountBalancesSpecificAccounts
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /energy/accounts/{accountId}/invoices
+  method: get
+  operationId: getEnergyAccountInvoices
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/invoices
+  method: get
+  operationId: listEnergyAccountInvoicesBulk
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/invoices
+  method: post
+  operationId: listEnergyInvoicesForSpecificAccounts
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    audience: null
+    token:
+      max-ttl: 300
+      exchange: true
+      purpose-required: true
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /energy/accounts/{accountId}/billing
+  method: get
+  operationId: getBillingForEnergyAccount
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/billing
+  method: get
+  operationId: listEnergyAccountBillingBulk
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /energy/accounts/billing
+  method: post
+  operationId: listEnergyAccountBillingForSpecificAccounts
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required

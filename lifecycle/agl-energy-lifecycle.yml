@@ -1,0 +1,119 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  Consumer Data Standards v1.36.0 versioning and future-dated-obligations
+  sections (https://consumerdatastandardsaustralia.github.io/standards/#versioning),
+  the DSB standards release history
+  (https://github.com/ConsumerDataStandardsAustralia/standards/releases, fetched
+  2026-07-27), and AGL's own live Consumer Data Standards operations endpoints.
+description: >-
+  AGL publishes no versioning or deprecation policy of its own. Its API lifecycle
+  is the Consumer Data Right lifecycle: endpoint versions are integers negotiated
+  per request through x-v / x-min-v, new versions become mandatory on dates set
+  by the Data Standards Body, and old versions may be retired only after a
+  published retirement-eligibility date. What AGL *does* operate itself is the
+  status and outage surface — and it is a machine-readable API, not a status
+  page: GET /cds-au/v1/discovery/status and GET /cds-au/v1/discovery/outages
+  return live JSON, verified 200 on 2026-07-27.
+provenance_note: >-
+  The versioning and deprecation policy below is authored by the Data Standards
+  Body (Treasury), not by AGL. It is recorded here because it is the policy that
+  actually governs the endpoints AGL serves — the same contract every designated
+  Australian energy data holder is bound to. The status and outage feeds are
+  AGL-operated and AGL-authored.
+
+versioning:
+  scheme: header-based per-endpoint integer versioning
+  request_headers: [x-v, x-min-v]
+  response_header: x-v
+  standard_version: '1.36.0'
+  standard_released: '2025-12-04'
+  base_path: /cds-au/v1
+  base_path_note: The /v1 in the path is the CDR standard major version, not the endpoint version.
+  docs: https://consumerdatastandardsaustralia.github.io/standards/#versioning
+  current_versions_by_operation: conventions/agl-energy-conventions.yml
+
+deprecation:
+  policy_url: https://consumerdatastandardsaustralia.github.io/standards/#endpoint-version-schedule
+  policy_url_note: >-
+    The Endpoint Version Schedule is the normative retirement table — every
+    endpoint, every version, its obligation date and its retirement-eligibility
+    date. Anchor verified present on 2026-07-27.
+  mechanism: >-
+    Endpoint versions are deprecated and retired through the Data Standards
+    Body's Future Dated Obligations schedule. Each obligation states the date by
+    which data holders MUST implement version N and the date from which they MAY
+    retire version N-1 (for example "Data Holders MUST implement v5 by 14 July
+    2025; Data Holders MAY retire v4 from 10 November 2025"). Retirement is
+    therefore date-driven and published in advance across the whole sector, not
+    negotiated per data holder.
+  future_dated_obligations: https://consumerdatastandardsaustralia.github.io/standards/#future-dated-obligations
+  sunset_header: false
+  sunset_header_note: >-
+    RFC 8594 Sunset / Deprecation response headers are not used. A client that
+    asks for a retired endpoint version receives HTTP 406 with
+    urn:au-cds:error:cds-all:Header/UnsupportedVersion instead.
+  agl_published_policy: false
+
+status_page:
+  url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  type: machine-readable (Consumer Data Standards Get Status)
+  operated_by: AGL
+  verified: {status: 200, date: '2026-07-27'}
+  last_observed_body: '{"data":{"status":"OK","updateTime":"2026-07-27T20:23:56Z","explanation":"All services operational"}}'
+  status_values: [OK, PARTIAL_FAILURE, UNAVAILABLE, SCHEDULED_OUTAGE]
+  human_status_page: false
+  human_status_page_note: AGL publishes no status.agl.com.au or equivalent human status page.
+
+outages:
+  url: https://public.cdr.agl.com.au/cds-au/v1/discovery/outages
+  type: machine-readable (Consumer Data Standards Get Outages)
+  operated_by: AGL
+  verified: {status: 200, date: '2026-07-27'}
+  scheduled_windows_observed: 6
+  observed:
+  - {outageTime: '2026-08-01T14:00:00Z', duration: PT8H, isPartial: false}
+  - {outageTime: '2026-08-02T20:00:00Z', duration: PT5H, isPartial: false}
+  - {outageTime: '2026-08-08T14:00:00Z', duration: PT8H, isPartial: false}
+  - {outageTime: '2026-08-15T14:00:00Z', duration: PT8H, isPartial: false}
+  - {outageTime: '2026-08-22T14:00:00Z', duration: PT8H, isPartial: false}
+  - {outageTime: '2026-08-29T14:00:00Z', duration: PT8H, isPartial: false}
+  explanation_text: >-
+    "AGL CDR Consent flow will be unavailable. Customer will be unable to
+    register and create new arrangements for CDR."
+  significance: >-
+    AGL-authored operational text naming its own CDR consent flow. This is the
+    strongest single piece of evidence that the implementation is operated, not
+    merely designated — an organisation does not schedule recurring maintenance
+    for a consent flow it has not built.
+
+sla:
+  published: false
+  note: >-
+    No public SLA or uptime target. Availability is a regulatory obligation under
+    the CDR performance requirements (the ACCC and the DSB publish data holder
+    performance reporting), not a commercial commitment AGL offers to developers.
+  regulator_reporting: https://www.cdr.gov.au/
+
+deprecated_operations:
+  count: 0
+  note: >-
+    No operation in either harvested specification carries deprecated: true. The
+    CDS deprecates whole endpoint *versions* through the obligations schedule
+    rather than flagging deprecation inside the OpenAPI document.
+
+surface_lifecycle:
+  designated: '2022'
+  product_data_live_from: '2022-10-01'
+  consumer_data_live_from: '2022-11-15'
+  note: >-
+    AGL was in the first tranche of designated energy data holders, alongside
+    AEMO and Origin.
+  platform_migration:
+    partner: Kaluza
+    detail: >-
+      AGL took a ~20 percent stake in Kaluza in 2024 (~A$150m) and is migrating
+      about four million consumer electricity and gas services onto the Kaluza
+      platform. The retail system of record behind these mandated endpoints is
+      being rebuilt on a third party's energy operating system, which is the
+      most likely source of future change to this surface.

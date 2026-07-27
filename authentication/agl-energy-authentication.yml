@@ -1,0 +1,109 @@
+generated: '2026-07-27'
+method: searched
+source: >-
+  Consumer Data Standards (CDR) Security Profile v1.36.0 —
+  https://consumerdatastandardsaustralia.github.io/standards/#security-profile —
+  plus live anonymous probes of AGL's CDR public base URI and the AER-operated
+  Product Reference Data host on 2026-07-27.
+docs: https://consumerdatastandardsaustralia.github.io/standards/#security-profile
+description: >-
+  AGL's authentication model is not AGL's design — it is the Consumer Data Right
+  security profile, which every designated data holder implements identically.
+  The harvested Consumer Data Standards OpenAPI documents declare NO
+  components.securitySchemes at all (verified: both cds_common and cds_energy
+  ship an empty securitySchemes object), because the CDR carries its security
+  contract in the Security Profile section of the standards and in the CDR
+  Register's certificate distribution, not inside the API specification. There
+  are therefore three distinct auth postures across AGL's three API surfaces, and
+  only one of them is authenticated at all.
+summary:
+  types: [oauth2, openIdConnect, mutualTLS, none]
+  api_key_in: []
+  oauth2_flows: [authorizationCode]
+  spec_declared_security_schemes: 0
+  note: >-
+    types are sourced from the CDR Security Profile, NOT from the OpenAPI —
+    derive-authentication.py over openapi/ correctly returns zero schemes.
+surfaces:
+- surface: AGL CDR Discovery (Common) API
+  base_url: https://public.cdr.agl.com.au/cds-au/v1
+  auth: none
+  detail: >-
+    GET /discovery/status and GET /discovery/outages are fully anonymous. The
+    only mandatory header is the Consumer Data Standards version header x-v: 1.
+    Verified 200 on 2026-07-27.
+  verified: {status: 200, date: '2026-07-27'}
+- surface: AGL Energy Product Reference Data (PRD) API
+  base_url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+  auth: none
+  detail: >-
+    Anonymous HTTP GET, no key, no accreditation, CORS
+    Access-Control-Allow-Origin *. Required header is x-v (1 for /energy/plans,
+    3 for /energy/plans/{planId}). Operated by the Australian Energy Regulator,
+    not by AGL.
+  verified: {status: 200, date: '2026-07-27'}
+- surface: AGL CDR Energy API (consumer data)
+  base_url: null
+  base_url_note: >-
+    Not published. The consumer-facing base URI is distributed to accredited
+    participants through the CDR Register.
+  auth: oauth2 + openIdConnect over mutualTLS (FAPI 1.0 Advanced)
+  detail: >-
+    Consumer-authorised. Only an Accredited Data Recipient, a CDR
+    representative or a sponsored/affiliate party holding CDR Register-issued
+    certificates can call these endpoints.
+schemes:
+- name: CDR OAuth 2.0 / OpenID Connect (FAPI 1.0 Advanced)
+  type: oauth2
+  flow: authorizationCode
+  profile: FAPI 1.0 Advanced Security Profile
+  source: https://consumerdatastandardsaustralia.github.io/standards/#security-profile
+  requirements:
+  - Pushed Authorization Requests (PAR, RFC 9126) — the authorisation request is pushed server-to-server
+  - private_key_jwt client authentication
+  - mTLS-bound (sender-constrained) access tokens, RFC 8705
+  - request object signing (PS256 / ES256)
+  - OIDC Hybrid or Authorization Code flow per the profile version in force
+  - CDR Arrangement ID issued per consent, revocable by the consumer or the ADR
+  scopes_artifact: scopes/agl-energy-scopes.yml
+- name: CDR transport security
+  type: mutualTLS
+  source: https://consumerdatastandardsaustralia.github.io/standards/#security-profile
+  detail: >-
+    All consumer-data calls between an Accredited Data Recipient and AGL as data
+    holder run over mutual TLS using transport certificates issued by the CDR
+    Register certificate authority. Signing certificates are separately issued.
+- name: Anonymous (public CDR surfaces)
+  type: none
+  detail: >-
+    Discovery and Product Reference Data endpoints carry no authentication. The
+    x-v version header is mandatory but is not a credential.
+request_headers:
+- {name: x-v, required: true, purpose: requested endpoint version (positive integer)}
+- {name: x-min-v, required: false, purpose: minimum acceptable endpoint version}
+- {name: x-fapi-interaction-id, required: false, purpose: RFC 4122 UUID correlation id; echoed by the data holder}
+- {name: x-fapi-auth-date, required: false, purpose: time the consumer last logged in to the ADR software product}
+- {name: x-fapi-customer-ip-address, required: false, purpose: consumer's original IP when they are present}
+- {name: x-cds-client-headers, required: false, purpose: consumer's original HTTP headers, base64 encoded}
+onboarding:
+  self_serve: false
+  path: >-
+    Accreditation by the ACCC as a Data Recipient under the Consumer Data Right,
+    or operating under an existing ADR as a CDR representative or
+    sponsored/affiliate. Meet CDR Rules Schedule 2 information-security
+    controls, obtain CDR Register transport and signing certificates, register a
+    software product, then obtain the individual consumer's authorisation
+    through AGL's own CDR consent flow.
+  docs: https://www.cdr.gov.au/for-providers
+  sandbox: false
+oidc_discovery:
+  anonymous_document_found: false
+  probes:
+  - {url: 'https://public.cdr.agl.com.au/.well-known/openid-configuration', status: 404}
+  - {url: 'https://public.cdr.agl.com.au/.well-known/oauth-authorization-server', status: 404}
+  - {url: 'https://public.cdr.agl.com.au/.well-known/oauth-protected-resource', status: 404}
+  - {url: 'https://www.agl.com.au/.well-known/openid-configuration', status: 403}
+  note: >-
+    Expected under the CDR — data holder authorisation-server metadata is
+    published to the CDR Register and retrieved by accredited recipients, not
+    served anonymously.

@@ -1,0 +1,90 @@
+generated: '2026-07-27'
+method: probed
+source: >-
+  live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+  (0-working/probe-domain-security.py), corrected and extended by hand on the
+  same date: the script's HSTS check reported null for hosts that do serve
+  Strict-Transport-Security, and it did not cover the AER-operated Product
+  Reference Data host that serves AGL's plans. Both were re-probed with
+  `curl -D -` and `dig`, and the observed header values are recorded verbatim.
+hosts:
+- host: www.agl.com.au
+  role: corporate website
+  https: true
+  http_status: 403
+  http_status_note: Akamai edge (server AkamaiGHost) denies all non-browser clients.
+  tls_version: TLSv1.3
+  cert_expires: Oct 12 23:59:59 2026 GMT
+  hsts: true
+  hsts_header: 'max-age=86400 ; includeSubDomains ; preload'
+  hsts_max_age: 86400
+  hsts_note: >-
+    max-age is 1 day — well below the 31536000 (1 year) that HSTS preload
+    submission requires, despite the preload token being present.
+- host: public.cdr.agl.com.au
+  role: AGL CDR public base URI
+  https: true
+  http_status: 200
+  http_status_note: 200 on /cds-au/v1/discovery/status; nginx 404 at the host root, which is correct.
+  tls_version: TLSv1.3
+  cert_expires: Nov  6 23:59:59 2026 GMT
+  hsts: true
+  hsts_header: 'max-age=63072000; includeSubDomains;'
+  hsts_max_age: 63072000
+  other_headers:
+  - 'x-content-type-options: nosniff'
+  - 'x-frame-options: DENY'
+  - 'access-control-allow-origin: *'
+- host: cdr.energymadeeasy.gov.au
+  role: AER-operated central energy Product Reference Data host serving AGL's plans
+  operated_by: Australian Energy Regulator (not AGL)
+  https: true
+  http_status: 200
+  tls_version: TLSv1.3
+  cert_expires: Jan 31 23:59:59 2027 GMT
+  hsts: false
+  hsts_note: No Strict-Transport-Security header returned on the AGL PRD path.
+- host: www.aer.gov.au
+  role: AER documentation host referenced from apis.yml
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  5 08:19:20 2026 GMT
+  hsts: null
+domains:
+- domain: agl.com.au
+  dnssec: false
+  caa:
+  - 0 issue "amazon.com"
+  - 0 issue "amazontrust.com"
+  - 0 issue "digicert.com"
+  - 0 issue "awstrust.com"
+  - 0 issue "amazonaws.com"
+  - 0 issue "letsencrypt.org"
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: energymadeeasy.gov.au
+  dnssec: false
+  caa:
+  - 0 issuewild "amazon.com"
+  - 0 issuewild "amazonaws.com"
+  - 0 issuewild "amazontrust.com"
+  - 0 issuewild "awstrust.com"
+  spf: true
+  spf_record: 'v=spf1 include:amazonses.com -all'
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: aer.gov.au
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+summary:
+  hosts_probed: 4
+  https_everywhere: true
+  tls_1_3_everywhere: true
+  hsts_on_api_host: true
+  dnssec_anywhere: false
+  caa_published: [agl.com.au, energymadeeasy.gov.au]
+  dmarc_enforcing: [agl.com.au (reject), aer.gov.au (reject), energymadeeasy.gov.au (quarantine)]
