@@ -1,0 +1,172 @@
+aid: agl-energy
+url: https://raw.githubusercontent.com/api-evangelist/agl-energy/refs/heads/main/apis.yml
+name: AGL Energy
+kind: company
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Energy
+- Australia
+- Utilities
+- Electricity
+- Gas
+- Energy Retailer
+- Consumer Data Right
+- CDR
+- Smart Metering
+- Solar
+- DER
+- Renewables
+- Energy Markets
+created: '2026-07-27'
+modified: '2026-07-27'
+specificationVersion: '0.19'
+description: >-
+  AGL Energy Limited (ASX:AGL) is Australia's oldest listed company — founded in
+  Sydney in 1837 as the Australian Gas Light Company — and one of the country's
+  largest integrated energy businesses, retailing electricity, gas, broadband and
+  mobile to roughly four million customer accounts while owning the nation's
+  largest electricity generation portfolio (Bayswater and Loy Yang A coal, gas
+  peakers, hydro, wind, utility-scale solar and grid-scale batteries). It sits at
+  both ends of the Australian value chain: generator and wholesale market
+  participant in the NEM, and the retailer of record that holds the customer
+  relationship, the billing account and the metering data. Its API posture is
+  entirely a product of regulation, not of product strategy. AGL publishes no
+  public developer portal and no self-serve API programme — apideveloper.agl.com.au
+  resolves through Akamai but returns HTTP 403 to every anonymous client, and
+  agl.com.au itself is bot-blocked at 403. What AGL does expose is the Consumer
+  Data Right: it is a designated CDR energy data holder, listed on the CDR Register
+  under brand "AGL" with public base URI https://public.cdr.agl.com.au, and that
+  surface is real and verified — GET /cds-au/v1/discovery/status and
+  /cds-au/v1/discovery/outages both return HTTP 200 with conformant Consumer Data
+  Standards envelopes, and AGL's own outage notices describe scheduled downtime of
+  the "AGL CDR Consent flow". Its energy plan Product Reference Data is genuinely
+  open and anonymous — 1,343 plans at
+  https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans — but that endpoint
+  is operated centrally by the Australian Energy Regulator, not by AGL, which is
+  the structural difference from CDR banking where every bank serves its own PRD.
+  Consumer usage, billing, service point, DER and account data is available only to
+  Accredited Data Recipients, over mTLS, under a consumer authorisation, with the
+  base URI distributed through the CDR Register rather than published. AGL is
+  therefore open on product data, closed to everyone but accredited recipients on
+  consumer data, and silent everywhere else — it publishes no open grid or market
+  data of its own. It is also migrating around four million customer services onto
+  the Kaluza platform under a A$150m, 20 percent stake taken in 2024, so the
+  retail data layer behind these mandated endpoints is being rebuilt on a
+  third-party energy operating system.
+apis:
+- aid: agl-energy:agl-cdr-energy-api
+  name: AGL CDR Energy API
+  description: >-
+    AGL's mandated Consumer Data Right energy data-sharing surface, implementing the
+    DSB Consumer Data Standards CDR Energy API v1.36.0 — service points, electricity
+    usage, DER register detail, accounts, balances, invoices, billing, payment
+    schedules and concessions. These endpoints are consumer-authorised: only an
+    Accredited Data Recipient (or a CDR representative/sponsored party) holding CDR
+    Register-issued certificates can call them, over mTLS, after the consumer
+    completes AGL's CDR consent flow. The base URI is not published — it is
+    distributed to accredited participants through the CDR Register, so none is
+    recorded here. AGL's own outage feed confirms the consent flow is a live,
+    operated service. AEMO acts as secondary data holder for NMI standing data and
+    metering data, which AGL requests on the consumer's behalf.
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  tags:
+  - Consumer Data Right
+  - CDR
+  - Energy
+  - Usage
+  - Billing
+  - Accounts
+  - DER
+  - Australia
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-cds-energy-openapi.json
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+- aid: agl-energy:agl-cdr-discovery-api
+  name: AGL CDR Discovery (Common) API
+  description: >-
+    The unauthenticated half of AGL's Consumer Data Right implementation, served from
+    its CDR public base URI and conforming to the DSB Consumer Data Standards CDR
+    Common API v1.36.0. GET /cds-au/v1/discovery/status returned HTTP 200 on
+    2026-07-27 with {"status":"OK","explanation":"All services operational"}, and GET
+    /cds-au/v1/discovery/outages returned HTTP 200 with six scheduled outage windows
+    authored by AGL describing unavailability of the AGL CDR consent flow. No API key,
+    no accreditation and no consent is needed to call these two endpoints — they are
+    the only anonymously reachable API AGL itself operates. The /common/customer
+    endpoints in the same standard are consumer-authorised and return HTTP 404 on the
+    public base URI.
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Consumer Data Right
+  - CDR
+  - Discovery
+  - Status
+  - Outages
+  - Australia
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-cds-common-openapi.json
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+- aid: agl-energy:agl-energy-product-reference-data-api
+  name: AGL Energy Product Reference Data (PRD) API
+  description: >-
+    AGL's retail energy plans published as anonymous, machine-readable Consumer Data
+    Right Product Reference Data. Verified live on 2026-07-27: GET
+    /energy/plans?page-size=10 returned HTTP 200 with x-v:1, meta.totalRecords 1343
+    across 135 pages, CORS Access-Control-Allow-Origin *, and plan detail for
+    planId AGL1067320MRE2@EME returned HTTP 200 at x-v:3. Critically, this endpoint is
+    NOT operated by AGL — the Australian Energy Regulator hosts every retailer's PRD
+    centrally at cdr.energymadeeasy.gov.au under a per-brand path, which is the
+    structural break from CDR banking where each ADI serves its own product API from
+    its own domain. AGL's own public base URI returns HTTP 404 for /cds-au/v1/energy/plans.
+  humanURL: https://www.aer.gov.au/energy-product-reference-data
+  baseURL: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+  tags:
+  - Consumer Data Right
+  - CDR
+  - Product Reference Data
+  - Tariffs
+  - Plans
+  - Electricity
+  - Gas
+  - Australia
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-cds-energy-openapi.json
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+common:
+- type: Website
+  url: https://www.agl.com.au/
+- type: Documentation
+  url: https://www.agl.com.au/consumer-data-right-policy
+- type: PrivacyPolicy
+  url: https://www.agl.com.au/consumer-data-right-policy
+- type: Support
+  url: https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right
+- type: Forum
+  url: https://neighbourhood.agl.com.au/
+- type: GitHubOrganization
+  url: https://github.com/AGLEnergy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/agl-energy
+- type: Registration
+  url: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

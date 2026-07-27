@@ -1,0 +1,386 @@
+aid: agl-energy
+name: AGL Energy
+review:
+  question: >-
+    Does AGL Energy expose a real, verifiable public API surface, and is its
+    Consumer Data Right energy obligation an actual implementation or only a
+    designation on paper?
+  answer: >-
+    Yes to both, with a sharp split. AGL operates no public developer programme
+    and no self-serve API portal, but its CDR energy obligation is a genuine,
+    live, standards-conformant implementation that was verified by direct
+    anonymous HTTP calls on the review date — not inferred from a compliance page.
+  date: '2026-07-27'
+  reviewer: API Evangelist
+  homeMarket: Australia
+  tier: utility-retailer
+
+mandate:
+  regime: cdr-energy
+  regimeName: >-
+    Consumer Data Right (Competition and Consumer Act 2010, Part IVD), extended
+    from banking to the energy sector. Regulator: ACCC. Standards setter: Data
+    Standards Body (Treasury). Privacy regulator: OAIC. Sector data holder for
+    metering/NMI standing data: AEMO, acting as secondary data holder.
+  status: live-implemented
+  designated: true
+  designationDetail: >-
+    AGL Energy was in the initial tranche of designated energy data holders.
+    Energy product data sharing commenced 1 October 2022; consumer data sharing
+    commenced 15 November 2022 for the first retailers — AEMO, AGL and Origin —
+    with EnergyAustralia following in May 2023.
+  verifiedHow: >-
+    Not by press release and not by a compliance page. Three independent,
+    anonymous, unauthenticated HTTP probes on 2026-07-27:
+    (1) the ACCC CDR Register public API listed AGL as a live energy data holder
+    brand with a public base URI; (2) that base URI answered the Consumer Data
+    Standards discovery endpoints with conformant envelopes; (3) AGL-branded
+    Product Reference Data returned 1,343 real plans through the AER's central
+    energy PRD service. All three are recorded below with HTTP status.
+  registerEntry:
+    source: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+    httpStatus: 200
+    fetched: '2026-07-27'
+    brandName: AGL
+    dataHolderBrandId: d177e382-b12d-ed11-a832-000d3a8830d6
+    interimId: a94e942b-6d39-4b4d-9b31-88e7cb65f6d1
+    industries:
+    - energy
+    abn: '74115061375'
+    publicBaseUri: https://public.cdr.agl.com.au
+    registerLastUpdated: '2026-07-01T12:15:11Z'
+    note: >-
+      203 data holder brands are listed on the register in total, 84 of them in
+      the energy industry. AGL appears once, as a single brand; ActewAGL (25%
+      AGL-owned, ABN 46221314841) is a separate register entry with its own base
+      URI at https://public.cdr.actewagl.com.au and is not covered by this profile.
+  claimVsImplementation: >-
+    The distinction this study cares about resolves cleanly here. AGL publishes a
+    Consumer Data Right Policy page and a customer-facing "Manage Consumer Data
+    Right" help page — both of which are only claims, and neither of which could
+    even be read programmatically (both returned HTTP 403 to curl and to WebFetch
+    behind Akamai). The implementation was proven independently of anything AGL
+    says about itself, by calling the endpoints. AGL's own scheduled-outage feed
+    is the strongest single piece of evidence: it publishes six future maintenance
+    windows whose text reads "AGL CDR Consent flow will be unavailable. Customer
+    will be unable to register and create new arrangements for CDR." An
+    organization does not schedule downtime for a consent flow it has not built.
+
+dataStandard:
+  name: CDR Consumer Data Standards (Energy)
+  version: 1.36.0
+  documents:
+  - title: CDR Energy API
+    version: 1.36.0
+    format: OpenAPI 3.0.3
+    paths: 18
+    saved: openapi/agl-energy-cds-energy-openapi.json
+    sourceURL: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_energy.json
+    httpStatus: 200
+    fetched: '2026-07-27'
+    parses: true
+  - title: CDR Common API
+    version: 1.36.0
+    format: OpenAPI 3.0.3
+    paths: 4
+    saved: openapi/agl-energy-cds-common-openapi.json
+    sourceURL: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_common.json
+    httpStatus: 200
+    fetched: '2026-07-27'
+    parses: true
+  provenanceNote: >-
+    Neither document is AGL-authored. AGL publishes no first-party OpenAPI. These
+    are the Data Standards Body's specifications, harvested verbatim (an
+    x-provenance / x-source-url / x-harvested block was added to info, nothing
+    else was altered). This is the control-case point: AGL's API contract is not
+    AGL's — it is the standard, identical to every other designated energy
+    retailer, exactly as the fifty Australian banks share one byte-for-byte
+    banking contract.
+  otherStandardsFound: >-
+    No Green Button / ESPI, no OpenADR, no IEEE 2030.5, no OCPP/OCPI, no IEC CIM
+    reference was found on any AGL surface. Australia's energy consumer-data layer
+    is CDR, and only CDR.
+
+consumerVsMarketData:
+  consumerDataAPI: true
+  consumerDataDetail: >-
+    Yes — a third party can obtain an individual AGL customer's usage, service
+    point, DER, account, balance, invoice, billing and concession data through a
+    documented API, because the CDR compels it. The contract is the CDR Energy
+    API v1.36.0 (18 paths). The eleven consent scopes carried in the harvested
+    specifications are energy:accounts.basic:read, energy:accounts.detail:read,
+    energy:accounts.concessions:read, energy:accounts.paymentschedule:read,
+    energy:billing:read, energy:electricity.servicepoints.basic:read,
+    energy:electricity.servicepoints.detail:read, energy:electricity.der:read,
+    energy:electricity.usage:read, common:customer.basic:read and
+    common:customer.detail:read. AEMO supplies NMI standing data and metering
+    data as secondary data holder; AGL requests it on the consumer's behalf.
+    The consumer base URI is not published anywhere — it is distributed to
+    accredited participants through the CDR Register — so no baseURL is recorded
+    for that API in apis.yml.
+  marketDataOpen: false
+  marketDataDetail: >-
+    AGL publishes no open grid, market or system data of its own. No open-data
+    portal, no generation or emissions feed, no NEM data. That layer in Australia
+    belongs to AEMO, not to the retailer. The one genuinely anonymous, open,
+    machine-readable dataset carrying AGL's name is its retail Product Reference
+    Data — and AGL does not operate it. See prdSplit below. Marked false
+    deliberately rather than conflating open product data with open market data.
+  prdSplit:
+    finding: >-
+      This is the structural break from CDR banking. In banking, every designated
+      ADI serves its own unauthenticated Product Reference Data from its own
+      domain. In energy, the AER hosts every retailer's PRD centrally at
+      cdr.energymadeeasy.gov.au behind a per-brand path. AGL's own CDR public base
+      URI returns HTTP 404 for /cds-au/v1/energy/plans. The same statutory
+      machinery produced a materially different topology when it was transplanted
+      into the second sector: the mandate replicated, the architecture did not.
+    verified:
+    - url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans?page-size=10
+      httpStatus: 200
+      xV: '1'
+      totalRecords: 1343
+      totalPages: 135
+      cors: 'Access-Control-Allow-Origin: *'
+      fapiInteractionId: present
+      auth: none — fully anonymous, no key, no accreditation
+      hosting: AWS API Gateway behind CloudFront (AER-operated), not AGL infrastructure
+    - url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans/AGL1067320MRE2@EME
+      httpStatus: 200
+      xV: '3'
+      note: Plan detail resolves; sample plan is a MARKET electricity plan, brand "agl", distributor SA Power Networks.
+    - url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/discovery/status
+      httpStatus: 200
+      note: AER-side status for the AGL PRD path returns status OK.
+    - url: https://public.cdr.agl.com.au/cds-au/v1/energy/plans
+      httpStatus: 404
+      note: Confirms AGL does not serve its own PRD. nginx 404.
+
+accessGate:
+  gate: accredited-only
+  gated: true
+  whatADeveloperMustDo: >-
+    To read any AGL customer's data you must become an Accredited Data Recipient
+    under the Consumer Data Right — apply to the ACCC, meet the information
+    security controls of CDR Rule Schedule 2, obtain CDR Register-issued
+    transport and signing certificates, register your software product, and then
+    obtain that individual consumer's authorisation through AGL's own consent
+    flow. Alternatively operate under the sponsored/affiliate or CDR
+    representative model beneath an existing ADR. There is no other path: no
+    sandbox key, no partner form, no trial. To read AGL's plan and tariff data you
+    need nothing at all — call the AER PRD endpoint anonymously. To read AGL's CDR
+    discovery endpoints you also need nothing.
+  selfServeSignup: false
+  publicDeveloperPortal: false
+  portalEvidence:
+  - url: https://developer.agl.com.au/
+    dnsResolves: false
+    httpStatus: 000
+  - url: https://api.agl.com.au/
+    dnsResolves: false
+    httpStatus: 000
+  - url: https://docs.agl.com.au/
+    dnsResolves: false
+    httpStatus: 000
+  - url: https://data.agl.com.au/
+    dnsResolves: false
+    httpStatus: 000
+  - url: https://apideveloper.agl.com.au/
+    dnsResolves: true
+    dnsChain: eip-prd.edgekey.net -> e323721.dscx.akamaiedge.net
+    httpStatus: 403
+    note: >-
+      A production API developer-portal host exists in AGL's DNS behind Akamai but
+      is not reachable anonymously. Its non-production siblings
+      apideveloper-ppd.nprd.agl.com.au and apideveloper-dev.nprd.agl.com.au are
+      indexed publicly and describe an internal portal whose help text instructs
+      users to "reach out to an AGL contact to have the account created" and to
+      look up UE codes on a Confluence page — i.e. an internal/partner API
+      management platform, not a public developer programme. Both also return 403.
+      This is NOT counted as a confirmed developer portal.
+
+authModel:
+  consumerData: >-
+    FAPI 1.0 Advanced profile as required by the CDR: OAuth 2.0 / OpenID Connect
+    with mutual TLS, mTLS-bound access tokens, private_key_jwt client
+    authentication, Pushed Authorization Requests, and CDR Register-issued
+    certificates. Consent is per-consumer, scoped, and time-limited.
+  productData: >-
+    None. Anonymous HTTP GET. The only required header is the CDS version header
+    x-v (1 for /energy/plans, 3 for /energy/plans/{planId}).
+  discovery: >-
+    None. Anonymous HTTP GET against https://public.cdr.agl.com.au/cds-au/v1 with
+    header x-v: 1.
+  openidConfiguration:
+    probed:
+    - url: https://public.cdr.agl.com.au/.well-known/openid-configuration
+      httpStatus: 404
+    - url: https://api.cdr.agl.com.au/.well-known/openid-configuration
+      httpStatus: 000
+    - url: https://secure.cdr.agl.com.au/.well-known/openid-configuration
+      httpStatus: 000
+    - url: https://www.agl.com.au/.well-known/openid-configuration
+      httpStatus: 403
+    result: >-
+      No anonymously served OIDC discovery document was found. Under the CDR this
+      is expected — the data holder's authorisation server metadata is published
+      to the CDR Register and retrieved by accredited recipients, not exposed to
+      the open internet.
+
+probes:
+  date: '2026-07-27'
+  method: curl, anonymous, following redirects, with and without a browser User-Agent
+  results:
+  - url: https://www.agl.com.au/
+    httpStatus: 403
+    note: Akamai edge denies all non-browser clients. Same for every path under www.agl.com.au.
+  - url: https://agl.com.au/
+    httpStatus: 403
+  - url: https://www.agl.com.au/developers
+    httpStatus: 403
+  - url: https://www.agl.com.au/api
+    httpStatus: 403
+  - url: https://www.agl.com.au/docs
+    httpStatus: 403
+  - url: https://www.agl.com.au/data
+    httpStatus: 403
+  - url: https://www.agl.com.au/openapi.json
+    httpStatus: 403
+  - url: https://www.agl.com.au/swagger.json
+    httpStatus: 403
+  - url: https://www.agl.com.au/api-docs
+    httpStatus: 403
+  - url: https://www.agl.com.au/.well-known/security.txt
+    httpStatus: 403
+  - url: https://www.agl.com.au/robots.txt
+    httpStatus: 403
+  - url: https://www.agl.com.au/consumer-data-right-policy
+    httpStatus: 403
+    note: AGL's own CDR policy page is unreadable programmatically. Listed in apis.yml common[] because it is the canonical human URL, but its content could not be verified.
+  - url: https://www.agl.com.au/content/dam/digital/agl/documents/pdf/agl-consumer-data-right-policy.pdf
+    httpStatus: 403
+  - url: https://cdr.agl.com.au/
+    httpStatus: 000
+    note: Does not resolve. The CDR host is public.cdr.agl.com.au.
+  - url: https://public.cdr.agl.com.au/
+    httpStatus: 404
+    note: nginx 404 at root — correct, the surface is path-scoped to /cds-au/v1.
+  - url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+    httpStatus: 200
+    body: '{"data":{"status":"OK","updateTime":"2026-07-27T12:06:42.933420746Z","explanation":"All services operational"},"links":{"self":"https://public.cdr.agl.com.au/cds-au/v1/discovery/status"},"meta":{}}'
+  - url: https://public.cdr.agl.com.au/cds-au/v1/discovery/outages
+    httpStatus: 200
+    note: >-
+      Six future outage windows returned. Representative entry — outageTime
+      2026-08-29T14:00:00Z, duration PT8H, isPartial false, explanation "AGL CDR
+      Consent flow will be unavailable. Customer will be unable to register and
+      create new arrangements for CDR."
+  - url: https://public.cdr.agl.com.au/cds-au/v1/common/customer
+    httpStatus: 404
+    note: Consumer-authorised endpoint, correctly absent from the public base URI.
+  - url: https://public.cdr.agl.com.au/cds-au/v1/energy/accounts
+    httpStatus: 404
+  - url: https://neighbourhood.agl.com.au/
+    httpStatus: 200
+    note: Community forum. Not a developer surface. Carries a long-standing customer request for downloadable usage data from the AGL app.
+  - url: https://github.com/AGLEnergy
+    httpStatus: 200
+    note: >-
+      Organization exists since 2015 with exactly one public repository,
+      "log4jscanlinux". No SDKs, no specs, no developer artifacts. Effectively
+      an empty presence.
+  - url: https://github.com/agl-energy
+    httpStatus: 404
+  - url: https://www.aer.gov.au/energy-product-reference-data
+    httpStatus: 000
+    note: Timed out from this client; the AER PRD endpoints themselves were verified directly instead.
+
+findings:
+  summary: >-
+    AGL is the cleanest available proof that a statutory data mandate is
+    replicable across sectors — and also the clearest evidence that replicating
+    the mandate does not replicate the market. The Consumer Data Right was moved
+    intact from banking to energy: same Act, same regulator, same Data Standards
+    Body, same FAPI security profile, same specification shape. On AGL it is
+    genuinely live, and that was proven by calling it, not by reading about it.
+    But every API AGL has, it has because it was told to. There is no developer
+    portal, no first-party OpenAPI, no SDK, no self-serve key, one abandoned
+    GitHub org, and a corporate website that returns 403 to any machine. The
+    company's entire public machine-readable footprint is the standard's
+    footprint. Two further asymmetries matter: the open half of the mandate was
+    centralised away from the retailer (the AER serves AGL's 1,343 plans, AGL
+    serves none of them), and the closed half is gated behind accreditation so
+    tightly that "the data is available" and "a developer can get it" are not the
+    same sentence. Meanwhile AGL is moving four million customer services onto
+    Kaluza — so the system of record behind these mandated endpoints is being
+    replaced by a third party's platform, which is where any real API capability
+    at AGL will end up living.
+  mandateIsNotImplementation: >-
+    Recorded as separate facts throughout. Designation: verified from the ACCC
+    CDR Register. Implementation: verified from live 200 responses on two
+    conformant endpoint families plus AGL-authored consent-flow outage notices.
+    Claims: AGL's own CDR policy and help pages could not be read at all (403) and
+    were given no evidentiary weight.
+  contrastWithBanking: >-
+    Banking: each ADI serves its own unauthenticated Product Reference Data from
+    its own domain, and several publish first-party renderings of the CDS
+    specification on their own developer portals. Energy: PRD is centralised at
+    the AER, retailers publish nothing of their own, and no energy retailer
+    developer portal exists at AGL. Same mandate, thinner surface.
+  kaluza: >-
+    In 2024 AGL took a roughly 20 percent stake in Kaluza (approximately A$150m /
+    US$100m) and committed around A$300m over four years to migrate about four
+    million consumer electricity and gas customer services onto the Kaluza
+    platform. Large business customers are excluded. AGL had previously migrated
+    OVO Energy Australia's customers to Kaluza in 2023. Relevant here because the
+    retail data layer that answers CDR requests is being rebuilt on someone else's
+    energy operating system.
+
+sources:
+- url: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+  type: Registry
+  httpStatus: 200
+  note: ACCC CDR Register public API. Primary evidence of designation and of the AGL public base URI.
+- url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  type: APIReference
+  httpStatus: 200
+  note: Primary evidence of a live, conformant AGL-operated CDR implementation.
+- url: https://public.cdr.agl.com.au/cds-au/v1/discovery/outages
+  type: APIReference
+  httpStatus: 200
+  note: AGL-authored operational notices naming the AGL CDR consent flow.
+- url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  type: APIReference
+  httpStatus: 200
+  note: 1,343 AGL plans, anonymous, AER-hosted.
+- url: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_energy.json
+  type: OpenAPI
+  httpStatus: 200
+  note: Harvested to openapi/agl-energy-cds-energy-openapi.json.
+- url: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_common.json
+  type: OpenAPI
+  httpStatus: 200
+  note: Harvested to openapi/agl-energy-cds-common-openapi.json.
+- url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  type: Documentation
+  note: CDR energy sector rollout — product data 1 Oct 2022, consumer data 15 Nov 2022.
+- url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  type: Documentation
+  note: AEMO's role as secondary data holder for NMI standing and metering data.
+- url: https://www.aer.gov.au/energy-product-reference-data
+  type: Documentation
+  note: AER as the designated central energy PRD data holder.
+- url: https://en.wikipedia.org/wiki/AGL_Energy
+  type: Documentation
+  note: Corporate identity, founded 1837, generation portfolio, subsidiaries.
+
+actions:
+  apisYmlCreated: true
+  openapiHarvested: 2
+  fabricationCheck: >-
+    No host, endpoint, scope or specification was invented. Every URL in apis.yml
+    is either a live 200 verified above, a standards/regulator document, or a
+    canonical AGL human URL explicitly recorded here as 403-unreadable. The
+    eleven CDR scopes listed were extracted from the harvested specifications, not
+    recalled. No baseURL was recorded for the consumer-data API because AGL does
+    not publish one.
