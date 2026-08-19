@@ -1,0 +1,142 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "CDR Common API",
+    "version": "1.36.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Data Holder Customers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://mtls.dh.example.com/cds-au/v1/common/customer",
+            "headers": [
+              {
+                "name": "x-v",
+                "value": ""
+              },
+              {
+                "name": "x-min-v",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-auth-date",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-cds-client-headers",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Obtain basic information on the customer that has authorised the current session.\n\n<h3 id='cdr-common-api_get-customer_conventions'>Conventions</h3>\nIn the customer payloads there are conventions that are explained below.\n\n#### Given Names\n\n_firstName_ represents the first of a person's given names.\n\n_middleNames_ represents a collection of given names if the person has more than one given name.\n\nWhere a data holder holds a person's given names as a single string in source systems, it may not po"
+        },
+        {
+          "info": {
+            "name": "Get Customer Detail",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://mtls.dh.example.com/cds-au/v1/common/customer/detail",
+            "headers": [
+              {
+                "name": "x-v",
+                "value": ""
+              },
+              {
+                "name": "x-min-v",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-interaction-id",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-auth-date",
+                "value": ""
+              },
+              {
+                "name": "x-fapi-customer-ip-address",
+                "value": ""
+              },
+              {
+                "name": "x-cds-client-headers",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Obtain detailed information on the authorised customer within the current session.\n\nObsolete versions: [v1](includes/obsolete/get-customer-detail-v1.html)."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Holder Operations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://mtls.dh.example.com/cds-au/v1/discovery/status",
+            "headers": [
+              {
+                "name": "x-v",
+                "value": ""
+              },
+              {
+                "name": "x-min-v",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Obtain a health check status for the implementation."
+        },
+        {
+          "info": {
+            "name": "Get Outages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://mtls.dh.example.com/cds-au/v1/discovery/outages",
+            "headers": [
+              {
+                "name": "x-v",
+                "value": ""
+              },
+              {
+                "name": "x-min-v",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Obtain a list of scheduled outages for the implementation."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

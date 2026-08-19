@@ -1,67 +1,182 @@
 generated: '2026-07-27'
 method: derived
 status: candidate
-source: >-
-  openapi/agl-energy-cds-energy-openapi.json and
-  openapi/agl-energy-cds-common-openapi.json — one candidate tool per operation.
-description: >-
-  AGL publishes no Model Context Protocol server, and none exists for the
-  Consumer Data Right more broadly. Searched on 2026-07-27: the AGL CDR public
-  base URI answers 404 for every non-CDS path, the AGLEnergy GitHub org holds one
-  unrelated repository (log4jscanlinux), and no MCP registry, npm
-  @modelcontextprotocol package or docs page names AGL. The tool list below is a
-  CANDIDATE surface derived one-per-operation from the Consumer Data Standards
-  contracts AGL implements — a proposal, not a published server.
+source: openapi/agl-energy-cds-energy-openapi.json and openapi/agl-energy-cds-common-openapi.json — one
+  candidate tool per operation.
+description: 'AGL publishes no Model Context Protocol server, and none exists for the Consumer Data Right
+  more broadly. Searched on 2026-07-27: the AGL CDR public base URI answers 404 for every non-CDS path,
+  the AGLEnergy GitHub org holds one unrelated repository (log4jscanlinux), and no MCP registry, npm @modelcontextprotocol
+  package or docs page names AGL. The tool list below is a CANDIDATE surface derived one-per-operation
+  from the Consumer Data Standards contracts AGL implements — a proposal, not a published server.'
 searched:
   hosted_server_found: false
   probes:
-  - {url: 'https://public.cdr.agl.com.au/mcp', status: 404}
-  - {url: 'https://public.cdr.agl.com.au/graphql', status: 404}
-  - {url: 'https://github.com/AGLEnergy', status: 200, note: 'one public repo, log4jscanlinux; no MCP, SDK or spec artifacts'}
-  registries_checked: [npm, PyPI, MCP registry, provider docs]
+  - url: https://public.cdr.agl.com.au/mcp
+    status: 404
+  - url: https://public.cdr.agl.com.au/graphql
+    status: 404
+  - url: https://github.com/AGLEnergy
+    status: 200
+    note: one public repo, log4jscanlinux; no MCP, SDK or spec artifacts
+  registries_checked:
+  - npm
+  - PyPI
+  - MCP registry
+  - provider docs
 server:
   name: agl-energy
   transport: http
   url: null
   published: false
-gating_note: >-
-  Any real MCP server over this surface splits into two very different halves.
-  The four unauthenticated tools (status, outages, list/get energy plans) could
-  run anonymously today. The other 23 tools require an Accredited Data Recipient
-  identity — CDR Register certificates, mutual TLS, a FAPI 1.0 Advanced token and
-  a live consumer consent — so an MCP server exposing them would have to carry
-  the ADR credentials and bind each session to one consumer's consent
-  arrangement. That is a consent-broker design problem, not a wrapper.
+gating_note: Any real MCP server over this surface splits into two very different halves. The four unauthenticated
+  tools (status, outages, list/get energy plans) could run anonymously today. The other 23 tools require
+  an Accredited Data Recipient identity — CDR Register certificates, mutual TLS, a FAPI 1.0 Advanced token
+  and a live consumer consent — so an MCP server exposing them would have to carry the ADR credentials
+  and bind each session to one consumer's consent arrangement. That is a consent-broker design problem,
+  not a wrapper.
 tools:
-- {name: get_cdr_status, description: Get the current availability status of AGL's CDR implementation, source_operation: 'openapi/agl-energy-cds-common-openapi.json#getStatus', auth: none}
-- {name: get_cdr_outages, description: List scheduled outages for AGL's CDR endpoints and consent flow, source_operation: 'openapi/agl-energy-cds-common-openapi.json#getOutages', auth: none}
-- {name: list_energy_plans, description: List AGL retail energy plans (Product Reference Data), source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyPlans', auth: none}
-- {name: get_energy_plan_detail, description: Get full tariff detail for one AGL energy plan, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyPlanDetail', auth: none}
-- {name: get_customer, description: Get basic details of the consenting customer, source_operation: 'openapi/agl-energy-cds-common-openapi.json#getCustomer', auth: adr-consent, scope: 'common:customer.basic:read'}
-- {name: get_customer_detail, description: Get contact details of the consenting customer, source_operation: 'openapi/agl-energy-cds-common-openapi.json#getCustomerDetail', auth: adr-consent, scope: 'common:customer.detail:read'}
-- {name: list_energy_accounts, description: List the consumer's AGL energy accounts, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccounts', auth: adr-consent, scope: 'energy:accounts.basic:read'}
-- {name: get_energy_account_detail, description: Get full detail for one energy account including plans and tariffs, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountDetail', auth: adr-consent, scope: 'energy:accounts.detail:read'}
-- {name: get_account_payment_schedule, description: Get the agreed payment schedule for an account, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountPaymentSchedule', auth: adr-consent, scope: 'energy:accounts.paymentschedule:read'}
-- {name: get_account_concessions, description: Get concessions and rebates applied to an account, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountConcessions', auth: adr-consent, scope: 'energy:accounts.concessions:read'}
-- {name: get_account_balance, description: Get the current balance for one energy account, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountBalance', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_account_balances, description: Get balances across all of the consumer's accounts, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBalancesBulk', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_balances_for_accounts, description: Get balances for a specific list of account ids, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBalancesSpecificAccounts', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: get_account_invoices, description: List invoices for one energy account, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountInvoices', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_invoices, description: List invoices across all of the consumer's accounts, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountInvoicesBulk', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_invoices_for_accounts, description: List invoices for a specific list of account ids, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyInvoicesForSpecificAccounts', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: get_account_billing, description: List billing transactions for one energy account, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getBillingForEnergyAccount', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_billing, description: List billing transactions across all of the consumer's accounts, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBillingBulk', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_billing_for_accounts, description: List billing transactions for a specific list of account ids, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBillingForSpecificAccounts', auth: adr-consent, scope: 'energy:billing:read'}
-- {name: list_service_points, description: List the consumer's electricity service points (NMIs), source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listElectricityServicePoints', auth: adr-consent, scope: 'energy:electricity.servicepoints.basic:read'}
-- {name: get_service_point_detail, description: Get meter, register and network detail for a service point, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getElectricityServicePointDetail', auth: adr-consent, scope: 'energy:electricity.servicepoints.detail:read'}
-- {name: get_service_point_usage, description: Get meter reads for one service point over a date range, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getElectricityServicePointUsage', auth: adr-consent, scope: 'energy:electricity.usage:read'}
-- {name: list_usage, description: Get meter reads across all of the consumer's service points, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listElectricityUsageBulk', auth: adr-consent, scope: 'energy:electricity.usage:read'}
-- {name: list_usage_for_service_points, description: Get meter reads for a specific list of service point ids, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listElectricityUsageForServicePoints', auth: adr-consent, scope: 'energy:electricity.usage:read'}
-- {name: get_service_point_der, description: Get the DER (solar, battery, inverter) register for one service point, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#getElectricityDERForServicePoint', auth: adr-consent, scope: 'energy:electricity.der:read'}
-- {name: list_der, description: Get DER records across all of the consumer's service points, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listElectricityDERBulk', auth: adr-consent, scope: 'energy:electricity.der:read'}
-- {name: list_der_for_service_points, description: Get DER records for a specific list of service point ids, source_operation: 'openapi/agl-energy-cds-energy-openapi.json#listElectricityDERForSpecificServicePoints', auth: adr-consent, scope: 'energy:electricity.der:read'}
+- name: get_cdr_status
+  description: Get the current availability status of AGL's CDR implementation
+  source_operation: openapi/agl-energy-cds-common-openapi.json#getStatus
+  auth: none
+- name: get_cdr_outages
+  description: List scheduled outages for AGL's CDR endpoints and consent flow
+  source_operation: openapi/agl-energy-cds-common-openapi.json#getOutages
+  auth: none
+- name: list_energy_plans
+  description: List AGL retail energy plans (Product Reference Data)
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyPlans
+  auth: none
+- name: get_energy_plan_detail
+  description: Get full tariff detail for one AGL energy plan
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyPlanDetail
+  auth: none
+- name: get_customer
+  description: Get basic details of the consenting customer
+  source_operation: openapi/agl-energy-cds-common-openapi.json#getCustomer
+  auth: adr-consent
+  scope: common:customer.basic:read
+- name: get_customer_detail
+  description: Get contact details of the consenting customer
+  source_operation: openapi/agl-energy-cds-common-openapi.json#getCustomerDetail
+  auth: adr-consent
+  scope: common:customer.detail:read
+- name: list_energy_accounts
+  description: List the consumer's AGL energy accounts
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccounts
+  auth: adr-consent
+  scope: energy:accounts.basic:read
+- name: get_energy_account_detail
+  description: Get full detail for one energy account including plans and tariffs
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountDetail
+  auth: adr-consent
+  scope: energy:accounts.detail:read
+- name: get_account_payment_schedule
+  description: Get the agreed payment schedule for an account
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountPaymentSchedule
+  auth: adr-consent
+  scope: energy:accounts.paymentschedule:read
+- name: get_account_concessions
+  description: Get concessions and rebates applied to an account
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountConcessions
+  auth: adr-consent
+  scope: energy:accounts.concessions:read
+- name: get_account_balance
+  description: Get the current balance for one energy account
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountBalance
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_account_balances
+  description: Get balances across all of the consumer's accounts
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBalancesBulk
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_balances_for_accounts
+  description: Get balances for a specific list of account ids
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBalancesSpecificAccounts
+  auth: adr-consent
+  scope: energy:billing:read
+- name: get_account_invoices
+  description: List invoices for one energy account
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getEnergyAccountInvoices
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_invoices
+  description: List invoices across all of the consumer's accounts
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountInvoicesBulk
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_invoices_for_accounts
+  description: List invoices for a specific list of account ids
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyInvoicesForSpecificAccounts
+  auth: adr-consent
+  scope: energy:billing:read
+- name: get_account_billing
+  description: List billing transactions for one energy account
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getBillingForEnergyAccount
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_billing
+  description: List billing transactions across all of the consumer's accounts
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBillingBulk
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_billing_for_accounts
+  description: List billing transactions for a specific list of account ids
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listEnergyAccountBillingForSpecificAccounts
+  auth: adr-consent
+  scope: energy:billing:read
+- name: list_service_points
+  description: List the consumer's electricity service points (NMIs)
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listElectricityServicePoints
+  auth: adr-consent
+  scope: energy:electricity.servicepoints.basic:read
+- name: get_service_point_detail
+  description: Get meter
+  register and network detail for a service point: null
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getElectricityServicePointDetail
+  auth: adr-consent
+  scope: energy:electricity.servicepoints.detail:read
+- name: get_service_point_usage
+  description: Get meter reads for one service point over a date range
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getElectricityServicePointUsage
+  auth: adr-consent
+  scope: energy:electricity.usage:read
+- name: list_usage
+  description: Get meter reads across all of the consumer's service points
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listElectricityUsageBulk
+  auth: adr-consent
+  scope: energy:electricity.usage:read
+- name: list_usage_for_service_points
+  description: Get meter reads for a specific list of service point ids
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listElectricityUsageForServicePoints
+  auth: adr-consent
+  scope: energy:electricity.usage:read
+- name: get_service_point_der
+  description: Get the DER (solar
+  battery: null
+  inverter) register for one service point: null
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#getElectricityDERForServicePoint
+  auth: adr-consent
+  scope: energy:electricity.der:read
+- name: list_der
+  description: Get DER records across all of the consumer's service points
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listElectricityDERBulk
+  auth: adr-consent
+  scope: energy:electricity.der:read
+- name: list_der_for_service_points
+  description: Get DER records for a specific list of service point ids
+  source_operation: openapi/agl-energy-cds-energy-openapi.json#listElectricityDERForSpecificServicePoints
+  auth: adr-consent
+  scope: energy:electricity.der:read
 coverage:
   operations_total: 27
   tools_derived: 27
   anonymous_tools: 4
   consent_gated_tools: 23
+deployment:
+  mode: none
+  verified: derived
+  tools: 27
+  checked: '2026-08-12'
+  source: catalog MCP census
