@@ -65,44 +65,16 @@ description: >-
   retail data layer behind these mandated endpoints is being rebuilt on a
   third-party energy operating system.
 apis:
-- aid: agl-energy:agl-cdr-energy-api
-  name: AGL CDR Energy API
-  description: >-
-    AGL's mandated Consumer Data Right energy data-sharing surface, implementing the
-    DSB Consumer Data Standards CDR Energy API v1.36.0 — service points, electricity
-    usage, DER register detail, accounts, balances, invoices, billing, payment
-    schedules and concessions. These endpoints are consumer-authorised: only an
-    Accredited Data Recipient (or a CDR representative/sponsored party) holding CDR
-    Register-issued certificates can call them, over mTLS, after the consumer
-    completes AGL's CDR consent flow. The base URI is not published — it is
-    distributed to accredited participants through the CDR Register, so none is
-    recorded here. AGL's own outage feed confirms the consent flow is a live,
-    operated service. AEMO acts as secondary data holder for NMI standing data and
-    metering data, which AGL requests on the consumer's behalf.
+- aid: agl-energy:agl-energy-data-holder-customers-api
+  name: AGL Energy Data Holder Customers API
+  description: Data Holder Customer endpoints
   humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
   tags:
-  - Consumer Data Right
-  - CDR
-  - Energy
-  - Usage
-  - Billing
-  - Account
-  - DER
-  - Australia
-  tags_raw:
-  - Consumer Data Right
-  - CDR
-  - Energy
-  - Usage
-  - Billing
-  - Accounts
-  - DER
-  - Australia
+  - Data Holder Customers
   properties:
   - type: OpenAPI
-    url: openapi/agl-energy-cds-energy-openapi.json
-  - type: Overlay
-    url: overlays/agl-energy-cds-energy-overlay.yaml
+    url: openapi/agl-energy-data-holder-customers-api-openapi.yml
   - type: APIReference
     url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
   - type: Documentation
@@ -113,76 +85,261 @@ apis:
     url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
   - type: Registration
     url: https://www.cdr.gov.au/for-providers
-- aid: agl-energy:agl-cdr-discovery-api
-  name: AGL CDR Discovery (Common) API
-  description: >-
-    The unauthenticated half of AGL's Consumer Data Right implementation, served from
-    its CDR public base URI and conforming to the DSB Consumer Data Standards CDR
-    Common API v1.36.0. GET /cds-au/v1/discovery/status returned HTTP 200 on
-    2026-07-27 with {"status":"OK","explanation":"All services operational"}, and GET
-    /cds-au/v1/discovery/outages returned HTTP 200 with six scheduled outage windows
-    authored by AGL describing unavailability of the AGL CDR consent flow. No API key,
-    no accreditation and no consent is needed to call these two endpoints — they are
-    the only anonymously reachable API AGL itself operates. The /common/customer
-    endpoints in the same standard are consumer-authorised and return HTTP 404 on the
-    public base URI.
-  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
-  baseURL: https://public.cdr.agl.com.au/cds-au/v1
-  tags:
-  - Consumer Data Right
-  - CDR
-  - Discovery
-  - Status
-  - Outages
-  - Australia
-  properties:
-  - type: OpenAPI
-    url: openapi/agl-energy-cds-common-openapi.json
-  - type: Overlay
-    url: overlays/agl-energy-cds-common-overlay.yaml
   - type: StatusPage
     url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
   - type: APIReference
     url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
   - type: Documentation
-    url: https://consumerdatastandardsaustralia.github.io/standards/
-  - type: Documentation
     url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
-- aid: agl-energy:agl-energy-product-reference-data-api
-  name: AGL Energy Product Reference Data (PRD) API
-  description: >-
-    AGL's retail energy plans published as anonymous, machine-readable Consumer Data
-    Right Product Reference Data. Verified live on 2026-07-27: GET
-    /energy/plans?page-size=10 returned HTTP 200 with x-v:1, meta.totalRecords 1343
-    across 135 pages, CORS Access-Control-Allow-Origin *, and plan detail for
-    planId AGL1067320MRE2@EME returned HTTP 200 at x-v:3. Critically, this endpoint is
-    NOT operated by AGL — the Australian Energy Regulator hosts every retailer's PRD
-    centrally at cdr.energymadeeasy.gov.au under a per-brand path, which is the
-    structural break from CDR banking where each ADI serves its own product API from
-    its own domain. AGL's own public base URI returns HTTP 404 for /cds-au/v1/energy/plans.
-  humanURL: https://www.aer.gov.au/energy-product-reference-data
-  baseURL: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
-  tags:
-  - Consumer Data Right
-  - CDR
-  - Product Reference Data
-  - Tariffs
-  - Plans
-  - Electricity
-  - Gas
-  - Australia
-  properties:
-  - type: OpenAPI
-    url: openapi/agl-energy-cds-energy-openapi.json
-  - type: Overlay
-    url: overlays/agl-energy-cds-energy-overlay.yaml
   - type: Documentation
     url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-data-holder-operations-api
+  name: AGL Energy Data Holder Operations API
+  description: Data Holder Operations endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Data Holder Operations
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-data-holder-operations-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
   - type: Documentation
     url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-distributed-energy-resources-api
+  name: AGL Energy Distributed Energy Resources API
+  description: Distributed Energy Resource endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Distributed Energy Resources
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-distributed-energy-resources-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-electricity-service-points-api
+  name: AGL Energy Electricity Service Points API
+  description: Electricity Service Point endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Electricity Service Points
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-electricity-service-points-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-electricity-usage-api
+  name: AGL Energy Electricity Usage API
+  description: Electricity Usage endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Electricity Usage
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-electricity-usage-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-energy-account-balances-api
+  name: AGL Energy Energy Account Balances API
+  description: Energy Account Balance endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Energy Account Balances
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-energy-account-balances-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-energy-account-billing-api
+  name: AGL Energy Energy Account Billing API
+  description: Energy Account Billing endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Energy Account Billing
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-energy-account-billing-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-energy-accounts-api
+  name: AGL Energy Energy Accounts API
+  description: Energy Account endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Energy Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-energy-accounts-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
+  - type: APIReference
+    url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+- aid: agl-energy:agl-energy-energy-plans-api
+  name: AGL Energy Energy Plans API
+  description: Energy Plan endpoints
+  humanURL: https://consumerdatastandardsaustralia.github.io/standards/
+  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  tags:
+  - Energy Plans
+  properties:
+  - type: OpenAPI
+    url: openapi/agl-energy-energy-plans-api-openapi.yml
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+  - type: Documentation
+    url: https://consumerdatastandardsaustralia.github.io/standards/
+  - type: Documentation
+    url: https://www.cdr.gov.au/rollout/cdr-energy-sector
+  - type: Documentation
+    url: https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr
+  - type: Registration
+    url: https://www.cdr.gov.au/for-providers
+  - type: StatusPage
+    url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+  - type: APIReference
+    url: https://consumerdatastandardsaustralia.github.io/standards/#common-apis
+  - type: Documentation
+    url: https://www.cdr.gov.au/for-providers/how-find-data-holders-product-data-request-service
+  - type: Documentation
+    url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
 common:
+- type: Overlay
+  url: overlays/agl-energy-cds-energy-overlay.yaml
+- type: Overlay
+  url: overlays/agl-energy-cds-common-overlay.yaml
 - type: DomainSecurity
   url: security/agl-energy-domain-security.yml
 - type: AgenticAccess
