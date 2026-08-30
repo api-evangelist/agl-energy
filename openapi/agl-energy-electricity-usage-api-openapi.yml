@@ -1,0 +1,776 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: contact@dsb.gov.au
+    name: Data Standards Body
+    url: https://dsb.gov.au/
+  description: Specifications for resource endpoints applicable to data holders in the Energy sector.
+  title: CDR Energy Electricity Usage API
+  version: 1.36.0
+  x-provenance: Shared DSB Consumer Data Standards CDR Energy API (not AGL-proprietary). Harvested verbatim from the Consumer Data Standards Australia published Swagger. AGL is a designated CDR energy data holder and implements this standardized surface; the consumer-facing endpoints are reachable only by Accredited Data Recipients over mTLS with a consumer authorisation, so the base URI is distributed through the CDR Register rather than published. The product reference data endpoints (/energy/plans, /energy/plans/{planId}) are served for AGL by the AER at https://cdr.energymadeeasy.gov.au/agl/cds-au/v1 and were verified live and anonymous on 2026-07-27.
+  x-source-url: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_energy.json
+  x-cds-version: 1.36.0
+  x-harvested: '2026-07-27'
+  x-harvest-http-status: 200
+  x-agl-cdr-public-base-uri: https://public.cdr.agl.com.au
+  x-agl-cdr-data-holder-brand-id: d177e382-b12d-ed11-a832-000d3a8830d6
+servers:
+- description: MTLS
+  url: https://mtls.dh.example.com/cds-au/v1
+tags:
+- description: Electricity Usage endpoints
+  name: Electricity Usage
+  x-shortName: Usage
+paths:
+  /energy/electricity/servicepoints/{servicePointId}/usage:
+    get:
+      description: Obtain a list of electricity usage data from a particular service point.
+      operationId: getElectricityServicePointUsage
+      parameters:
+      - description: The _servicePointId_ to obtain data for. _servicePointId_ values are returned by service point list endpoints. Note that it is not a _nationalMeteringId_.
+        explode: false
+        in: path
+        name: servicePointId
+        required: true
+        schema:
+          $ref: '#/components/schemas/EnergyServicePointId'
+        style: simple
+      - description: Constrain the request to records with effective date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with effective date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Type of interval reads. Any one of the valid values for this field can be supplied. If absent defaults to `NONE`.
+        explode: true
+        in: query
+        name: interval-reads
+        required: false
+        schema:
+          default: NONE
+          enum:
+          - NONE
+          - MIN_30
+          - FULL
+          type: string
+        style: form
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyUsageListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[404 - Unavailable Service Point](#error-404-unavailable-service-point)</li><li>[404 - Invalid Service Point](#error-404-invalid-service-point)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Usage For Service Point
+      tags:
+      - Electricity Usage
+      x-scopes:
+      - energy:electricity.usage:read
+      x-version: '1'
+  /energy/electricity/servicepoints/usage:
+    get:
+      description: Obtain usage data for all service points associated with the customer.
+      operationId: listElectricityUsageBulk
+      parameters:
+      - description: Type of interval reads. Any one of the valid values for this field can be supplied. If absent defaults to `NONE`.
+        explode: true
+        in: query
+        name: interval-reads
+        required: false
+        schema:
+          default: NONE
+          enum:
+          - NONE
+          - MIN_30
+          - FULL
+          type: string
+        style: form
+      - description: Constrain the request to records with effective date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with effective date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyUsageListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Bulk Usage
+      tags:
+      - Electricity Usage
+      x-scopes:
+      - energy:electricity.usage:read
+      x-version: '1'
+    post:
+      description: Obtain the electricity usage data for a specific set of service points.
+      operationId: listElectricityUsageForServicePoints
+      parameters:
+      - description: Constrain the request to records with effective date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with effective date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Type of interval reads. Any one of the valid values for this field can be supplied. If absent defaults to `NONE`.
+        explode: true
+        in: query
+        name: interval-reads
+        required: false
+        schema:
+          default: NONE
+          enum:
+          - NONE
+          - MIN_30
+          - FULL
+          type: string
+        style: form
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      requestBody:
+        $ref: '#/components/requestBodies/RequestServicePointIds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyUsageListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryResponseErrorListV1'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li><li>[422 - Unavailable Service Point](#error-422-unavailable-service-point)</li><li>[422 - Invalid Service Point](#error-422-invalid-service-point)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Usage For Specific Service Points
+      tags:
+      - Electricity Usage
+      x-scopes:
+      - energy:electricity.usage:read
+      x-version: '1'
+components:
+  schemas:
+    EnergyUsageRead_basicRead:
+      description: Mandatory if _readUType_ is set to `basicRead`.
+      properties:
+        quality:
+          default: ACTUAL
+          description: The quality of the read taken. If absent then assumed to be `ACTUAL`.
+          enum:
+          - ACTUAL
+          - SUBSTITUTE
+          - FINAL_SUBSTITUTE
+          type: string
+        value:
+          description: Meter read value. If positive then it means consumption, if negative it means export.
+          type: number
+      required:
+      - value
+      type: object
+    LinksPaginated:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+        first:
+          description: URI to the first page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        prev:
+          description: URI to the previous page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        next:
+          description: URI to the next page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+        last:
+          description: URI to the last page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+      x-conditional:
+      - first
+      - prev
+      - next
+      - last
+    EnergyUsageListResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyUsageListResponse_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
+      type: object
+    Meta:
+      type: object
+    EnergyUsageListResponse_data:
+      properties:
+        reads:
+          description: Array of meter reads sorted by NMI in ascending order followed by _readStartDate_ in descending order.
+          items:
+            $ref: '#/components/schemas/EnergyUsageRead'
+          type: array
+      required:
+      - reads
+      type: object
+    EnergyUsageRead_intervalRead:
+      description: Mandatory if _readUType_ is set to `intervalRead`.
+      properties:
+        readIntervalLength:
+          description: Read interval length in minutes. Required when _interval-reads_ query parameter equals `FULL` or `MIN_30`.
+          type: integer
+          x-cds-type: PositiveInteger
+        aggregateValue:
+          description: The aggregate sum of the interval read values. If positive then it means net consumption, if negative it means net export.
+          type: number
+        intervalReads:
+          description: Array of Interval read values. If positive then it means consumption, if negative it means export. Required when _interval-reads_ query parameter equals `FULL` or `MIN_30`.<br>Each read value indicates the read for the interval specified by _readIntervalLength_ beginning at midnight of _readStartDate_ (for example 00:00 to 00:30 would be the first reading in a 30 minute Interval).
+          items:
+            type: number
+          type: array
+        readQualities:
+          description: ' Specifies quality of reads that are not `ACTUAL`. For read indices that are not specified, quality is assumed to be `ACTUAL`. If not present, all quality of all reads are assumed to be actual. Required when _interval-reads_ query parameter equals `FULL` or `MIN_30`.'
+          items:
+            $ref: '#/components/schemas/EnergyUsageRead_intervalRead_readQualities'
+          type: array
+      required:
+      - aggregateValue
+      type: object
+      x-conditional:
+      - readIntervalLength
+      - intervalReads
+      - readQualities
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    EnergyServicePointId:
+      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    PrimaryResponseErrorListV1:
+      properties:
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/PrimaryErrorV1'
+          type: array
+      required:
+      - errors
+      type: object
+    MetaPaginated:
+      properties:
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+      required:
+      - totalPages
+      - totalRecords
+      type: object
+    EnergyUsageRead_intervalRead_readQualities:
+      properties:
+        startInterval:
+          description: Start interval for read quality flag. First read begins at `1`.
+          example: 1
+          type: integer
+          x-cds-type: PositiveInteger
+        endInterval:
+          description: End interval for read quality flag.
+          example: 1
+          type: integer
+          x-cds-type: PositiveInteger
+        quality:
+          description: The quality of the read taken.
+          enum:
+          - SUBSTITUTE
+          - FINAL_SUBSTITUTE
+          type: string
+      required:
+      - endInterval
+      - quality
+      - startInterval
+      type: object
+    PrimaryErrorV1:
+      allOf:
+      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
+      - $ref: '#/components/schemas/ErrorV2'
+      type: object
+    ErrorV2:
+      properties:
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
+      required:
+      - code
+      - detail
+      - title
+      type: object
+      x-conditional:
+      - meta
+    RequestServicePointIdListV1_data:
+      properties:
+        servicePointIds:
+          description: Array of _servicePointId_ values to obtain data for.
+          items:
+            $ref: '#/components/schemas/EnergyServicePointId'
+          type: array
+      required:
+      - servicePointIds
+      type: object
+    PrimaryErrorV1_allOf:
+      properties:
+        isSecondaryDataHolderError:
+          default: false
+          description: Indicates the error was propagated from a designated secondary data holder.
+          type: boolean
+      type: object
+    RequestServicePointIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestServicePointIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
+    EnergyUsageRead:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        registerId:
+          description: Register ID of the meter register where the meter reads are obtained.
+          type: string
+        registerSuffix:
+          description: Register suffix of the meter register where the meter reads are obtained.
+          type: string
+        meterId:
+          description: Meter id/serial number as it appears in customer's bill. ID permanence rules do not apply.
+          type: string
+        controlledLoad:
+          description: Indicates whether the energy recorded by this register is created under a Controlled Load regime.
+          type: boolean
+        readStartDate:
+          description: Date when the meter reads start in AEST and assumed to start from 12:00am AEST.
+          type: string
+          x-cds-type: DateString
+        readEndDate:
+          description: Date when the meter reads end in AEST. If absent then assumed to be equal to _readStartDate_. In this case the entry represents data for a single date specified by _readStartDate_.
+          type: string
+          x-cds-type: DateString
+        unitOfMeasure:
+          description: Unit of measure of the meter reads. Refer to Appendix B of <a href='https://www.aemo.com.au/-/media/files/stakeholder_consultation/consultations/nem-consultations/2019/5ms-metering-package-2/final-determination/mdff-specification-nem12-nem13-v21-final-determination-clean.pdf?la=en&hash=03FCBA0D60E091DE00F2361AE76206EA'>MDFF Specification NEM12 NEM13 v2.1</a> for a list of possible values.
+          type: string
+          x-cds-type: ExternalRef
+        readUType:
+          description: Specify the type of the meter read data.
+          enum:
+          - basicRead
+          - intervalRead
+          type: string
+        basicRead:
+          $ref: '#/components/schemas/EnergyUsageRead_basicRead'
+        intervalRead:
+          $ref: '#/components/schemas/EnergyUsageRead_intervalRead'
+      required:
+      - readStartDate
+      - readUType
+      - registerSuffix
+      - servicePointId
+      type: object
+      x-conditional:
+      - basicRead
+      - intervalRead
+  headers:
+    XV:
+      description: The [payload version](#response-headers) that the endpoint has responded with.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+    XFAPIInteractionId:
+      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+  requestBodies:
+    RequestServicePointIds:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestServicePointIdListV1'
+      description: Request payload containing a list of _servicePointId_ values to obtain data for.
+      required: true

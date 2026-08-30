@@ -1,0 +1,273 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: contact@dsb.gov.au
+    name: Data Standards Body
+    url: https://dsb.gov.au/
+  description: Specifications for common endpoints applicable to all data holders (except secondary data holders).
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  title: CDR Common Data Holder Operations API
+  version: 1.36.0
+  x-provenance: Shared DSB Consumer Data Standards CDR Common API (not AGL-proprietary). Harvested verbatim from the Consumer Data Standards Australia published Swagger. AGL implements the unauthenticated discovery half of this contract at its CDR public base URI https://public.cdr.agl.com.au/cds-au/v1 — GET /discovery/status and GET /discovery/outages both returned HTTP 200 with conformant CDS envelopes on 2026-07-27. The /common/customer endpoints are consumer-authorised and are not served on the public base URI (HTTP 404).
+  x-source-url: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_common.json
+  x-cds-version: 1.36.0
+  x-harvested: '2026-07-27'
+  x-harvest-http-status: 200
+  x-agl-cdr-public-base-uri: https://public.cdr.agl.com.au
+  x-agl-cdr-data-holder-brand-id: d177e382-b12d-ed11-a832-000d3a8830d6
+servers:
+- description: MTLS
+  url: https://mtls.dh.example.com/cds-au/v1
+tags:
+- description: Data Holder Operations endpoints
+  name: Data Holder Operations
+  x-shortName: Operations
+paths:
+  /discovery/status:
+    get:
+      description: Obtain a health check status for the implementation.
+      operationId: getStatus
+      parameters:
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCommonDiscoveryStatus'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+      servers:
+      - description: TLS
+        url: https://tls.dh.example.com/cds-au/v1
+      summary: Get Status
+      tags:
+      - Data Holder Operations
+      x-version: '1'
+  /discovery/outages:
+    get:
+      description: Obtain a list of scheduled outages for the implementation.
+      operationId: getOutages
+      parameters:
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDiscoveryOutagesList'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+      servers:
+      - description: TLS
+        url: https://tls.dh.example.com/cds-au/v1
+      summary: Get Outages
+      tags:
+      - Data Holder Operations
+      x-version: '1'
+components:
+  schemas:
+    ResponseDiscoveryOutagesList_data:
+      properties:
+        outages:
+          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
+          items:
+            $ref: '#/components/schemas/DiscoveryOutage'
+          type: array
+      required:
+      - outages
+      type: object
+    ResponseCommonDiscoveryStatus_data:
+      properties:
+        status:
+          description: 'Enumeration with values: <ul><li>`OK`: (implementation is fully functional).<li>`PARTIAL_FAILURE`: (one or more endpoints are unexpectedly unavailable).<li>`UNAVAILABLE`: (the full implementation is unexpectedly unavailable).<li>`SCHEDULED_OUTAGE`: (an advertised outage is in effect).</ul>'
+          enum:
+          - OK
+          - PARTIAL_FAILURE
+          - SCHEDULED_OUTAGE
+          - UNAVAILABLE
+          type: string
+        explanation:
+          description: Provides an explanation of the current outage that can be displayed to an end customer. Mandatory if the status property is any value other than `OK`.
+          type: string
+        detectionTime:
+          description: The date and time that the current outage was detected. Should only be present if the status property is `PARTIAL_FAILURE` or `UNAVAILABLE`.
+          type: string
+          x-cds-type: DateTimeString
+        expectedResolutionTime:
+          description: The date and time that full service is expected to resume (if known). Should not be present if the status property has a value of `OK`.
+          type: string
+          x-cds-type: DateTimeString
+        updateTime:
+          description: The date and time that this status was last updated by the Data Holder.
+          type: string
+          x-cds-type: DateTimeString
+      required:
+      - status
+      - updateTime
+      type: object
+      x-conditional:
+      - explanation
+    DiscoveryOutage:
+      properties:
+        outageTime:
+          description: Date and time that the outage is scheduled to begin.
+          type: string
+          x-cds-type: DateTimeString
+        duration:
+          description: Planned duration of the outage. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).
+          type: string
+          x-cds-type: ExternalRef
+        isPartial:
+          description: Flag that indicates, if present and set to `true`, that the outage is only partial meaning that only a subset of normally available endpoints will be affected by the outage.
+          type: boolean
+        explanation:
+          description: Provides an explanation of the current outage that can be displayed to an end customer.
+          type: string
+      required:
+      - duration
+      - explanation
+      - outageTime
+      type: object
+    ResponseDiscoveryOutagesList:
+      properties:
+        data:
+          $ref: '#/components/schemas/ResponseDiscoveryOutagesList_data'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      - links
+      type: object
+    ErrorV2:
+      properties:
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
+      required:
+      - code
+      - detail
+      - title
+      type: object
+      x-conditional:
+      - meta
+    Meta:
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    Links:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+    ResponseCommonDiscoveryStatus:
+      properties:
+        data:
+          $ref: '#/components/schemas/ResponseCommonDiscoveryStatus_data'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      - links
+      type: object
+    ResponseErrorListV2:
+      properties:
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/ErrorV2'
+          type: array
+      required:
+      - errors
+      type: object
+  headers:
+    XV:
+      description: The [payload version](#response-headers) that the endpoint has responded with.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple

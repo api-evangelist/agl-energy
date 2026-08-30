@@ -1,0 +1,1601 @@
+openapi: 3.2.0
+info:
+  contact:
+    email: contact@dsb.gov.au
+    name: Data Standards Body
+    url: https://dsb.gov.au/
+  description: Specifications for resource endpoints applicable to data holders in the Energy sector.
+  title: CDR Energy Energy Account Billing API
+  version: 1.36.0
+  x-provenance: Shared DSB Consumer Data Standards CDR Energy API (not AGL-proprietary). Harvested verbatim from the Consumer Data Standards Australia published Swagger. AGL is a designated CDR energy data holder and implements this standardized surface; the consumer-facing endpoints are reachable only by Accredited Data Recipients over mTLS with a consumer authorisation, so the base URI is distributed through the CDR Register rather than published. The product reference data endpoints (/energy/plans, /energy/plans/{planId}) are served for AGL by the AER at https://cdr.energymadeeasy.gov.au/agl/cds-au/v1 and were verified live and anonymous on 2026-07-27.
+  x-source-url: https://consumerdatastandardsaustralia.github.io/standards/includes/swagger/cds_energy.json
+  x-cds-version: 1.36.0
+  x-harvested: '2026-07-27'
+  x-harvest-http-status: 200
+  x-agl-cdr-public-base-uri: https://public.cdr.agl.com.au
+  x-agl-cdr-data-holder-brand-id: d177e382-b12d-ed11-a832-000d3a8830d6
+servers:
+- description: MTLS
+  url: https://mtls.dh.example.com/cds-au/v1
+tags:
+- description: Energy Account Billing endpoints
+  name: Energy Account Billing
+  x-shortName: Billing
+paths:
+  /energy/accounts/{accountId}/invoices:
+    get:
+      description: Obtain the invoices for a specific account.
+      operationId: getEnergyAccountInvoices
+      parameters:
+      - description: The _accountId_ to obtain data for. _accountId_ values are returned by account list endpoints.
+        explode: false
+        in: path
+        name: accountId
+        required: true
+        schema:
+          $ref: '#/components/schemas/EnergyAccountId'
+        style: simple
+      - description: Constrain the request to records with issue date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with issue date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyInvoiceListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[404 - Unavailable Energy Account](#error-404-unavailable-energy-account)</li><li>[404 - Invalid Energy Account](#error-404-invalid-energy-account)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Invoices For Account
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '1'
+  /energy/accounts/invoices:
+    get:
+      description: Obtain the invoices for all accounts.
+      operationId: listEnergyAccountInvoicesBulk
+      parameters:
+      - description: Constrain the request to records with issue date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with issue date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyInvoiceListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Bulk Invoices
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '1'
+    post:
+      description: Obtain invoices for a specified set of accounts.
+      operationId: listEnergyInvoicesForSpecificAccounts
+      parameters:
+      - description: Constrain the request to records with issue date at or before this date. If absent defaults to current date. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: newest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Constrain the request to records with issue date at or after this date. If absent defaults to _newest-date_ minus 24 months. Format is aligned to DateString common type.
+        explode: true
+        in: query
+        name: oldest-date
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      requestBody:
+        $ref: '#/components/requestBodies/RequestAccountIds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyInvoiceListResponse'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li><li>[422 - Unavailable Energy Account](#error-422-unavailable-energy-account)</li><li>[422 - Invalid Energy Account](#error-422-invalid-energy-account)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Invoices For Specific Accounts
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '1'
+  /energy/accounts/{accountId}/billing:
+    get:
+      description: "Obtain the billing transactions for a specific account.\n\nDeprecated Versions: \n\n- [v1](includes/obsolete/get-billing-for-account-v1.html) - This version is to be ceased to be called by data recipients by September 9th 2024 and **MAY** be decommissioned by data holders as of that date \n- [v2](includes/obsolete/get-billing-for-account-v2.html) - This version **MAY** be retired by September 9th 2024 if v3 is implemented."
+      operationId: getBillingForEnergyAccount
+      parameters:
+      - description: The _accountId_ to obtain data for. _accountId_ values are returned by account list endpoints.
+        explode: false
+        in: path
+        name: accountId
+        required: true
+        schema:
+          $ref: '#/components/schemas/EnergyAccountId'
+        style: simple
+      - description: Constrain the request to records with effective time at or before this date/time. If absent defaults to current date/time. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: newest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Constrain the request to records with effective time at or after this date/time. If absent defaults to _newest-time_ minus 12 months. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: oldest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyBillingListResponseV3'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[404 - Unavailable Energy Account](#error-404-unavailable-energy-account)</li><li>[404 - Invalid Energy Account](#error-404-invalid-energy-account)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Billing For Account
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '3'
+  /energy/accounts/billing:
+    get:
+      description: "Obtain billing transactions for all accounts.\n\nDeprecated Versions: \n\n- [v1](includes/obsolete/get-bulk-billing-v1.html) - This version is to be ceased to be called by data recipients by September 9th 2024 and **MAY** be decommissioned by data holders as of that date \n- [v2](includes/obsolete/get-bulk-billing-v2.html) - This version **MAY** be retired by September 9th 2024 if v3 is implemented."
+      operationId: listEnergyAccountBillingBulk
+      parameters:
+      - description: Constrain the request to records with effective time at or before this date/time. If absent defaults to current date/time. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: newest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Constrain the request to records with effective time at or after this date/time. If absent defaults to _newest-time_ minus 12 months. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: oldest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyBillingListResponseV3'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Bulk Billing
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '3'
+    post:
+      description: "Obtain billing for a specified set of accounts.\n\nDeprecated Versions: \n\n- [v1](includes/obsolete/get-billing-for-specific-accounts-v1.html) - This version is to be ceased to be called by data recipients by September 9th 2024 and **MAY** be decommissioned by data holders as of that date \n- [v2](includes/obsolete/get-billing-for-specific-accounts-v2.html) - This version **MAY** be retired by September 9th 2024 if v3 is implemented."
+      operationId: listEnergyAccountBillingForSpecificAccounts
+      parameters:
+      - description: Constrain the request to records with effective time at or before this date/time. If absent defaults to current date/time. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: newest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Constrain the request to records with effective time at or after this date/time. If absent defaults to _newest-time_ minus 12 months. Format is aligned to DateTimeString common type.
+        explode: true
+        in: query
+        name: oldest-time
+        required: false
+        schema:
+          type: string
+        style: form
+        x-cds-type: DateTimeString
+      - description: Page of results to request (standard pagination).
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Page size to request. Default is 25 (standard pagination).
+        explode: true
+        in: query
+        name: page-size
+        required: false
+        schema:
+          type: integer
+        style: form
+        x-cds-type: PositiveInteger
+      - description: Version of the API endpoint requested by the client. Must be set to a positive integer. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If the value of [_x-min-v_](#request-headers) is equal to or higher than the value of [_x-v_](#request-headers) then the [_x-min-v_](#request-headers) header should be treated as absent. If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`. See [HTTP Headers](#request-headers).
+        explode: false
+        in: header
+        name: x-v
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Minimum version of the API endpoint requested by the client. Must be set to a positive integer if provided. The endpoint should respond with the highest supported version between [_x-min-v_](#request-headers) and [_x-v_](#request-headers). If all versions requested are not supported then the endpoint **MUST** respond with a `406 Not Acceptable`.
+        explode: false
+        in: header
+        name: x-min-v
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+        explode: false
+        in: header
+        name: x-fapi-interaction-id
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The time when the customer last logged in to the Data Recipient Software Product as described in **[[FAPI-1.0-Baseline]](#nref-FAPI-1-0-Baseline)**. Required for all resource calls (customer present and unattended). Not required for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-auth-date
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+      - description: The customer's original IP address if the customer is currently logged in to the data recipient. The presence of this header indicates that the API is being called in a customer present context. Not to be included for unauthenticated calls.
+        explode: false
+        in: header
+        name: x-fapi-customer-ip-address
+        required: false
+        schema:
+          type: string
+        style: simple
+      - description: The customer's original standard http headers [Base64](#common-field-types) encoded, including the original User-Agent header, if the customer is currently logged in to the data recipient. Mandatory for customer present calls. Not required for unattended or unauthenticated calls.
+        explode: false
+        in: header
+        name: x-cds-client-headers
+        required: false
+        schema:
+          type: string
+        style: simple
+        x-conditional: true
+        x-cds-type: Base64
+      requestBody:
+        $ref: '#/components/requestBodies/RequestAccountIds'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnergyBillingListResponseV3'
+          description: Successful response
+          headers:
+            x-v:
+              $ref: '#/components/headers/XV'
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[400 - Invalid Field](#error-400-field-invalid)</li><li>[400 - Missing Required Field](#error-400-field-missing)</li><li>[400 - Invalid Date](#error-400-field-invalid-date-time)</li><li>[400 - Invalid Page Size](#error-400-field-invalid-page-size)</li><li>[400 - Invalid Version](#error-400-header-invalid-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '406':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[406 - Unsupported Version](#error-406-header-unsupported-version)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseErrorListV2'
+          description: The following error codes **MUST** be supported:<br/><ul class="error-code-list"><li>[422 - Invalid Page](#error-422-field-invalid-page)</li><li>[422 - Unavailable Energy Account](#error-422-unavailable-energy-account)</li><li>[422 - Invalid Energy Account](#error-422-invalid-energy-account)</li></ul>
+          headers:
+            x-fapi-interaction-id:
+              $ref: '#/components/headers/XFAPIInteractionId'
+      summary: Get Billing For Specific Accounts
+      tags:
+      - Energy Account Billing
+      x-scopes:
+      - energy:billing:read
+      x-version: '3'
+components:
+  schemas:
+    EnergyBillingUsageTransactionV2:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        invoiceNumber:
+          description: The number of the invoice in which this transaction is included if it has been issued.
+          type: string
+        timeOfUseType:
+          description: The time of use type that the transaction applies to.
+          enum:
+          - PEAK
+          - OFF_PEAK
+          - OFF_PEAK_DEMAND_CHARGE
+          - SHOULDER
+          - SHOULDER1
+          - SHOULDER2
+          - CONTROLLED_LOAD
+          - SOLAR
+          - AGGREGATE
+          - ALL_DAY
+          type: string
+        description:
+          description: Optional description of the transaction that can be used for display purposes.
+          type: string
+        isEstimate:
+          default: false
+          description: Flag indicating if the usage is estimated or actual. `true` indicates estimate. `false` or absent indicates actual.
+          type: boolean
+        startDate:
+          description: Date and time when the usage period starts.
+          type: string
+          x-cds-type: DateTimeString
+        endDate:
+          description: Date and time when the usage period ends.
+          type: string
+          x-cds-type: DateTimeString
+        measureUnit:
+          allOf:
+          - $ref: '#/components/schemas/MeasureUnitEnum'
+          default: KWH
+          description: The measurement unit of rate. Assumed to be `KWH` if absent.
+          type: string
+        usage:
+          description: The usage for the period in measure unit. A negative value indicates power generated.
+          type: number
+        amount:
+          description: The amount charged or credited for this transaction prior to any adjustments being applied. A negative value indicates a credit.
+          type: string
+          x-cds-type: AmountString
+        calculationFactors:
+          description: Additional calculation factors that inform the transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_calculationFactors'
+          type: array
+        adjustments:
+          description: Optional array of adjustments arising for this transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_adjustments'
+          type: array
+      required:
+      - amount
+      - endDate
+      - startDate
+      - timeOfUseType
+      - usage
+      type: object
+    LinksPaginated:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+        first:
+          description: URI to the first page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        prev:
+          description: URI to the previous page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        next:
+          description: URI to the next page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+        last:
+          description: URI to the last page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+      x-conditional:
+      - first
+      - prev
+      - next
+      - last
+    EnergyBillingUsageTransactionV2_calculationFactors:
+      properties:
+        value:
+          description: The value of the calculation factor.
+          type: number
+        type:
+          description: The type of the calculation factor.
+          enum:
+          - DLF
+          - MLF
+          type: string
+      required:
+      - type
+      - value
+      type: object
+    RequestAccountIdListV1_data:
+      properties:
+        accountIds:
+          description: Array of _accountId_ values to obtain data for.
+          items:
+            $ref: '#/components/schemas/EnergyAccountId'
+          type: array
+      required:
+      - accountIds
+      type: object
+    EnergyInvoice_payOnTimeDiscount:
+      description: A discount for on time payment.
+      properties:
+        discountAmount:
+          description: The amount that will be discounted if the invoice is paid by the date specified.
+          type: string
+          x-cds-type: AmountString
+        gstAmount:
+          default: '0.00'
+          description: The GST amount that will be discounted if the invoice is paid by the date specified. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+        date:
+          description: The date by which the invoice must be paid to receive the pay on time discount.
+          type: string
+          x-cds-type: DateString
+      required:
+      - date
+      - discountAmount
+      type: object
+    EnergyInvoiceGasUsageCharges:
+      properties:
+        totalUsageCharges:
+          description: The aggregate total of usage charges for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalGenerationCredits:
+          description: The aggregate total of generation credits for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalOnceOffCharges:
+          description: The aggregate total of any once off charges arising from gas usage for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalOnceOffDiscounts:
+          description: The aggregate total of any once off discounts or credits arising from gas usage for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        otherCharges:
+          description: Optional array of charges that may be part of the invoice (for e.g., environmental charges for C&I consumers) (exclusive of GST).
+          items:
+            $ref: '#/components/schemas/EnergyInvoiceGasUsageCharges_otherCharges'
+          type: array
+        totalGst:
+          default: '0.00'
+          description: The total GST for all gas usage charges. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+      required:
+      - totalGenerationCredits
+      - totalOnceOffCharges
+      - totalOnceOffDiscounts
+      - totalUsageCharges
+      type: object
+    EnergyBillingTransactionV3:
+      properties:
+        accountId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyAccountId'
+          description: Unique identifier for the account.
+        executionDateTime:
+          description: The date and time that the transaction occurred.
+          type: string
+          x-cds-type: DateTimeString
+        gst:
+          default: '0.00'
+          description: The GST incurred in the transaction. Should not be included for credits or payments. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+        transactionUType:
+          description: Indicator of the type of transaction object present in this record.
+          enum:
+          - usage
+          - demand
+          - onceOff
+          - otherCharges
+          - payment
+          type: string
+        usage:
+          allOf:
+          - $ref: '#/components/schemas/EnergyBillingUsageTransactionV2'
+          description: Represents a usage charge or generation credit. Mandatory if _transactionUType_ is equal to `usage`.
+        demand:
+          allOf:
+          - $ref: '#/components/schemas/EnergyBillingDemandTransactionV3'
+          description: Represents a demand charge or generation credit. Mandatory if _transactionUType_ is equal to `demand`.
+        onceOff:
+          allOf:
+          - $ref: '#/components/schemas/EnergyBillingOnceOffTransaction'
+          description: Represents a once off charge or credit. Mandatory if _transactionUType_ is equal to `onceOff`.
+        otherCharges:
+          allOf:
+          - $ref: '#/components/schemas/EnergyBillingOtherTransaction'
+          description: Represents charge other than usage and once off. Mandatory if _transactionUType_ is equal to `otherCharges`.
+        payment:
+          allOf:
+          - $ref: '#/components/schemas/EnergyBillingPaymentTransaction'
+          description: Represents a payment to the account. Mandatory if _transactionUType_ is equal to `payment`.
+      required:
+      - accountId
+      - executionDateTime
+      - transactionUType
+      type: object
+      x-conditional:
+      - usage
+      - onceOff
+      - payment
+      - demand
+      - otherCharges
+    EnergyBillingOnceOffTransaction:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        invoiceNumber:
+          description: The number of the invoice in which this transaction is included if it has been issued.
+          type: string
+        amount:
+          description: The amount of the charge or credit. A positive value indicates a charge and a negative value indicates a credit.
+          type: string
+          x-cds-type: AmountString
+        description:
+          description: A free text description of the item.
+          type: string
+      required:
+      - amount
+      - description
+      type: object
+    Meta:
+      type: object
+    EnergyBillingUsageTransactionV2_adjustments:
+      properties:
+        amount:
+          description: The amount of the adjustment.
+          type: string
+          x-cds-type: AmountString
+        description:
+          description: A free text description of the adjustment.
+          type: string
+      required:
+      - amount
+      - description
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    MeasureUnitEnum:
+      enum:
+      - KWH
+      - KVA
+      - KVAR
+      - KVARH
+      - KW
+      - DAYS
+      - METER
+      - MONTH
+      type: string
+    EnergyInvoiceAccountCharges:
+      description: Object contains account level charges and credits related to electricity usage.
+      properties:
+        totalCharges:
+          description: The aggregate total of account level charges for the period covered by the invoice.
+          type: string
+          x-cds-type: AmountString
+        totalDiscounts:
+          description: The aggregate total of account level discounts or credits for the period covered by the invoice.
+          type: string
+          x-cds-type: AmountString
+        totalGst:
+          default: '0.00'
+          description: The total GST for all account level charges. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+      required:
+      - totalCharges
+      - totalDiscounts
+      type: object
+    EnergyServicePointId:
+      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    MetaPaginated:
+      properties:
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+      required:
+      - totalPages
+      - totalRecords
+      type: object
+    EnergyBillingListResponseV3_data:
+      properties:
+        transactions:
+          description: Array of transactions sorted by date and time in descending order.
+          items:
+            $ref: '#/components/schemas/EnergyBillingTransactionV3'
+          type: array
+      required:
+      - transactions
+      type: object
+    EnergyBillingOtherTransaction:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        invoiceNumber:
+          description: The number of the invoice in which this transaction is included if it has been issued.
+          type: string
+        startDate:
+          description: Optional start date for the application of the charge.
+          type: string
+          x-cds-type: DateString
+        endDate:
+          description: Optional end date for the application of the charge.
+          type: string
+          x-cds-type: DateString
+        type:
+          default: OTHER
+          description: Type of charge. Assumed to be `OTHER` if absent.
+          enum:
+          - ENVIRONMENTAL
+          - REGULATED
+          - NETWORK
+          - METERING
+          - RETAIL_SERVICE
+          - RCTI
+          - OTHER
+          type: string
+        amount:
+          description: The amount of the charge.
+          type: string
+          x-cds-type: AmountString
+        description:
+          description: A free text description of the item.
+          type: string
+        calculationFactors:
+          description: Additional calculation factors that inform the transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_calculationFactors'
+          type: array
+        adjustments:
+          description: Optional array of adjustments arising for this transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_adjustments'
+          type: array
+      required:
+      - amount
+      - description
+      type: object
+    EnergyInvoice:
+      properties:
+        accountId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyAccountId'
+          description: Unique identifier for the account.
+        invoiceNumber:
+          description: The number assigned to this invoice by the energy Retailer.
+          type: string
+        issueDate:
+          description: The date that the invoice was actually issued (as opposed to generated or calculated).
+          type: string
+          x-cds-type: DateString
+        dueDate:
+          description: The date that the invoice is due to be paid.
+          type: string
+          x-cds-type: DateString
+        period:
+          $ref: '#/components/schemas/EnergyInvoice_period'
+        invoiceAmount:
+          description: The net amount due for this invoice regardless of previous balance.
+          type: string
+          x-cds-type: AmountString
+        gstAmount:
+          default: '0.00'
+          description: The total GST amount for this invoice. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+        payOnTimeDiscount:
+          $ref: '#/components/schemas/EnergyInvoice_payOnTimeDiscount'
+        balanceAtIssue:
+          description: The account balance at the time the invoice was issued.
+          type: string
+          x-cds-type: AmountString
+        servicePoints:
+          description: Array of service point IDs to which this invoice applies. May be empty if the invoice contains no electricity usage related charges.
+          items:
+            type: string
+          type: array
+        gas:
+          allOf:
+          - $ref: '#/components/schemas/EnergyInvoiceGasUsageCharges'
+          description: Object containing charges and credits related to gas usage.
+        electricity:
+          allOf:
+          - $ref: '#/components/schemas/EnergyInvoiceElectricityUsageCharges'
+          description: Object containing charges and credits related to electricity usage.
+        accountCharges:
+          $ref: '#/components/schemas/EnergyInvoiceAccountCharges'
+        paymentStatus:
+          description: Indicator of the payment status for the invoice.
+          enum:
+          - PAID
+          - PARTIALLY_PAID
+          - NOT_PAID
+          type: string
+      required:
+      - accountId
+      - balanceAtIssue
+      - invoiceNumber
+      - issueDate
+      - paymentStatus
+      - servicePoints
+      type: object
+      x-conditional:
+      - period
+    EnergyAccountId:
+      description: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    EnergyBillingPaymentTransaction:
+      properties:
+        amount:
+          description: The amount paid.
+          type: string
+          x-cds-type: AmountString
+        method:
+          description: The method of payment.
+          enum:
+          - DIRECT_DEBIT
+          - CARD
+          - TRANSFER
+          - BPAY
+          - CASH
+          - CHEQUE
+          - OTHER
+          type: string
+      required:
+      - amount
+      - method
+      type: object
+    RequestAccountIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestAccountIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
+    EnergyInvoiceListResponse_data:
+      properties:
+        invoices:
+          description: Array of invoices sorted by issue date in descending order.
+          items:
+            $ref: '#/components/schemas/EnergyInvoice'
+          type: array
+      required:
+      - invoices
+      type: object
+    EnergyInvoice_period:
+      description: Object containing the start and end date for the period covered by the invoice. Mandatory if any usage or demand based charges are included in the invoice.
+      properties:
+        startDate:
+          description: The start date of the period covered by this invoice.
+          type: string
+          x-cds-type: DateString
+        endDate:
+          description: The end date of the period covered by this invoice.
+          type: string
+          x-cds-type: DateString
+      required:
+      - endDate
+      - startDate
+      type: object
+    ResponseErrorListV2:
+      properties:
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/ErrorV2'
+          type: array
+      required:
+      - errors
+      type: object
+    EnergyBillingListResponseV3:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyBillingListResponseV3_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
+      type: object
+    EnergyInvoiceGasUsageCharges_otherCharges:
+      properties:
+        type:
+          default: OTHER
+          description: Type of charge. Assumed to be `OTHER` if absent.
+          enum:
+          - ENVIRONMENTAL
+          - REGULATED
+          - NETWORK
+          - METERING
+          - RETAIL_SERVICE
+          - RCTI
+          - OTHER
+          type: string
+        amount:
+          description: The aggregate total of charges for this item (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        description:
+          description: A free text description of the type of charge.
+          type: string
+      required:
+      - amount
+      - description
+      type: object
+    ErrorV2:
+      properties:
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
+      required:
+      - code
+      - detail
+      - title
+      type: object
+      x-conditional:
+      - meta
+    EnergyInvoiceElectricityUsageCharges:
+      properties:
+        totalUsageCharges:
+          description: The aggregate total of usage charges for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalGenerationCredits:
+          description: The aggregate total of generation credits for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalOnceOffCharges:
+          description: The aggregate total of any once off charges arising from electricity usage for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        totalOnceOffDiscounts:
+          description: The aggregate total of any once off discounts or credits arising from electricity usage for the period covered by the invoice (exclusive of GST).
+          type: string
+          x-cds-type: AmountString
+        otherCharges:
+          description: Optional array of charges that may be part of the invoice (for e.g., environmental charges for C&I consumers) (exclusive of GST).
+          items:
+            $ref: '#/components/schemas/EnergyInvoiceGasUsageCharges_otherCharges'
+          type: array
+        totalGst:
+          default: '0.00'
+          description: The total GST for all electricity usage charges. If absent then zero is assumed.
+          type: string
+          x-cds-type: AmountString
+      required:
+      - totalGenerationCredits
+      - totalOnceOffCharges
+      - totalOnceOffDiscounts
+      - totalUsageCharges
+      type: object
+    EnergyInvoiceListResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyInvoiceListResponse_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
+      type: object
+    EnergyBillingDemandTransactionV3:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        invoiceNumber:
+          description: The number of the invoice in which this transaction is included if it has been issued.
+          type: string
+        timeOfUseType:
+          description: The time of use type that the transaction applies to.
+          enum:
+          - PEAK
+          - OFF_PEAK
+          - OFF_PEAK_DEMAND_CHARGE
+          - SHOULDER
+          - SHOULDER1
+          - SHOULDER2
+          - CONTROLLED_LOAD
+          - SOLAR
+          - AGGREGATE
+          - ALL_DAY
+          - EXCESS
+          type: string
+        description:
+          description: Optional description of the transaction that can be used for display purposes.
+          type: string
+        isEstimate:
+          default: false
+          description: Flag indicating if the usage is estimated or actual. `true` indicates estimate. `false` or absent indicates actual.
+          type: boolean
+        startDate:
+          description: Date and time when the demand period starts.
+          type: string
+          x-cds-type: DateTimeString
+        endDate:
+          description: Date and time when the demand period ends.
+          type: string
+          x-cds-type: DateTimeString
+        measureUnit:
+          allOf:
+          - $ref: '#/components/schemas/MeasureUnitEnum'
+          default: KVA
+          description: The measurement unit of rate. Assumed to be `KVA` if absent.
+          type: string
+        rate:
+          description: The rate for the demand charge in _measureUnit_. Assumed to be `KVA` if _measureUnit_ not provided. A negative value indicates power generated.
+          type: number
+        amount:
+          description: The amount charged or credited for this transaction prior to any adjustments being applied. A negative value indicates a credit.
+          type: string
+          x-cds-type: AmountString
+        calculationFactors:
+          description: Additional calculation factors that inform the transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_calculationFactors'
+          type: array
+        adjustments:
+          description: Optional array of adjustments arising for this transaction.
+          items:
+            $ref: '#/components/schemas/EnergyBillingUsageTransactionV2_adjustments'
+          type: array
+      required:
+      - amount
+      - endDate
+      - rate
+      - startDate
+      - timeOfUseType
+      type: object
+  headers:
+    XV:
+      description: The [payload version](#response-headers) that the endpoint has responded with.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+    XFAPIInteractionId:
+      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+  requestBodies:
+    RequestAccountIds:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestAccountIdListV1'
+      description: Request payload containing a list of _accountId_ values to obtain data for.
+      required: true
