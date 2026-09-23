@@ -127,15 +127,36 @@ paths:
       x-version: '1'
 components:
   schemas:
-    ResponseDiscoveryOutagesList_data:
+    ResponseErrorListV2:
       properties:
-        outages:
-          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
+        errors:
+          description: List of errors.
           items:
-            $ref: '#/components/schemas/DiscoveryOutage'
+            $ref: '#/components/schemas/ErrorV2'
           type: array
       required:
-      - outages
+      - errors
+      type: object
+    DiscoveryOutage:
+      properties:
+        outageTime:
+          description: Date and time that the outage is scheduled to begin.
+          type: string
+          x-cds-type: DateTimeString
+        duration:
+          description: Planned duration of the outage. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).
+          type: string
+          x-cds-type: ExternalRef
+        isPartial:
+          description: Flag that indicates, if present and set to `true`, that the outage is only partial meaning that only a subset of normally available endpoints will be affected by the outage.
+          type: boolean
+        explanation:
+          description: Provides an explanation of the current outage that can be displayed to an end customer.
+          type: string
+      required:
+      - duration
+      - explanation
+      - outageTime
       type: object
     ResponseCommonDiscoveryStatus_data:
       properties:
@@ -168,27 +189,6 @@ components:
       type: object
       x-conditional:
       - explanation
-    DiscoveryOutage:
-      properties:
-        outageTime:
-          description: Date and time that the outage is scheduled to begin.
-          type: string
-          x-cds-type: DateTimeString
-        duration:
-          description: Planned duration of the outage. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).
-          type: string
-          x-cds-type: ExternalRef
-        isPartial:
-          description: Flag that indicates, if present and set to `true`, that the outage is only partial meaning that only a subset of normally available endpoints will be affected by the outage.
-          type: boolean
-        explanation:
-          description: Provides an explanation of the current outage that can be displayed to an end customer.
-          type: string
-      required:
-      - duration
-      - explanation
-      - outageTime
-      type: object
     ResponseDiscoveryOutagesList:
       properties:
         data:
@@ -200,6 +200,48 @@ components:
       required:
       - data
       - links
+      type: object
+    ResponseDiscoveryOutagesList_data:
+      properties:
+        outages:
+          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
+          items:
+            $ref: '#/components/schemas/DiscoveryOutage'
+          type: array
+      required:
+      - outages
+      type: object
+    Links:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    ResponseCommonDiscoveryStatus:
+      properties:
+        data:
+          $ref: '#/components/schemas/ResponseCommonDiscoveryStatus_data'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      - links
+      type: object
+    Meta:
       type: object
     ErrorV2:
       properties:
@@ -221,48 +263,6 @@ components:
       type: object
       x-conditional:
       - meta
-    Meta:
-      type: object
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
-      properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
-      type: object
-      x-conditional:
-      - urn
-    Links:
-      properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-      required:
-      - self
-      type: object
-    ResponseCommonDiscoveryStatus:
-      properties:
-        data:
-          $ref: '#/components/schemas/ResponseCommonDiscoveryStatus_data'
-        links:
-          $ref: '#/components/schemas/Links'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - data
-      - links
-      type: object
-    ResponseErrorListV2:
-      properties:
-        errors:
-          description: List of errors.
-          items:
-            $ref: '#/components/schemas/ErrorV2'
-          type: array
-      required:
-      - errors
-      type: object
   headers:
     XV:
       description: The [payload version](#response-headers) that the endpoint has responded with.

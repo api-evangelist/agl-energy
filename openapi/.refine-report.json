@@ -1,0 +1,38 @@
+{
+  "provider": "agl-energy",
+  "sources": [
+    "_original/agl-energy-cds-common-openapi.json",
+    "_original/agl-energy-cds-energy-openapi.json"
+  ],
+  "outputs": [
+    "agl-energy-data-holder-customers-api-openapi.yml",
+    "agl-energy-data-holder-operations-api-openapi.yml",
+    "agl-energy-distributed-energy-resources-api-openapi.yml",
+    "agl-energy-electricity-service-points-api-openapi.yml",
+    "agl-energy-electricity-usage-api-openapi.yml",
+    "agl-energy-energy-account-balances-api-openapi.yml",
+    "agl-energy-energy-account-billing-api-openapi.yml",
+    "agl-energy-energy-accounts-api-openapi.yml",
+    "agl-energy-energy-plans-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "agl-energy-cds-common-openapi.json: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "agl-energy-cds-energy-openapi.json: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "agl-energy-data-holder-customers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-data-holder-operations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-distributed-energy-resources-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-electricity-service-points-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-electricity-usage-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-energy-account-balances-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-energy-account-billing-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-energy-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "agl-energy-energy-plans-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}
