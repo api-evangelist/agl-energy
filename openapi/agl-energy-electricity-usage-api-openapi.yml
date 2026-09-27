@@ -491,59 +491,7 @@ paths:
       - energy:electricity.usage:read
       x-version: '1'
 components:
-  headers:
-    XFAPIInteractionId:
-      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
-      explode: false
-      required: true
-      schema:
-        type: string
-      style: simple
-    XV:
-      description: The [payload version](#response-headers) that the endpoint has responded with.
-      explode: false
-      required: true
-      schema:
-        type: string
-      style: simple
   schemas:
-    EnergyUsageRead_basicRead:
-      description: Mandatory if _readUType_ is set to `basicRead`.
-      properties:
-        quality:
-          default: ACTUAL
-          description: The quality of the read taken. If absent then assumed to be `ACTUAL`.
-          enum:
-          - ACTUAL
-          - SUBSTITUTE
-          - FINAL_SUBSTITUTE
-          type: string
-        value:
-          description: Meter read value. If positive then it means consumption, if negative it means export.
-          type: number
-      required:
-      - value
-      type: object
-    ErrorV2:
-      properties:
-        code:
-          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
-          type: string
-        title:
-          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
-          type: string
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        meta:
-          $ref: '#/components/schemas/ErrorV2_meta'
-      required:
-      - code
-      - detail
-      - title
-      type: object
-      x-conditional:
-      - meta
     EnergyUsageListResponse:
       properties:
         data:
@@ -556,99 +504,6 @@ components:
       - data
       - links
       - meta
-      type: object
-    EnergyUsageListResponse_data:
-      properties:
-        reads:
-          description: Array of meter reads sorted by NMI in ascending order followed by _readStartDate_ in descending order.
-          items:
-            $ref: '#/components/schemas/EnergyUsageRead'
-          type: array
-      required:
-      - reads
-      type: object
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
-      properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
-      type: object
-      x-conditional:
-      - urn
-    EnergyServicePointId:
-      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
-      type: string
-      x-cds-type: ASCIIString
-    RequestServicePointIdListV1_data:
-      properties:
-        servicePointIds:
-          description: Array of _servicePointId_ values to obtain data for.
-          items:
-            $ref: '#/components/schemas/EnergyServicePointId'
-          type: array
-      required:
-      - servicePointIds
-      type: object
-    PrimaryErrorV1_allOf:
-      properties:
-        isSecondaryDataHolderError:
-          default: false
-          description: Indicates the error was propagated from a designated secondary data holder.
-          type: boolean
-      type: object
-    PrimaryErrorV1:
-      allOf:
-      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
-      - $ref: '#/components/schemas/ErrorV2'
-      type: object
-    EnergyUsageRead_intervalRead_readQualities:
-      properties:
-        startInterval:
-          description: Start interval for read quality flag. First read begins at `1`.
-          example: 1
-          type: integer
-          x-cds-type: PositiveInteger
-        endInterval:
-          description: End interval for read quality flag.
-          example: 1
-          type: integer
-          x-cds-type: PositiveInteger
-        quality:
-          description: The quality of the read taken.
-          enum:
-          - SUBSTITUTE
-          - FINAL_SUBSTITUTE
-          type: string
-      required:
-      - endInterval
-      - quality
-      - startInterval
-      type: object
-    Meta:
-      type: object
-    MetaPaginated:
-      properties:
-        totalRecords:
-          description: The total number of records in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-        totalPages:
-          description: The total number of pages in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-      required:
-      - totalPages
-      - totalRecords
-      type: object
-    RequestServicePointIdListV1:
-      properties:
-        data:
-          $ref: '#/components/schemas/RequestServicePointIdListV1_data'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - data
       type: object
     EnergyUsageRead_intervalRead:
       description: Mandatory if _readUType_ is set to `intervalRead`.
@@ -677,15 +532,14 @@ components:
       - readIntervalLength
       - intervalReads
       - readQualities
-    PrimaryResponseErrorListV1:
+    PrimaryErrorV1_allOf:
       properties:
-        errors:
-          description: List of errors.
-          items:
-            $ref: '#/components/schemas/PrimaryErrorV1'
-          type: array
-      required:
-      - errors
+        isSecondaryDataHolderError:
+          default: false
+          description: Indicates the error was propagated from a designated secondary data holder.
+          type: boolean
+      type: object
+    Meta:
       type: object
     LinksPaginated:
       properties:
@@ -717,6 +571,137 @@ components:
       - prev
       - next
       - last
+    ErrorV2:
+      properties:
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
+      required:
+      - code
+      - detail
+      - title
+      type: object
+      x-conditional:
+      - meta
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    RequestServicePointIdListV1_data:
+      properties:
+        servicePointIds:
+          description: Array of _servicePointId_ values to obtain data for.
+          items:
+            $ref: '#/components/schemas/EnergyServicePointId'
+          type: array
+      required:
+      - servicePointIds
+      type: object
+    MetaPaginated:
+      properties:
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+      required:
+      - totalPages
+      - totalRecords
+      type: object
+    EnergyUsageListResponse_data:
+      properties:
+        reads:
+          description: Array of meter reads sorted by NMI in ascending order followed by _readStartDate_ in descending order.
+          items:
+            $ref: '#/components/schemas/EnergyUsageRead'
+          type: array
+      required:
+      - reads
+      type: object
+    EnergyServicePointId:
+      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    EnergyUsageRead_basicRead:
+      description: Mandatory if _readUType_ is set to `basicRead`.
+      properties:
+        quality:
+          default: ACTUAL
+          description: The quality of the read taken. If absent then assumed to be `ACTUAL`.
+          enum:
+          - ACTUAL
+          - SUBSTITUTE
+          - FINAL_SUBSTITUTE
+          type: string
+        value:
+          description: Meter read value. If positive then it means consumption, if negative it means export.
+          type: number
+      required:
+      - value
+      type: object
+    EnergyUsageRead_intervalRead_readQualities:
+      properties:
+        startInterval:
+          description: Start interval for read quality flag. First read begins at `1`.
+          example: 1
+          type: integer
+          x-cds-type: PositiveInteger
+        endInterval:
+          description: End interval for read quality flag.
+          example: 1
+          type: integer
+          x-cds-type: PositiveInteger
+        quality:
+          description: The quality of the read taken.
+          enum:
+          - SUBSTITUTE
+          - FINAL_SUBSTITUTE
+          type: string
+      required:
+      - endInterval
+      - quality
+      - startInterval
+      type: object
+    PrimaryErrorV1:
+      allOf:
+      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
+      - $ref: '#/components/schemas/ErrorV2'
+      type: object
+    RequestServicePointIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestServicePointIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
+    PrimaryResponseErrorListV1:
+      properties:
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/PrimaryErrorV1'
+          type: array
+      required:
+      - errors
+      type: object
     EnergyUsageRead:
       properties:
         servicePointId:
@@ -774,3 +759,18 @@ components:
             $ref: '#/components/schemas/RequestServicePointIdListV1'
       description: Request payload containing a list of _servicePointId_ values to obtain data for.
       required: true
+  headers:
+    XV:
+      description: The [payload version](#response-headers) that the endpoint has responded with.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+    XFAPIInteractionId:
+      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple

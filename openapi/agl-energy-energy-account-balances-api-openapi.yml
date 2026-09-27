@@ -372,15 +372,66 @@ paths:
       x-version: '1'
 components:
   schemas:
-    ResponseErrorListV2:
+    EnergyBalanceListResponse_data:
       properties:
-        errors:
-          description: List of errors.
+        balances:
+          description: Array of account balances.
           items:
-            $ref: '#/components/schemas/ErrorV2'
+            $ref: '#/components/schemas/EnergyBalanceListResponse_data_balances'
           type: array
       required:
-      - errors
+      - balances
+      type: object
+    MetaPaginated:
+      properties:
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+      required:
+      - totalPages
+      - totalRecords
+      type: object
+    EnergyAccountId:
+      description: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    Meta:
+      type: object
+    EnergyBalanceResponse_data:
+      properties:
+        balance:
+          description: The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.
+          type: string
+          x-cds-type: AmountString
+      required:
+      - balance
+      type: object
+    RequestAccountIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestAccountIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
+    EnergyBalanceListResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyBalanceListResponse_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
       type: object
     LinksPaginated:
       properties:
@@ -426,41 +477,45 @@ components:
       - accountId
       - balance
       type: object
-    RequestAccountIdListV1:
+    RequestAccountIdListV1_data:
       properties:
-        data:
-          $ref: '#/components/schemas/RequestAccountIdListV1_data'
-        meta:
-          $ref: '#/components/schemas/Meta'
+        accountIds:
+          description: Array of _accountId_ values to obtain data for.
+          items:
+            $ref: '#/components/schemas/EnergyAccountId'
+          type: array
       required:
-      - data
+      - accountIds
       type: object
-    EnergyAccountId:
-      description: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
-      type: string
-      x-cds-type: ASCIIString
-    EnergyBalanceResponse_data:
+    ErrorV2:
       properties:
-        balance:
-          description: The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
           type: string
-          x-cds-type: AmountString
-      required:
-      - balance
-      type: object
-    EnergyBalanceListResponse:
-      properties:
-        data:
-          $ref: '#/components/schemas/EnergyBalanceListResponse_data'
-        links:
-          $ref: '#/components/schemas/LinksPaginated'
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
         meta:
-          $ref: '#/components/schemas/MetaPaginated'
+          $ref: '#/components/schemas/ErrorV2_meta'
       required:
-      - data
-      - links
-      - meta
+      - code
+      - detail
+      - title
       type: object
+      x-conditional:
+      - meta
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
     EnergyBalanceResponse:
       properties:
         data:
@@ -482,70 +537,15 @@ components:
       required:
       - self
       type: object
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
+    ResponseErrorListV2:
       properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
-      type: object
-      x-conditional:
-      - urn
-    ErrorV2:
-      properties:
-        code:
-          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
-          type: string
-        title:
-          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
-          type: string
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        meta:
-          $ref: '#/components/schemas/ErrorV2_meta'
-      required:
-      - code
-      - detail
-      - title
-      type: object
-      x-conditional:
-      - meta
-    Meta:
-      type: object
-    MetaPaginated:
-      properties:
-        totalRecords:
-          description: The total number of records in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-        totalPages:
-          description: The total number of pages in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-      required:
-      - totalPages
-      - totalRecords
-      type: object
-    RequestAccountIdListV1_data:
-      properties:
-        accountIds:
-          description: Array of _accountId_ values to obtain data for.
+        errors:
+          description: List of errors.
           items:
-            $ref: '#/components/schemas/EnergyAccountId'
+            $ref: '#/components/schemas/ErrorV2'
           type: array
       required:
-      - accountIds
-      type: object
-    EnergyBalanceListResponse_data:
-      properties:
-        balances:
-          description: Array of account balances.
-          items:
-            $ref: '#/components/schemas/EnergyBalanceListResponse_data_balances'
-          type: array
-      required:
-      - balances
+      - errors
       type: object
   headers:
     XFAPIInteractionId:

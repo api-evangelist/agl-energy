@@ -257,67 +257,75 @@ paths:
       - energy:electricity.servicepoints.detail:read
       x-version: '2'
 components:
-  headers:
-    XFAPIInteractionId:
-      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
-      explode: false
-      required: true
-      schema:
-        type: string
-      style: simple
-    XV:
-      description: The [payload version](#response-headers) that the endpoint has responded with.
-      explode: false
-      required: true
-      schema:
-        type: string
-      style: simple
   schemas:
-    EnergyServicePointDetailV2_allOf_relatedParticipants:
+    EnergyServicePointDetailV2_allOf_registers:
       properties:
-        party:
-          description: The name of the party/organisation related to this service point.
+        registerId:
+          description: Unique identifier of the register within this service point. Is not globally unique.
           type: string
-        role:
-          description: 'The role performed by this participant in relation to the service point. Note the details of enumeration values below: <ul><li>`FRMP`: Financially Responsible Market Participant</li><li>`LNSP`: Local Network Service Provider or Embedded Network Manager for child connection points</li><li>`DRSP`: wholesale Demand Response and/or market ancillary Service Provider and note that where it is not relevant for a NMI it will not be included.</li></ul>'
+        registerSuffix:
+          description: Register suffix of the meter register where the meter reads are obtained.
+          type: string
+        averagedDailyLoad:
+          description: The energy delivered through a connection point or metering point over an extended period normalised to a 'per day' basis (kWh). This value is calculated annually.
+          type: number
+        registerConsumptionType:
+          description: Indicates the consumption type of register.
           enum:
-          - FRMP
-          - LNSP
-          - DRSP
+          - INTERVAL
+          - BASIC
+          - PROFILE_DATA
+          - ACTIVE_IMPORT
+          - ACTIVE
+          - REACTIVE_IMPORT
+          - REACTIVE
+          type: string
+        networkTariffCode:
+          description: The Network Tariff Code is a free text field containing a code supplied and published by the local network service provider.
+          type: string
+        unitOfMeasure:
+          description: The unit of measure for data held in this register.
+          type: string
+        timeOfDay:
+          description: Code to identify the time validity of register contents.
+          enum:
+          - ALLDAY
+          - INTERVAL
+          - PEAK
+          - BUSINESS
+          - SHOULDER
+          - EVENING
+          - OFFPEAK
+          - CONTROLLED
+          - DEMAND
+          type: string
+        multiplier:
+          description: Multiplier required to take a register value and turn it into a value representing billable energy.
+          type: number
+        controlledLoad:
+          description: Indicates whether the energy recorded by this register is created under a Controlled Load regime.
+          type: boolean
+        consumptionType:
+          description: 'Actual/Subtractive Indicator. Note the details of enumeration values below: <ul><li>`ACTUAL`: implies volume of energy actually metered between two dates</li><li>`CUMULATIVE`: indicates a meter reading for a specific date. A second Meter Reading is required to determine the consumption between those two Meter Reading dates.</li></ul>'
+          enum:
+          - ACTUAL
+          - CUMULATIVE
           type: string
       required:
-      - party
-      - role
+      - registerConsumptionType
+      - registerId
       type: object
-    EnergyServicePointDetailV2_allOf:
+    EnergyServicePointDetailResponseV2:
       properties:
-        distributionLossFactor:
-          $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_distributionLossFactor'
-        relatedParticipants:
-          items:
-            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_relatedParticipants'
-          type: array
-        location:
-          allOf:
-          - $ref: '#/components/schemas/CommonPhysicalAddress'
-          description: Location of the servicepoint.
-        meters:
-          description: The meters associated with the service point. This may be empty where there are no meters physically installed at the service point.
-          items:
-            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_meters'
-          type: array
+        data:
+          $ref: '#/components/schemas/EnergyServicePointDetailV2'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - distributionLossFactor
-      - location
-      - relatedParticipants
-    EnergyServicePointListResponseV2_data:
-      properties:
-        servicePoints:
-          items:
-            $ref: '#/components/schemas/EnergyServicePointV2'
-          type: array
-      required:
-      - servicePoints
+      - data
+      - links
       type: object
     CommonPhysicalAddress:
       properties:
@@ -337,6 +345,45 @@ components:
       x-conditional:
       - simple
       - paf
+    PrimaryErrorV1_allOf:
+      properties:
+        isSecondaryDataHolderError:
+          default: false
+          description: Indicates the error was propagated from a designated secondary data holder.
+          type: boolean
+      type: object
+    Meta:
+      type: object
+    LinksPaginated:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+        first:
+          description: URI to the first page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        prev:
+          description: URI to the previous page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        next:
+          description: URI to the next page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+        last:
+          description: URI to the last page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+      x-conditional:
+      - first
+      - prev
+      - next
+      - last
     ErrorV2:
       properties:
         code:
@@ -357,32 +404,6 @@ components:
       type: object
       x-conditional:
       - meta
-    EnergyServicePointDetailV2:
-      allOf:
-      - $ref: '#/components/schemas/EnergyServicePointV2'
-      - $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf'
-    EnergyServicePointListResponseV2:
-      properties:
-        data:
-          $ref: '#/components/schemas/EnergyServicePointListResponseV2_data'
-        links:
-          $ref: '#/components/schemas/LinksPaginated'
-        meta:
-          $ref: '#/components/schemas/MetaPaginated'
-      required:
-      - data
-      - links
-      - meta
-      type: object
-    Links:
-      properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-      required:
-      - self
-      type: object
     ErrorV2_meta:
       description: Additional data for customised error codes.
       properties:
@@ -392,10 +413,6 @@ components:
       type: object
       x-conditional:
       - urn
-    EnergyServicePointId:
-      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
-      type: string
-      x-cds-type: ASCIIString
     CommonSimpleAddress:
       description: Required if _addressUType_ is set to `simple`.
       properties:
@@ -432,29 +449,108 @@ components:
       type: object
       x-conditional:
       - postcode
-    PrimaryErrorV1_allOf:
+    EnergyServicePointDetailV2_allOf_distributionLossFactor:
       properties:
-        isSecondaryDataHolderError:
-          default: false
-          description: Indicates the error was propagated from a designated secondary data holder.
-          type: boolean
+        code:
+          description: A code used to identify data loss factor for the service point values. Refer to AEMO distribution loss factor documents for each financial year to interpret.
+          type: string
+        description:
+          description: Description of the data loss factor code and value.
+          type: string
+        lossValue:
+          description: The value associated with the loss factor code.
+          type: string
+      required:
+      - code
+      - description
+      - lossValue
       type: object
-    PrimaryErrorV1:
-      allOf:
-      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
-      - $ref: '#/components/schemas/ErrorV2'
+    EnergyServicePointDetailV2_allOf_meters:
+      properties:
+        meterId:
+          description: The meter ID uniquely identifies a meter for a given service point. It is unique in the context of the service point. It is not globally unique.
+          type: string
+        specifications:
+          $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_specifications'
+        registers:
+          description: Usage data registers available from the meter. This may be empty where there are no meters physically installed at the service point.
+          items:
+            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_registers'
+          type: array
+      required:
+      - meterId
+      - specifications
       type: object
-    EnergyServicePointDetailResponseV2:
+    EnergyServicePointListResponseV2:
       properties:
         data:
-          $ref: '#/components/schemas/EnergyServicePointDetailV2'
+          $ref: '#/components/schemas/EnergyServicePointListResponseV2_data'
         links:
-          $ref: '#/components/schemas/Links'
+          $ref: '#/components/schemas/LinksPaginated'
         meta:
-          $ref: '#/components/schemas/Meta'
+          $ref: '#/components/schemas/MetaPaginated'
       required:
       - data
       - links
+      - meta
+      type: object
+    EnergyServicePointDetailV2_allOf_specifications:
+      description: Technical characteristics of the meter.
+      properties:
+        status:
+          description: 'A code to denote the status of the meter. Note the details of enumeration values below: <ul><li>`CURRENT`: Applies when a meter is current and not disconnected</li><li>`DISCONNECTED`: Applies when a meter is present but has been remotely disconnected.</li></ul>'
+          enum:
+          - CURRENT
+          - DISCONNECTED
+          type: string
+        installationType:
+          description: 'The metering Installation type code indicates whether the metering installation has to be manually read. Note the details of enumeration values below: <ul><li>`BASIC`: Accumulation Meter – Type 6</li><li>`COMMS1`: Interval Meter with communications – Type 1</li><li>`COMMS2`: Interval Meter with communications – Type 2</li><li>`COMMS3`: Interval Meter with communications – Type 3</li><li>`COMMS4`: Interval Meter with communications – Type 4</li><li>`COMMS4C`: CT connected metering installation that meets the minimum services specifications</li><li>`COMMS4D`: Whole current metering installation that meets the minimum services specifications</li><li>`MRAM`: Small customer metering installation – Type 4A</li><li>`MRIM`: Manually Read Interval Meter – Type 5</li><li>`UMCP`: Unmetered Supply – Type 7</li><li>`VICAMI`: A relevant metering installation as defined in clause 9.9C of the NER</li><li>`NCONUML`: Non-contestable unmeter load - Introduced as part of Global Settlement.</li></ul>'
+          enum:
+          - BASIC
+          - COMMS1
+          - COMMS2
+          - COMMS3
+          - COMMS4
+          - COMMS4C
+          - COMMS4D
+          - MRAM
+          - MRIM
+          - PROF
+          - SAMPLE
+          - UMCP
+          - VICAMI
+          - NCOLNUML
+          type: string
+        manufacturer:
+          description: Free text field to identify the manufacturer of the installed meter.
+          type: string
+        model:
+          description: Free text field to identify the meter manufacturer's designation for the meter model.
+          type: string
+        readType:
+          description: 'Code to denote the method and frequency of Meter Reading. The value is formatted as follows: <ul><li>First Character = Remote (`R`) or Manual (`M`)</li><li>Second Character = Mode: `T` = telephone, `W` = wireless, `P` = powerline, `I` = infra-red, `G` = galvanic, `V` = visual</li><li>Third Character = Frequency of Scheduled Meter Readings: `1` = Twelve times per year, `2` = Six times per year, `3` = Four times per year, `D` = Daily or weekly</li><li>Optional Fourth Character = to identify what interval length the meter is capable of reading. This includes five, 15 and 30 minute granularity as the following: `A` = 5 minute, `B` = 15 minute, `C` = 30 minute, `D` = Cannot convert to 5 minute (i.e. due to metering installation de-energised), `M` = Manually Read Accumulation Meter.</li></ul>For example, <ul><li>`MV3` = Manual, Visual, Quarterly</li><li>`MV3M` = Manual, Visual, Quarterly, Manually Read Accumulation Meter</li><li>`RWDC` = Remote, Wireless, Daily, 30 minutes interval.</li></ul>'
+          type: string
+        nextScheduledReadDate:
+          description: This date is the next scheduled meter read date (NSRD) if a manual Meter Reading is required.
+          type: string
+          x-cds-type: DateString
+      required:
+      - installationType
+      - status
+      type: object
+    MetaPaginated:
+      properties:
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+      required:
+      - totalPages
+      - totalRecords
       type: object
     EnergyServicePointV2:
       properties:
@@ -525,37 +621,90 @@ components:
       - servicePointStatus
       - validFromDate
       type: object
-    EnergyServicePointDetailV2_allOf_meters:
+    EnergyServicePointDetailV2_allOf_relatedParticipants:
       properties:
-        meterId:
-          description: The meter ID uniquely identifies a meter for a given service point. It is unique in the context of the service point. It is not globally unique.
+        party:
+          description: The name of the party/organisation related to this service point.
           type: string
-        specifications:
-          $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_specifications'
-        registers:
-          description: Usage data registers available from the meter. This may be empty where there are no meters physically installed at the service point.
+        role:
+          description: 'The role performed by this participant in relation to the service point. Note the details of enumeration values below: <ul><li>`FRMP`: Financially Responsible Market Participant</li><li>`LNSP`: Local Network Service Provider or Embedded Network Manager for child connection points</li><li>`DRSP`: wholesale Demand Response and/or market ancillary Service Provider and note that where it is not relevant for a NMI it will not be included.</li></ul>'
+          enum:
+          - FRMP
+          - LNSP
+          - DRSP
+          type: string
+      required:
+      - party
+      - role
+      type: object
+    EnergyServicePointId:
+      description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
+    EnergyServicePointDetailV2:
+      allOf:
+      - $ref: '#/components/schemas/EnergyServicePointV2'
+      - $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf'
+    Links:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+    PrimaryErrorV1:
+      allOf:
+      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
+      - $ref: '#/components/schemas/ErrorV2'
+      type: object
+    EnergyServicePointDetailV2_allOf:
+      properties:
+        distributionLossFactor:
+          $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_distributionLossFactor'
+        relatedParticipants:
           items:
-            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_registers'
+            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_relatedParticipants'
+          type: array
+        location:
+          allOf:
+          - $ref: '#/components/schemas/CommonPhysicalAddress'
+          description: Location of the servicepoint.
+        meters:
+          description: The meters associated with the service point. This may be empty where there are no meters physically installed at the service point.
+          items:
+            $ref: '#/components/schemas/EnergyServicePointDetailV2_allOf_meters'
           type: array
       required:
-      - meterId
-      - specifications
-      type: object
-    Meta:
-      type: object
-    MetaPaginated:
+      - distributionLossFactor
+      - location
+      - relatedParticipants
+    PrimaryResponseErrorListV1:
       properties:
-        totalRecords:
-          description: The total number of records in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-        totalPages:
-          description: The total number of pages in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/PrimaryErrorV1'
+          type: array
       required:
-      - totalPages
-      - totalRecords
+      - errors
+      type: object
+    EnergyServicePointV2_consumerProfile:
+      properties:
+        classification:
+          description: A code that defines the consumer class as defined in the National Energy Retail Regulations, or in overriding Jurisdictional instruments.
+          enum:
+          - BUSINESS
+          - RESIDENTIAL
+          type: string
+        threshold:
+          description: 'A code that defines the consumption threshold as defined in the National Energy Retail Regulations, or in overriding Jurisdictional instruments. Note the details of enumeration values below: <ul><li>`LOW`: Consumption is less than the ''lower consumption threshold'' as defined in the National Energy Retail Regulations</li><li>`MEDIUM`: Consumption is equal to or greater than the ''lower consumption threshold'', but less than the ''upper consumption threshold'', as defined in the National Energy Retail Regulations</li><li>`HIGH`: Consumption is equal to or greater than the ''upper consumption threshold'' as defined in the National Energy Retail Regulations.</li></ul>'
+          enum:
+          - LOW
+          - MEDIUM
+          - HIGH
+          type: string
       type: object
     CommonPAFAddress:
       description: Australian address formatted according to the file format defined by the [PAF file format](https://auspost.com.au/content/dam/auspost_corp/media/documents/australia-post-data-guide.pdf). Required if _addressUType_ is set to `paf`.
@@ -634,176 +783,27 @@ components:
       - postcode
       - state
       type: object
-    EnergyServicePointDetailV2_allOf_specifications:
-      description: Technical characteristics of the meter.
+    EnergyServicePointListResponseV2_data:
       properties:
-        status:
-          description: 'A code to denote the status of the meter. Note the details of enumeration values below: <ul><li>`CURRENT`: Applies when a meter is current and not disconnected</li><li>`DISCONNECTED`: Applies when a meter is present but has been remotely disconnected.</li></ul>'
-          enum:
-          - CURRENT
-          - DISCONNECTED
-          type: string
-        installationType:
-          description: 'The metering Installation type code indicates whether the metering installation has to be manually read. Note the details of enumeration values below: <ul><li>`BASIC`: Accumulation Meter – Type 6</li><li>`COMMS1`: Interval Meter with communications – Type 1</li><li>`COMMS2`: Interval Meter with communications – Type 2</li><li>`COMMS3`: Interval Meter with communications – Type 3</li><li>`COMMS4`: Interval Meter with communications – Type 4</li><li>`COMMS4C`: CT connected metering installation that meets the minimum services specifications</li><li>`COMMS4D`: Whole current metering installation that meets the minimum services specifications</li><li>`MRAM`: Small customer metering installation – Type 4A</li><li>`MRIM`: Manually Read Interval Meter – Type 5</li><li>`UMCP`: Unmetered Supply – Type 7</li><li>`VICAMI`: A relevant metering installation as defined in clause 9.9C of the NER</li><li>`NCONUML`: Non-contestable unmeter load - Introduced as part of Global Settlement.</li></ul>'
-          enum:
-          - BASIC
-          - COMMS1
-          - COMMS2
-          - COMMS3
-          - COMMS4
-          - COMMS4C
-          - COMMS4D
-          - MRAM
-          - MRIM
-          - PROF
-          - SAMPLE
-          - UMCP
-          - VICAMI
-          - NCOLNUML
-          type: string
-        manufacturer:
-          description: Free text field to identify the manufacturer of the installed meter.
-          type: string
-        model:
-          description: Free text field to identify the meter manufacturer's designation for the meter model.
-          type: string
-        readType:
-          description: 'Code to denote the method and frequency of Meter Reading. The value is formatted as follows: <ul><li>First Character = Remote (`R`) or Manual (`M`)</li><li>Second Character = Mode: `T` = telephone, `W` = wireless, `P` = powerline, `I` = infra-red, `G` = galvanic, `V` = visual</li><li>Third Character = Frequency of Scheduled Meter Readings: `1` = Twelve times per year, `2` = Six times per year, `3` = Four times per year, `D` = Daily or weekly</li><li>Optional Fourth Character = to identify what interval length the meter is capable of reading. This includes five, 15 and 30 minute granularity as the following: `A` = 5 minute, `B` = 15 minute, `C` = 30 minute, `D` = Cannot convert to 5 minute (i.e. due to metering installation de-energised), `M` = Manually Read Accumulation Meter.</li></ul>For example, <ul><li>`MV3` = Manual, Visual, Quarterly</li><li>`MV3M` = Manual, Visual, Quarterly, Manually Read Accumulation Meter</li><li>`RWDC` = Remote, Wireless, Daily, 30 minutes interval.</li></ul>'
-          type: string
-        nextScheduledReadDate:
-          description: This date is the next scheduled meter read date (NSRD) if a manual Meter Reading is required.
-          type: string
-          x-cds-type: DateString
-      required:
-      - installationType
-      - status
-      type: object
-    EnergyServicePointDetailV2_allOf_distributionLossFactor:
-      properties:
-        code:
-          description: A code used to identify data loss factor for the service point values. Refer to AEMO distribution loss factor documents for each financial year to interpret.
-          type: string
-        description:
-          description: Description of the data loss factor code and value.
-          type: string
-        lossValue:
-          description: The value associated with the loss factor code.
-          type: string
-      required:
-      - code
-      - description
-      - lossValue
-      type: object
-    EnergyServicePointDetailV2_allOf_registers:
-      properties:
-        registerId:
-          description: Unique identifier of the register within this service point. Is not globally unique.
-          type: string
-        registerSuffix:
-          description: Register suffix of the meter register where the meter reads are obtained.
-          type: string
-        averagedDailyLoad:
-          description: The energy delivered through a connection point or metering point over an extended period normalised to a 'per day' basis (kWh). This value is calculated annually.
-          type: number
-        registerConsumptionType:
-          description: Indicates the consumption type of register.
-          enum:
-          - INTERVAL
-          - BASIC
-          - PROFILE_DATA
-          - ACTIVE_IMPORT
-          - ACTIVE
-          - REACTIVE_IMPORT
-          - REACTIVE
-          type: string
-        networkTariffCode:
-          description: The Network Tariff Code is a free text field containing a code supplied and published by the local network service provider.
-          type: string
-        unitOfMeasure:
-          description: The unit of measure for data held in this register.
-          type: string
-        timeOfDay:
-          description: Code to identify the time validity of register contents.
-          enum:
-          - ALLDAY
-          - INTERVAL
-          - PEAK
-          - BUSINESS
-          - SHOULDER
-          - EVENING
-          - OFFPEAK
-          - CONTROLLED
-          - DEMAND
-          type: string
-        multiplier:
-          description: Multiplier required to take a register value and turn it into a value representing billable energy.
-          type: number
-        controlledLoad:
-          description: Indicates whether the energy recorded by this register is created under a Controlled Load regime.
-          type: boolean
-        consumptionType:
-          description: 'Actual/Subtractive Indicator. Note the details of enumeration values below: <ul><li>`ACTUAL`: implies volume of energy actually metered between two dates</li><li>`CUMULATIVE`: indicates a meter reading for a specific date. A second Meter Reading is required to determine the consumption between those two Meter Reading dates.</li></ul>'
-          enum:
-          - ACTUAL
-          - CUMULATIVE
-          type: string
-      required:
-      - registerConsumptionType
-      - registerId
-      type: object
-    PrimaryResponseErrorListV1:
-      properties:
-        errors:
-          description: List of errors.
+        servicePoints:
           items:
-            $ref: '#/components/schemas/PrimaryErrorV1'
+            $ref: '#/components/schemas/EnergyServicePointV2'
           type: array
       required:
-      - errors
+      - servicePoints
       type: object
-    LinksPaginated:
-      properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-        first:
-          description: URI to the first page of this set. Mandatory if this response is not the first page.
-          type: string
-          x-cds-type: URIString
-        prev:
-          description: URI to the previous page of this set. Mandatory if this response is not the first page.
-          type: string
-          x-cds-type: URIString
-        next:
-          description: URI to the next page of this set. Mandatory if this response is not the last page.
-          type: string
-          x-cds-type: URIString
-        last:
-          description: URI to the last page of this set. Mandatory if this response is not the last page.
-          type: string
-          x-cds-type: URIString
-      required:
-      - self
-      type: object
-      x-conditional:
-      - first
-      - prev
-      - next
-      - last
-    EnergyServicePointV2_consumerProfile:
-      properties:
-        classification:
-          description: A code that defines the consumer class as defined in the National Energy Retail Regulations, or in overriding Jurisdictional instruments.
-          enum:
-          - BUSINESS
-          - RESIDENTIAL
-          type: string
-        threshold:
-          description: 'A code that defines the consumption threshold as defined in the National Energy Retail Regulations, or in overriding Jurisdictional instruments. Note the details of enumeration values below: <ul><li>`LOW`: Consumption is less than the ''lower consumption threshold'' as defined in the National Energy Retail Regulations</li><li>`MEDIUM`: Consumption is equal to or greater than the ''lower consumption threshold'', but less than the ''upper consumption threshold'', as defined in the National Energy Retail Regulations</li><li>`HIGH`: Consumption is equal to or greater than the ''upper consumption threshold'' as defined in the National Energy Retail Regulations.</li></ul>'
-          enum:
-          - LOW
-          - MEDIUM
-          - HIGH
-          type: string
-      type: object
+  headers:
+    XV:
+      description: The [payload version](#response-headers) that the endpoint has responded with.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
+    XFAPIInteractionId:
+      description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.
+      explode: false
+      required: true
+      schema:
+        type: string
+      style: simple
