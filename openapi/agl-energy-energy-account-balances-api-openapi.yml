@@ -372,15 +372,46 @@ paths:
       x-version: '1'
 components:
   schemas:
-    EnergyBalanceListResponse_data:
+    Links:
       properties:
-        balances:
-          description: Array of account balances.
-          items:
-            $ref: '#/components/schemas/EnergyBalanceListResponse_data_balances'
-          type: array
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
       required:
-      - balances
+      - self
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    RequestAccountIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestAccountIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
+    EnergyBalanceListResponse_data_balances:
+      properties:
+        accountId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyAccountId'
+          description: Unique identifier for the account.
+        balance:
+          description: The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.
+          type: string
+          x-cds-type: AmountString
+      required:
+      - accountId
+      - balance
       type: object
     MetaPaginated:
       properties:
@@ -395,43 +426,6 @@ components:
       required:
       - totalPages
       - totalRecords
-      type: object
-    EnergyAccountId:
-      description: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
-      type: string
-      x-cds-type: ASCIIString
-    Meta:
-      type: object
-    EnergyBalanceResponse_data:
-      properties:
-        balance:
-          description: The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.
-          type: string
-          x-cds-type: AmountString
-      required:
-      - balance
-      type: object
-    RequestAccountIdListV1:
-      properties:
-        data:
-          $ref: '#/components/schemas/RequestAccountIdListV1_data'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - data
-      type: object
-    EnergyBalanceListResponse:
-      properties:
-        data:
-          $ref: '#/components/schemas/EnergyBalanceListResponse_data'
-        links:
-          $ref: '#/components/schemas/LinksPaginated'
-        meta:
-          $ref: '#/components/schemas/MetaPaginated'
-      required:
-      - data
-      - links
-      - meta
       type: object
     LinksPaginated:
       properties:
@@ -463,29 +457,14 @@ components:
       - prev
       - next
       - last
-    EnergyBalanceListResponse_data_balances:
+    EnergyBalanceResponse_data:
       properties:
-        accountId:
-          allOf:
-          - $ref: '#/components/schemas/EnergyAccountId'
-          description: Unique identifier for the account.
         balance:
           description: The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.
           type: string
           x-cds-type: AmountString
       required:
-      - accountId
       - balance
-      type: object
-    RequestAccountIdListV1_data:
-      properties:
-        accountIds:
-          description: Array of _accountId_ values to obtain data for.
-          items:
-            $ref: '#/components/schemas/EnergyAccountId'
-          type: array
-      required:
-      - accountIds
       type: object
     ErrorV2:
       properties:
@@ -507,15 +486,39 @@ components:
       type: object
       x-conditional:
       - meta
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
+    EnergyBalanceListResponse_data:
       properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
+        balances:
+          description: Array of account balances.
+          items:
+            $ref: '#/components/schemas/EnergyBalanceListResponse_data_balances'
+          type: array
+      required:
+      - balances
       type: object
-      x-conditional:
-      - urn
+    RequestAccountIdListV1_data:
+      properties:
+        accountIds:
+          description: Array of _accountId_ values to obtain data for.
+          items:
+            $ref: '#/components/schemas/EnergyAccountId'
+          type: array
+      required:
+      - accountIds
+      type: object
+    EnergyBalanceListResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyBalanceListResponse_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
+      type: object
     EnergyBalanceResponse:
       properties:
         data:
@@ -528,15 +531,6 @@ components:
       - data
       - links
       type: object
-    Links:
-      properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-      required:
-      - self
-      type: object
     ResponseErrorListV2:
       properties:
         errors:
@@ -547,6 +541,12 @@ components:
       required:
       - errors
       type: object
+    Meta:
+      type: object
+    EnergyAccountId:
+      description: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
+      type: string
+      x-cds-type: ASCIIString
   headers:
     XFAPIInteractionId:
       description: An **[[RFC4122]](#nref-RFC4122)** UUID used as a correlation id. If provided, the data holder **MUST** play back this value in the _x-fapi-interaction-id_ response header. If not provided a **[[RFC4122]](#nref-RFC4122)** UUID value is required to be provided in the response header to track the interaction.

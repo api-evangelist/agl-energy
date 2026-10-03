@@ -127,6 +127,36 @@ paths:
       x-version: '1'
 components:
   schemas:
+    Links:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    ResponseDiscoveryOutagesList:
+      properties:
+        data:
+          $ref: '#/components/schemas/ResponseDiscoveryOutagesList_data'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      - links
+      type: object
     ResponseCommonDiscoveryStatus_data:
       properties:
         status:
@@ -158,16 +188,26 @@ components:
       type: object
       x-conditional:
       - explanation
-    ResponseDiscoveryOutagesList_data:
+    ErrorV2:
       properties:
-        outages:
-          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
-          items:
-            $ref: '#/components/schemas/DiscoveryOutage'
-          type: array
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
       required:
-      - outages
+      - code
+      - detail
+      - title
       type: object
+      x-conditional:
+      - meta
     DiscoveryOutage:
       properties:
         outageTime:
@@ -201,57 +241,15 @@ components:
       - data
       - links
       type: object
-    Meta:
-      type: object
-    ResponseDiscoveryOutagesList:
+    ResponseDiscoveryOutagesList_data:
       properties:
-        data:
-          $ref: '#/components/schemas/ResponseDiscoveryOutagesList_data'
-        links:
-          $ref: '#/components/schemas/Links'
-        meta:
-          $ref: '#/components/schemas/Meta'
+        outages:
+          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
+          items:
+            $ref: '#/components/schemas/DiscoveryOutage'
+          type: array
       required:
-      - data
-      - links
-      type: object
-    ErrorV2:
-      properties:
-        code:
-          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
-          type: string
-        title:
-          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
-          type: string
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        meta:
-          $ref: '#/components/schemas/ErrorV2_meta'
-      required:
-      - code
-      - detail
-      - title
-      type: object
-      x-conditional:
-      - meta
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
-      properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
-      type: object
-      x-conditional:
-      - urn
-    Links:
-      properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-      required:
-      - self
+      - outages
       type: object
     ResponseErrorListV2:
       properties:
@@ -262,6 +260,8 @@ components:
           type: array
       required:
       - errors
+      type: object
+    Meta:
       type: object
   headers:
     XV:
