@@ -127,15 +127,38 @@ paths:
       x-version: '1'
 components:
   schemas:
-    Links:
+    ResponseCommonDiscoveryStatus:
       properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
+        data:
+          $ref: '#/components/schemas/ResponseCommonDiscoveryStatus_data'
+        links:
+          $ref: '#/components/schemas/Links'
+        meta:
+          $ref: '#/components/schemas/Meta'
       required:
-      - self
+      - data
+      - links
       type: object
+    ErrorV2:
+      properties:
+        code:
+          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
+          type: string
+        title:
+          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
+          type: string
+        detail:
+          description: A human-readable explanation specific to this occurrence of the problem.
+          type: string
+        meta:
+          $ref: '#/components/schemas/ErrorV2_meta'
+      required:
+      - code
+      - detail
+      - title
+      type: object
+      x-conditional:
+      - meta
     ErrorV2_meta:
       description: Additional data for customised error codes.
       properties:
@@ -156,6 +179,58 @@ components:
       required:
       - data
       - links
+      type: object
+    Meta:
+      type: object
+    DiscoveryOutage:
+      properties:
+        outageTime:
+          description: Date and time that the outage is scheduled to begin.
+          type: string
+          x-cds-type: DateTimeString
+        duration:
+          description: Planned duration of the outage. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).
+          type: string
+          x-cds-type: ExternalRef
+        isPartial:
+          description: Flag that indicates, if present and set to `true`, that the outage is only partial meaning that only a subset of normally available endpoints will be affected by the outage.
+          type: boolean
+        explanation:
+          description: Provides an explanation of the current outage that can be displayed to an end customer.
+          type: string
+      required:
+      - duration
+      - explanation
+      - outageTime
+      type: object
+    ResponseDiscoveryOutagesList_data:
+      properties:
+        outages:
+          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
+          items:
+            $ref: '#/components/schemas/DiscoveryOutage'
+          type: array
+      required:
+      - outages
+      type: object
+    ResponseErrorListV2:
+      properties:
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/ErrorV2'
+          type: array
+      required:
+      - errors
+      type: object
+    Links:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
       type: object
     ResponseCommonDiscoveryStatus_data:
       properties:
@@ -188,81 +263,6 @@ components:
       type: object
       x-conditional:
       - explanation
-    ErrorV2:
-      properties:
-        code:
-          description: The code of the error encountered. Where the error is specific to the respondent, an application-specific error code, expressed as a string value. If the error is application-specific, the URN code that the specific error extends must be provided in the _meta_ object. Otherwise, the value is the error code URN.
-          type: string
-        title:
-          description: A short, human-readable summary of the problem that **MUST NOT** change from occurrence to occurrence of the problem represented by the error code.
-          type: string
-        detail:
-          description: A human-readable explanation specific to this occurrence of the problem.
-          type: string
-        meta:
-          $ref: '#/components/schemas/ErrorV2_meta'
-      required:
-      - code
-      - detail
-      - title
-      type: object
-      x-conditional:
-      - meta
-    DiscoveryOutage:
-      properties:
-        outageTime:
-          description: Date and time that the outage is scheduled to begin.
-          type: string
-          x-cds-type: DateTimeString
-        duration:
-          description: Planned duration of the outage. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).
-          type: string
-          x-cds-type: ExternalRef
-        isPartial:
-          description: Flag that indicates, if present and set to `true`, that the outage is only partial meaning that only a subset of normally available endpoints will be affected by the outage.
-          type: boolean
-        explanation:
-          description: Provides an explanation of the current outage that can be displayed to an end customer.
-          type: string
-      required:
-      - duration
-      - explanation
-      - outageTime
-      type: object
-    ResponseCommonDiscoveryStatus:
-      properties:
-        data:
-          $ref: '#/components/schemas/ResponseCommonDiscoveryStatus_data'
-        links:
-          $ref: '#/components/schemas/Links'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - data
-      - links
-      type: object
-    ResponseDiscoveryOutagesList_data:
-      properties:
-        outages:
-          description: List of scheduled outages. Property is mandatory but may contain an empty list if no outages are scheduled.
-          items:
-            $ref: '#/components/schemas/DiscoveryOutage'
-          type: array
-      required:
-      - outages
-      type: object
-    ResponseErrorListV2:
-      properties:
-        errors:
-          description: List of errors.
-          items:
-            $ref: '#/components/schemas/ErrorV2'
-          type: array
-      required:
-      - errors
-      type: object
-    Meta:
-      type: object
   headers:
     XV:
       description: The [payload version](#response-headers) that the endpoint has responded with.
