@@ -1,21 +1,19 @@
-# Kin Score artifact — agl-energy — 2026-08-25T143147
+# Kin Score artifact — agl-energy — 2026-10-03T024842
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: agl-energy
-  schema_version: 0.14.0
-  scored_at: '2026-08-25'
-  run_ts: 2026-08-25T143147
-  composite: 39.7
-  band: developing
+  schema_version: 0.23.0
+  scored_at: '2026-10-03'
+  run_ts: 2026-10-03T024842
+  composite: 35.5
+  band: thin
   facets:
-    discoverability: 64.8
+    discoverability: 73.2
     contract_quality: 12.4
-    governance: 30.3
+    contract_governance: 18.2
     operational_transparency: 44.7
     developer_ergonomics: 35.1
-    commercial_clarity: 34.2
-    contract_governance: 30.3
     access_clarity: 34.2
   agent_readiness:
     score: 23.9
@@ -44,7 +42,7 @@ kin_score:
     applies: true
     regime: Energy & Utilities
     regime_id: energy_utilities
-    score: 64.9
+    score: 39.3
     matched_via: tags
   provenance:
     mcp: derived
@@ -52,7 +50,7 @@ kin_score:
     agentic_access: derived
     conformance: first-party
     contracts:
-      total: 2
-      derived: 2
+      total: 9
+      derived: 9
       coverage: 100.0
       callable: 0.0
