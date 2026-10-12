@@ -16,7 +16,33 @@ edges:
     api_families: null
     detected_by: sweep-standard-registers.py
     detected: '2026-10-12'
+- partner_name: Arcadia
+  partner: arcadia-power
+  channel: partner-built
+  direction: partner-built
+  operations:
+  - statements
+  - statement-history
+  - web-navigation
+  contract_reference:
+    list: Arcadia Plug provider coverage (public list)
+    spec_file: null
+    listed_name: AGL
+    listed_id: prv_1e6856a8-a266-db8d-be7d-22000b109b8b
+    matched_domain: agl.com.au
+    service_types:
+    - Lighting
+    - Electric
+    - Natural Gas
+    detected_by: sweep-energy.py
+    detected: '2026-10-13'
+  type: coverage
+  relationship: system-coverage
+  evidence: https://api.arcadia.com/plug/providers/public
+  detected_by: sweep-energy.py
+  first_seen: '2026-10-13'
 generated: '2026-10-12'
 method: searched
 checked:
+- https://api.arcadia.com/plug/providers/public
 - https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
