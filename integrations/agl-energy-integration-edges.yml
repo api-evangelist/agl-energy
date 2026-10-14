@@ -1,21 +1,4 @@
 edges:
-- partner_name: Consumer Data Right
-  partner: null
-  type: contract
-  channel: regulator-register
-  relationship: standard-participant
-  direction: partner-built
-  evidence: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
-  contract_reference:
-    register: CDR Register (Australia, ACCC)
-    spec_file: null
-    role: data-holder
-    registered_name: AGL
-    register_id: d177e382-b12d-ed11-a832-000d3a8830d6
-    matched_domain: agl.com.au
-    api_families: null
-    detected_by: sweep-standard-registers.py
-    detected: '2026-10-12'
 - partner_name: Arcadia
   partner: arcadia-power
   channel: partner-built
@@ -41,6 +24,23 @@ edges:
   evidence: https://api.arcadia.com/plug/providers/public
   detected_by: sweep-energy.py
   first_seen: '2026-10-13'
+- partner_name: Consumer Data Right
+  partner: null
+  type: contract
+  channel: regulator-register
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+  contract_reference:
+    register: CDR Register (Australia, ACCC)
+    spec_file: null
+    role: data-holder
+    registered_name: AGL
+    register_id: d177e382-b12d-ed11-a832-000d3a8830d6
+    matched_domain: agl.com.au
+    api_families: null
+    detected_by: sweep-standard-registers.py
+    detected: '2026-10-14'
 generated: '2026-10-12'
 method: searched
 checked:
