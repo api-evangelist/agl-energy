@@ -492,31 +492,40 @@ paths:
       x-version: '1'
 components:
   schemas:
+    LinksPaginated:
+      properties:
+        self:
+          description: Fully qualified link that generated the current response document.
+          type: string
+          x-cds-type: URIString
+        first:
+          description: URI to the first page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        prev:
+          description: URI to the previous page of this set. Mandatory if this response is not the first page.
+          type: string
+          x-cds-type: URIString
+        next:
+          description: URI to the next page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+        last:
+          description: URI to the last page of this set. Mandatory if this response is not the last page.
+          type: string
+          x-cds-type: URIString
+      required:
+      - self
+      type: object
+      x-conditional:
+      - first
+      - prev
+      - next
+      - last
     EnergyServicePointId:
       description: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
       type: string
       x-cds-type: ASCIIString
-    PrimaryErrorV1_allOf:
-      properties:
-        isSecondaryDataHolderError:
-          default: false
-          description: Indicates the error was propagated from a designated secondary data holder.
-          type: boolean
-      type: object
-    MetaPaginated:
-      properties:
-        totalRecords:
-          description: The total number of records in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-        totalPages:
-          description: The total number of pages in the full set. See [pagination](#pagination).
-          type: integer
-          x-cds-type: NaturalNumber
-      required:
-      - totalPages
-      - totalRecords
-      type: object
     ErrorV2:
       properties:
         code:
@@ -537,92 +546,19 @@ components:
       type: object
       x-conditional:
       - meta
-    ErrorV2_meta:
-      description: Additional data for customised error codes.
+    MetaPaginated:
       properties:
-        urn:
-          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
-          type: string
-      type: object
-      x-conditional:
-      - urn
-    Meta:
-      type: object
-    EnergyUsageListResponse:
-      properties:
-        data:
-          $ref: '#/components/schemas/EnergyUsageListResponse_data'
-        links:
-          $ref: '#/components/schemas/LinksPaginated'
-        meta:
-          $ref: '#/components/schemas/MetaPaginated'
+        totalRecords:
+          description: The total number of records in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
+        totalPages:
+          description: The total number of pages in the full set. See [pagination](#pagination).
+          type: integer
+          x-cds-type: NaturalNumber
       required:
-      - data
-      - links
-      - meta
-      type: object
-    RequestServicePointIdListV1:
-      properties:
-        data:
-          $ref: '#/components/schemas/RequestServicePointIdListV1_data'
-        meta:
-          $ref: '#/components/schemas/Meta'
-      required:
-      - data
-      type: object
-    EnergyUsageRead:
-      properties:
-        servicePointId:
-          allOf:
-          - $ref: '#/components/schemas/EnergyServicePointId'
-          description: Unique identifier for the service point.
-        registerId:
-          description: Register ID of the meter register where the meter reads are obtained.
-          type: string
-        registerSuffix:
-          description: Register suffix of the meter register where the meter reads are obtained.
-          type: string
-        meterId:
-          description: Meter id/serial number as it appears in customer's bill. ID permanence rules do not apply.
-          type: string
-        controlledLoad:
-          description: Indicates whether the energy recorded by this register is created under a Controlled Load regime.
-          type: boolean
-        readStartDate:
-          description: Date when the meter reads start in AEST and assumed to start from 12:00am AEST.
-          type: string
-          x-cds-type: DateString
-        readEndDate:
-          description: Date when the meter reads end in AEST. If absent then assumed to be equal to _readStartDate_. In this case the entry represents data for a single date specified by _readStartDate_.
-          type: string
-          x-cds-type: DateString
-        unitOfMeasure:
-          description: Unit of measure of the meter reads. Refer to Appendix B of <a href='https://www.aemo.com.au/-/media/files/stakeholder_consultation/consultations/nem-consultations/2019/5ms-metering-package-2/final-determination/mdff-specification-nem12-nem13-v21-final-determination-clean.pdf?la=en&hash=03FCBA0D60E091DE00F2361AE76206EA'>MDFF Specification NEM12 NEM13 v2.1</a> for a list of possible values.
-          type: string
-          x-cds-type: ExternalRef
-        readUType:
-          description: Specify the type of the meter read data.
-          enum:
-          - basicRead
-          - intervalRead
-          type: string
-        basicRead:
-          $ref: '#/components/schemas/EnergyUsageRead_basicRead'
-        intervalRead:
-          $ref: '#/components/schemas/EnergyUsageRead_intervalRead'
-      required:
-      - readStartDate
-      - readUType
-      - registerSuffix
-      - servicePointId
-      type: object
-      x-conditional:
-      - basicRead
-      - intervalRead
-    PrimaryErrorV1:
-      allOf:
-      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
-      - $ref: '#/components/schemas/ErrorV2'
+      - totalPages
+      - totalRecords
       type: object
     RequestServicePointIdListV1_data:
       properties:
@@ -634,42 +570,19 @@ components:
       required:
       - servicePointIds
       type: object
-    EnergyUsageRead_basicRead:
-      description: Mandatory if _readUType_ is set to `basicRead`.
-      properties:
-        quality:
-          default: ACTUAL
-          description: The quality of the read taken. If absent then assumed to be `ACTUAL`.
-          enum:
-          - ACTUAL
-          - SUBSTITUTE
-          - FINAL_SUBSTITUTE
-          type: string
-        value:
-          description: Meter read value. If positive then it means consumption, if negative it means export.
-          type: number
-      required:
-      - value
+    PrimaryErrorV1:
+      allOf:
+      - $ref: '#/components/schemas/PrimaryErrorV1_allOf'
+      - $ref: '#/components/schemas/ErrorV2'
       type: object
-    PrimaryResponseErrorListV1:
-      properties:
-        errors:
-          description: List of errors.
-          items:
-            $ref: '#/components/schemas/PrimaryErrorV1'
-          type: array
-      required:
-      - errors
+    Meta:
       type: object
-    EnergyUsageListResponse_data:
+    PrimaryErrorV1_allOf:
       properties:
-        reads:
-          description: Array of meter reads sorted by NMI in ascending order followed by _readStartDate_ in descending order.
-          items:
-            $ref: '#/components/schemas/EnergyUsageRead'
-          type: array
-      required:
-      - reads
+        isSecondaryDataHolderError:
+          default: false
+          description: Indicates the error was propagated from a designated secondary data holder.
+          type: boolean
       type: object
     EnergyUsageRead_intervalRead:
       description: Mandatory if _readUType_ is set to `intervalRead`.
@@ -721,36 +634,123 @@ components:
       - quality
       - startInterval
       type: object
-    LinksPaginated:
+    PrimaryResponseErrorListV1:
       properties:
-        self:
-          description: Fully qualified link that generated the current response document.
-          type: string
-          x-cds-type: URIString
-        first:
-          description: URI to the first page of this set. Mandatory if this response is not the first page.
-          type: string
-          x-cds-type: URIString
-        prev:
-          description: URI to the previous page of this set. Mandatory if this response is not the first page.
-          type: string
-          x-cds-type: URIString
-        next:
-          description: URI to the next page of this set. Mandatory if this response is not the last page.
-          type: string
-          x-cds-type: URIString
-        last:
-          description: URI to the last page of this set. Mandatory if this response is not the last page.
-          type: string
-          x-cds-type: URIString
+        errors:
+          description: List of errors.
+          items:
+            $ref: '#/components/schemas/PrimaryErrorV1'
+          type: array
       required:
-      - self
+      - errors
+      type: object
+    EnergyUsageListResponse:
+      properties:
+        data:
+          $ref: '#/components/schemas/EnergyUsageListResponse_data'
+        links:
+          $ref: '#/components/schemas/LinksPaginated'
+        meta:
+          $ref: '#/components/schemas/MetaPaginated'
+      required:
+      - data
+      - links
+      - meta
+      type: object
+    EnergyUsageRead_basicRead:
+      description: Mandatory if _readUType_ is set to `basicRead`.
+      properties:
+        quality:
+          default: ACTUAL
+          description: The quality of the read taken. If absent then assumed to be `ACTUAL`.
+          enum:
+          - ACTUAL
+          - SUBSTITUTE
+          - FINAL_SUBSTITUTE
+          type: string
+        value:
+          description: Meter read value. If positive then it means consumption, if negative it means export.
+          type: number
+      required:
+      - value
+      type: object
+    EnergyUsageRead:
+      properties:
+        servicePointId:
+          allOf:
+          - $ref: '#/components/schemas/EnergyServicePointId'
+          description: Unique identifier for the service point.
+        registerId:
+          description: Register ID of the meter register where the meter reads are obtained.
+          type: string
+        registerSuffix:
+          description: Register suffix of the meter register where the meter reads are obtained.
+          type: string
+        meterId:
+          description: Meter id/serial number as it appears in customer's bill. ID permanence rules do not apply.
+          type: string
+        controlledLoad:
+          description: Indicates whether the energy recorded by this register is created under a Controlled Load regime.
+          type: boolean
+        readStartDate:
+          description: Date when the meter reads start in AEST and assumed to start from 12:00am AEST.
+          type: string
+          x-cds-type: DateString
+        readEndDate:
+          description: Date when the meter reads end in AEST. If absent then assumed to be equal to _readStartDate_. In this case the entry represents data for a single date specified by _readStartDate_.
+          type: string
+          x-cds-type: DateString
+        unitOfMeasure:
+          description: Unit of measure of the meter reads. Refer to Appendix B of <a href='https://www.aemo.com.au/-/media/files/stakeholder_consultation/consultations/nem-consultations/2019/5ms-metering-package-2/final-determination/mdff-specification-nem12-nem13-v21-final-determination-clean.pdf?la=en&hash=03FCBA0D60E091DE00F2361AE76206EA'>MDFF Specification NEM12 NEM13 v2.1</a> for a list of possible values.
+          type: string
+          x-cds-type: ExternalRef
+        readUType:
+          description: Specify the type of the meter read data.
+          enum:
+          - basicRead
+          - intervalRead
+          type: string
+        basicRead:
+          $ref: '#/components/schemas/EnergyUsageRead_basicRead'
+        intervalRead:
+          $ref: '#/components/schemas/EnergyUsageRead_intervalRead'
+      required:
+      - readStartDate
+      - readUType
+      - registerSuffix
+      - servicePointId
       type: object
       x-conditional:
-      - first
-      - prev
-      - next
-      - last
+      - basicRead
+      - intervalRead
+    EnergyUsageListResponse_data:
+      properties:
+        reads:
+          description: Array of meter reads sorted by NMI in ascending order followed by _readStartDate_ in descending order.
+          items:
+            $ref: '#/components/schemas/EnergyUsageRead'
+          type: array
+      required:
+      - reads
+      type: object
+    ErrorV2_meta:
+      description: Additional data for customised error codes.
+      properties:
+        urn:
+          description: The CDR error code URN which the application-specific error code extends. Mandatory if the error _code_ is an application-specific error rather than a standardised error code.
+          type: string
+      type: object
+      x-conditional:
+      - urn
+    RequestServicePointIdListV1:
+      properties:
+        data:
+          $ref: '#/components/schemas/RequestServicePointIdListV1_data'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      required:
+      - data
+      type: object
   headers:
     XV:
       description: The [payload version](#response-headers) that the endpoint has responded with.
