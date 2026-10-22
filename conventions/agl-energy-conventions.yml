@@ -146,6 +146,7 @@ bulk_and_specific_requests:
   request_bodies: [RequestServicePointIdListV1, RequestAccountIdListV1]
 
 idempotency:
+  coverage: na
   supported: false
   detail: >-
     The Consumer Data Standards define no idempotency-key header, and no
@@ -156,7 +157,14 @@ idempotency:
     idempotency contract to protect.
   verified: grep of openapi/ for idempoten* returns no match
 
+reversibility:
+  status: na
+  detail: >-
+    Read-only surface: all 27 operations are reads (22 GET plus 5 POST id-list reads), so there is no
+    write to reverse. dry_run_mode and idempotency are likewise na.
+
 rate_limiting:
+  see: rate-limits/agl-energy-rate-limits.yml
   documented: false
   detail: >-
     No rate-limit headers were returned on any observed response, and the

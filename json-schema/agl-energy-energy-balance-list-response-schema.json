@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-balance-list-response-schema.json",
+  "title": "EnergyBalanceListResponse",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceListResponse",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyBalanceListResponse_data"
+    },
+    "links": {
+      "$ref": "#/$defs/LinksPaginated"
+    },
+    "meta": {
+      "$ref": "#/$defs/MetaPaginated"
+    }
+  },
+  "required": [
+    "data",
+    "links",
+    "meta"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyAccountId": {
+      "description": "A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "EnergyBalanceListResponse_data": {
+      "properties": {
+        "balances": {
+          "description": "Array of account balances.",
+          "items": {
+            "$ref": "#/$defs/EnergyBalanceListResponse_data_balances"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "balances"
+      ],
+      "type": "object"
+    },
+    "EnergyBalanceListResponse_data_balances": {
+      "properties": {
+        "accountId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyAccountId"
+            }
+          ],
+          "description": "Unique identifier for the account."
+        },
+        "balance": {
+          "description": "The current balance of the account. A positive value indicates that amount is owing to be paid. A negative value indicates that the account is in credit.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        }
+      },
+      "required": [
+        "accountId",
+        "balance"
+      ],
+      "type": "object"
+    },
+    "LinksPaginated": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "first": {
+          "description": "URI to the first page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "prev": {
+          "description": "URI to the previous page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "next": {
+          "description": "URI to the next page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "last": {
+          "description": "URI to the last page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "first",
+        "prev",
+        "next",
+        "last"
+      ]
+    },
+    "MetaPaginated": {
+      "properties": {
+        "totalRecords": {
+          "description": "The total number of records in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        },
+        "totalPages": {
+          "description": "The total number of pages in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        }
+      },
+      "required": [
+        "totalPages",
+        "totalRecords"
+      ],
+      "type": "object"
+    }
+  }
+}

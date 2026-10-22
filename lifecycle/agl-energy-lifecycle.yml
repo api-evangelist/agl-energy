@@ -95,9 +95,9 @@ sla:
     performance reporting), not a commercial commitment AGL offers to developers.
   regulator_reporting: https://www.cdr.gov.au/
 
-deprecated_operations:
-  count: 0
-  note: >-
+deprecated_operations: []
+deprecated_operations_count: 0
+deprecated_operations_note: >-
     No operation in either harvested specification carries deprecated: true. The
     CDS deprecates whole endpoint *versions* through the obligations schedule
     rather than flagging deprecation inside the OpenAPI document.

@@ -1,41 +1,30 @@
 generated: '2026-07-27'
 method: searched
-source: >-
-  Derived from openapi/ (both harvested Consumer Data Standards documents),
-  conventions/agl-energy-conventions.yml,
-  authentication/agl-energy-authentication.yml,
-  errors/agl-energy-problem-types.yml and live probes on 2026-07-27; the CDR
-  claims are grounded in the ACCC CDR Register entry for brand "AGL"
-  (https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary, HTTP 200)
-  and the Consumer Data Standards security profile.
-description: >-
-  Which cross-cutting and industry standards AGL's API surface conforms to. The
-  answer is unusually clean because AGL implements a single statutory
-  specification and nothing else: the CDR Consumer Data Standards v1.36.0, with
-  its FAPI 1.0 Advanced security profile, its CDR-URN error registry and its
-  header-based versioning. Everything outside that regime — Green Button/ESPI,
-  OpenADR, IEEE 2030.5, OCPP/OCPI, IEC CIM, RFC 9457, GraphQL, AsyncAPI — is
-  absent, and was checked rather than assumed.
+source: Derived from openapi/ (both harvested Consumer Data Standards documents), conventions/agl-energy-conventions.yml, authentication/agl-energy-authentication.yml,
+  errors/agl-energy-problem-types.yml and live probes on 2026-07-27; the CDR claims are grounded in the ACCC CDR Register entry for brand "AGL"
+  (https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary, HTTP 200) and the Consumer Data Standards security profile.
+description: 'Which cross-cutting and industry standards AGL''s API surface conforms to. The answer is unusually clean because AGL implements
+  a single statutory specification and nothing else: the CDR Consumer Data Standards v1.36.0, with its FAPI 1.0 Advanced security profile, its
+  CDR-URN error registry and its header-based versioning. Everything outside that regime — Green Button/ESPI, OpenADR, IEEE 2030.5, OCPP/OCPI,
+  IEC CIM, RFC 9457, GraphQL, AsyncAPI — is absent, and was checked rather than assumed.'
 standards:
 - id: cdr-consumer-data-standards
   name: CDR Consumer Data Standards (Energy + Common), v1.36.0
   conforms: true
-  evidence: >-
-    Designated energy data holder on the ACCC CDR Register (brand AGL, id
-    d177e382-b12d-ed11-a832-000d3a8830d6, public base URI
-    https://public.cdr.agl.com.au). GET /cds-au/v1/discovery/status and
-    /discovery/outages returned HTTP 200 with conformant data/links/meta
-    envelopes and x-v: 1 on 2026-07-27.
+  evidence: 'Designated energy data holder on the ACCC CDR Register (brand AGL, id d177e382-b12d-ed11-a832-000d3a8830d6, public base URI https://public.cdr.agl.com.au).
+    GET /cds-au/v1/discovery/status and /discovery/outages returned HTTP 200 with conformant data/links/meta envelopes and x-v: 1 on 2026-07-27.'
   authority: Data Standards Body (Treasury), regulator ACCC
 - id: openapi-3
   conforms: true
   evidence: Both contracts are OpenAPI 3.0.3 documents; 27 operations, unique operationIds, tagged, with 2xx and 4xx responses.
 - id: oauth2
   conforms: true
-  evidence: CDR security profile mandates OAuth 2.0 authorization code flow for consumer data sharing. Not declared in the OpenAPI (securitySchemes is empty in the DSB documents).
+  evidence: CDR security profile mandates OAuth 2.0 authorization code flow for consumer data sharing. Not declared in the OpenAPI (securitySchemes
+    is empty in the DSB documents).
 - id: oidc
   conforms: true
-  evidence: OpenID Connect is mandated by the CDR security profile. No anonymous /.well-known/openid-configuration is served (probed 404) — metadata is distributed via the CDR Register.
+  evidence: OpenID Connect is mandated by the CDR security profile. No anonymous /.well-known/openid-configuration is served (probed 404) — metadata
+    is distributed via the CDR Register.
 - id: fapi-1-advanced
   conforms: true
   evidence: The CDR Security Profile is built on FAPI 1.0 Advanced — request object signing, PAR, private_key_jwt, mTLS-bound tokens.
@@ -53,13 +42,15 @@ standards:
   evidence: x-fapi-interaction-id is an RFC 4122 UUID echoed by the data holder.
 - id: pagination
   conforms: true
-  evidence: page / page-size query params with links{self,first,prev,next,last} and meta{totalRecords,totalPages}; verified live at 1343 records over 135 pages.
+  evidence: page / page-size query params with links{self,first,prev,next,last} and meta{totalRecords,totalPages}; verified live at 1343 records
+    over 135 pages.
 - id: rfc9457-problem-details
   conforms: false
   evidence: Errors are application/json with an errors[] array of CDR URN codes, not application/problem+json. See errors/agl-energy-problem-types.yml.
 - id: rfc8594-sunset-header
   conforms: false
-  evidence: Version retirement is date-driven through the DSB Future Dated Obligations schedule; retired versions answer HTTP 406 Header/UnsupportedVersion rather than emitting Sunset headers.
+  evidence: Version retirement is date-driven through the DSB Future Dated Obligations schedule; retired versions answer HTTP 406 Header/UnsupportedVersion
+    rather than emitting Sunset headers.
 - id: idempotency
   conforms: false
   evidence: No idempotency-key header in the standard or either spec. The whole surface is read-only, so there is nothing to make idempotent.
@@ -96,6 +87,12 @@ standards:
 - id: rfc9116-security-txt
   conforms: false
   evidence: No /.well-known/security.txt on any host (well-known/agl-energy-well-known.yml). A human Responsible Disclosure Policy does exist.
+- id: openapi-3.2
+  conforms: true
+  evidence: the document declares 3.2.0
+- id: rfc9457
+  conforms: false
+  evidence: no response declares application/problem+json
 regulatory:
   regime: Consumer Data Right (Competition and Consumer Act 2010, Part IVD)
   role: designated energy data holder
@@ -105,11 +102,7 @@ regulatory:
   secondary_data_holder: AEMO (NMI standing data, metering data)
 compliance_program:
   published_certifications: []
-  note: >-
-    No trust centre, no SOC 2 / ISO 27001 / PCI DSS attestation page and no
-    security compliance portal was found on any AGL host (probe-security-programs
-    returned trust=none on 2026-07-27; www.agl.com.au answers 403 to every
-    machine client). AGL's security obligations here are statutory — CDR Rules
-    Schedule 2 and the Security of Critical Infrastructure Act regime for energy
-    assets — rather than a published certification programme aimed at developers.
-    No Compliance pointer is therefore claimed in apis.yml.
+  note: No trust centre, no SOC 2 / ISO 27001 / PCI DSS attestation page and no security compliance portal was found on any AGL host (probe-security-programs
+    returned trust=none on 2026-07-27; www.agl.com.au answers 403 to every machine client). AGL's security obligations here are statutory — CDR
+    Rules Schedule 2 and the Security of Critical Infrastructure Act regime for energy assets — rather than a published certification programme
+    aimed at developers. No Compliance pointer is therefore claimed in apis.yml.

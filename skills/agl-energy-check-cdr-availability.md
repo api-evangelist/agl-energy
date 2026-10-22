@@ -1,10 +1,11 @@
 ---
-name: Check AGL CDR availability before a data request
+name: agl-energy-check-cdr-availability
+title: "Check AGL CDR availability before a data request"
 description: >-
   Read AGL's live Consumer Data Right status and scheduled outage windows before
   attempting any consumer data sharing, so a request is not fired into a
   maintenance window. Fully anonymous — no accreditation, no key, no consent.
-api: openapi/agl-energy-cds-common-openapi.json
+api: openapi/agl-energy-data-holder-operations-api-openapi.yml
 base_url: https://public.cdr.agl.com.au/cds-au/v1
 auth: none
 operations:

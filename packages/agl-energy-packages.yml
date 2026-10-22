@@ -1,0 +1,13 @@
+generated: '2026-10-20'
+method: none
+packages: []
+note: >-
+  No first-party client library found. github.com/AGLEnergy holds one public repo (log4jscanlinux, not an
+  SDK). npm "agl" exists but is an unrelated package ("Agent Gateway Layer..." by Task Venture Capital GmbH);
+  npm agl-energy, PyPI agl and agl-energy all 404. CDR clients use generic CDS tooling, not AGL packages.
+checked:
+- https://api.github.com/orgs/AGLEnergy/repos (200, 1 repo)
+- https://registry.npmjs.org/agl (200, unrelated)
+- https://registry.npmjs.org/agl-energy (404)
+- https://pypi.org/pypi/agl/json (404)
+- https://pypi.org/pypi/agl-energy/json (404)

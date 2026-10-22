@@ -1,0 +1,560 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-billing-list-response-v3-schema.json",
+  "title": "EnergyBillingListResponseV3",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingListResponseV3",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyBillingListResponseV3_data"
+    },
+    "links": {
+      "$ref": "#/$defs/LinksPaginated"
+    },
+    "meta": {
+      "$ref": "#/$defs/MetaPaginated"
+    }
+  },
+  "required": [
+    "data",
+    "links",
+    "meta"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyAccountId": {
+      "description": "A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "EnergyBillingDemandTransactionV3": {
+      "properties": {
+        "servicePointId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyServicePointId"
+            }
+          ],
+          "description": "Unique identifier for the service point."
+        },
+        "invoiceNumber": {
+          "description": "The number of the invoice in which this transaction is included if it has been issued.",
+          "type": "string"
+        },
+        "timeOfUseType": {
+          "description": "The time of use type that the transaction applies to.",
+          "enum": [
+            "PEAK",
+            "OFF_PEAK",
+            "OFF_PEAK_DEMAND_CHARGE",
+            "SHOULDER",
+            "SHOULDER1",
+            "SHOULDER2",
+            "CONTROLLED_LOAD",
+            "SOLAR",
+            "AGGREGATE",
+            "ALL_DAY",
+            "EXCESS"
+          ],
+          "type": "string"
+        },
+        "description": {
+          "description": "Optional description of the transaction that can be used for display purposes.",
+          "type": "string"
+        },
+        "isEstimate": {
+          "default": false,
+          "description": "Flag indicating if the usage is estimated or actual. `true` indicates estimate. `false` or absent indicates actual.",
+          "type": "boolean"
+        },
+        "startDate": {
+          "description": "Date and time when the demand period starts.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "endDate": {
+          "description": "Date and time when the demand period ends.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "measureUnit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MeasureUnitEnum"
+            }
+          ],
+          "default": "KVA",
+          "description": "The measurement unit of rate. Assumed to be `KVA` if absent.",
+          "type": "string"
+        },
+        "rate": {
+          "description": "The rate for the demand charge in _measureUnit_. Assumed to be `KVA` if _measureUnit_ not provided. A negative value indicates power generated.",
+          "type": "number"
+        },
+        "amount": {
+          "description": "The amount charged or credited for this transaction prior to any adjustments being applied. A negative value indicates a credit.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "calculationFactors": {
+          "description": "Additional calculation factors that inform the transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_calculationFactors"
+          },
+          "type": "array"
+        },
+        "adjustments": {
+          "description": "Optional array of adjustments arising for this transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_adjustments"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "amount",
+        "endDate",
+        "rate",
+        "startDate",
+        "timeOfUseType"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingListResponseV3_data": {
+      "properties": {
+        "transactions": {
+          "description": "Array of transactions sorted by date and time in descending order.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingTransactionV3"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "transactions"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingOnceOffTransaction": {
+      "properties": {
+        "servicePointId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyServicePointId"
+            }
+          ],
+          "description": "Unique identifier for the service point."
+        },
+        "invoiceNumber": {
+          "description": "The number of the invoice in which this transaction is included if it has been issued.",
+          "type": "string"
+        },
+        "amount": {
+          "description": "The amount of the charge or credit. A positive value indicates a charge and a negative value indicates a credit.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "description": {
+          "description": "A free text description of the item.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "description"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingOtherTransaction": {
+      "properties": {
+        "servicePointId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyServicePointId"
+            }
+          ],
+          "description": "Unique identifier for the service point."
+        },
+        "invoiceNumber": {
+          "description": "The number of the invoice in which this transaction is included if it has been issued.",
+          "type": "string"
+        },
+        "startDate": {
+          "description": "Optional start date for the application of the charge.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "endDate": {
+          "description": "Optional end date for the application of the charge.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "type": {
+          "default": "OTHER",
+          "description": "Type of charge. Assumed to be `OTHER` if absent.",
+          "enum": [
+            "ENVIRONMENTAL",
+            "REGULATED",
+            "NETWORK",
+            "METERING",
+            "RETAIL_SERVICE",
+            "RCTI",
+            "OTHER"
+          ],
+          "type": "string"
+        },
+        "amount": {
+          "description": "The amount of the charge.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "description": {
+          "description": "A free text description of the item.",
+          "type": "string"
+        },
+        "calculationFactors": {
+          "description": "Additional calculation factors that inform the transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_calculationFactors"
+          },
+          "type": "array"
+        },
+        "adjustments": {
+          "description": "Optional array of adjustments arising for this transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_adjustments"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "amount",
+        "description"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingPaymentTransaction": {
+      "properties": {
+        "amount": {
+          "description": "The amount paid.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "method": {
+          "description": "The method of payment.",
+          "enum": [
+            "DIRECT_DEBIT",
+            "CARD",
+            "TRANSFER",
+            "BPAY",
+            "CASH",
+            "CHEQUE",
+            "OTHER"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "method"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingTransactionV3": {
+      "properties": {
+        "accountId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyAccountId"
+            }
+          ],
+          "description": "Unique identifier for the account."
+        },
+        "executionDateTime": {
+          "description": "The date and time that the transaction occurred.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "gst": {
+          "default": "0.00",
+          "description": "The GST incurred in the transaction. Should not be included for credits or payments. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "transactionUType": {
+          "description": "Indicator of the type of transaction object present in this record.",
+          "enum": [
+            "usage",
+            "demand",
+            "onceOff",
+            "otherCharges",
+            "payment"
+          ],
+          "type": "string"
+        },
+        "usage": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyBillingUsageTransactionV2"
+            }
+          ],
+          "description": "Represents a usage charge or generation credit. Mandatory if _transactionUType_ is equal to `usage`."
+        },
+        "demand": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyBillingDemandTransactionV3"
+            }
+          ],
+          "description": "Represents a demand charge or generation credit. Mandatory if _transactionUType_ is equal to `demand`."
+        },
+        "onceOff": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyBillingOnceOffTransaction"
+            }
+          ],
+          "description": "Represents a once off charge or credit. Mandatory if _transactionUType_ is equal to `onceOff`."
+        },
+        "otherCharges": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyBillingOtherTransaction"
+            }
+          ],
+          "description": "Represents charge other than usage and once off. Mandatory if _transactionUType_ is equal to `otherCharges`."
+        },
+        "payment": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyBillingPaymentTransaction"
+            }
+          ],
+          "description": "Represents a payment to the account. Mandatory if _transactionUType_ is equal to `payment`."
+        }
+      },
+      "required": [
+        "accountId",
+        "executionDateTime",
+        "transactionUType"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "usage",
+        "onceOff",
+        "payment",
+        "demand",
+        "otherCharges"
+      ]
+    },
+    "EnergyBillingUsageTransactionV2": {
+      "properties": {
+        "servicePointId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyServicePointId"
+            }
+          ],
+          "description": "Unique identifier for the service point."
+        },
+        "invoiceNumber": {
+          "description": "The number of the invoice in which this transaction is included if it has been issued.",
+          "type": "string"
+        },
+        "timeOfUseType": {
+          "description": "The time of use type that the transaction applies to.",
+          "enum": [
+            "PEAK",
+            "OFF_PEAK",
+            "OFF_PEAK_DEMAND_CHARGE",
+            "SHOULDER",
+            "SHOULDER1",
+            "SHOULDER2",
+            "CONTROLLED_LOAD",
+            "SOLAR",
+            "AGGREGATE",
+            "ALL_DAY"
+          ],
+          "type": "string"
+        },
+        "description": {
+          "description": "Optional description of the transaction that can be used for display purposes.",
+          "type": "string"
+        },
+        "isEstimate": {
+          "default": false,
+          "description": "Flag indicating if the usage is estimated or actual. `true` indicates estimate. `false` or absent indicates actual.",
+          "type": "boolean"
+        },
+        "startDate": {
+          "description": "Date and time when the usage period starts.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "endDate": {
+          "description": "Date and time when the usage period ends.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "measureUnit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/MeasureUnitEnum"
+            }
+          ],
+          "default": "KWH",
+          "description": "The measurement unit of rate. Assumed to be `KWH` if absent.",
+          "type": "string"
+        },
+        "usage": {
+          "description": "The usage for the period in measure unit. A negative value indicates power generated.",
+          "type": "number"
+        },
+        "amount": {
+          "description": "The amount charged or credited for this transaction prior to any adjustments being applied. A negative value indicates a credit.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "calculationFactors": {
+          "description": "Additional calculation factors that inform the transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_calculationFactors"
+          },
+          "type": "array"
+        },
+        "adjustments": {
+          "description": "Optional array of adjustments arising for this transaction.",
+          "items": {
+            "$ref": "#/$defs/EnergyBillingUsageTransactionV2_adjustments"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "amount",
+        "endDate",
+        "startDate",
+        "timeOfUseType",
+        "usage"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingUsageTransactionV2_adjustments": {
+      "properties": {
+        "amount": {
+          "description": "The amount of the adjustment.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "description": {
+          "description": "A free text description of the adjustment.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "description"
+      ],
+      "type": "object"
+    },
+    "EnergyBillingUsageTransactionV2_calculationFactors": {
+      "properties": {
+        "value": {
+          "description": "The value of the calculation factor.",
+          "type": "number"
+        },
+        "type": {
+          "description": "The type of the calculation factor.",
+          "enum": [
+            "DLF",
+            "MLF"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "type": "object"
+    },
+    "EnergyServicePointId": {
+      "description": "A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "LinksPaginated": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "first": {
+          "description": "URI to the first page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "prev": {
+          "description": "URI to the previous page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "next": {
+          "description": "URI to the next page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "last": {
+          "description": "URI to the last page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "first",
+        "prev",
+        "next",
+        "last"
+      ]
+    },
+    "MeasureUnitEnum": {
+      "enum": [
+        "KWH",
+        "KVA",
+        "KVAR",
+        "KVARH",
+        "KW",
+        "DAYS",
+        "METER",
+        "MONTH"
+      ],
+      "type": "string"
+    },
+    "MetaPaginated": {
+      "properties": {
+        "totalRecords": {
+          "description": "The total number of records in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        },
+        "totalPages": {
+          "description": "The total number of pages in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        }
+      },
+      "required": [
+        "totalPages",
+        "totalRecords"
+      ],
+      "type": "object"
+    }
+  }
+}

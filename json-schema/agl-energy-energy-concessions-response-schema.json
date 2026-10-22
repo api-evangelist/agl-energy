@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-concessions-response-schema.json",
+  "title": "EnergyConcessionsResponse",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-accounts-api-openapi.yml#/components/schemas/EnergyConcessionsResponse",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyConcessionsResponse_data"
+    },
+    "links": {
+      "$ref": "#/$defs/Links"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "required": [
+    "data",
+    "links"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyConcession": {
+      "properties": {
+        "type": {
+          "description": "Indicator of the method of concession calculation.",
+          "enum": [
+            "FIXED_AMOUNT",
+            "FIXED_PERCENTAGE",
+            "VARIABLE"
+          ],
+          "type": "string"
+        },
+        "displayName": {
+          "description": "The display name of the concession.",
+          "type": "string"
+        },
+        "additionalInfo": {
+          "description": "Display text providing more information on the concession. Mandatory if _type_ is `VARIABLE`.",
+          "type": "string"
+        },
+        "additionalInfoUri": {
+          "description": "Optional link to additional information regarding the concession.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "startDate": {
+          "description": "Optional start date for the application of the concession.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "endDate": {
+          "description": "Optional end date for the application of the concession.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "discountFrequency": {
+          "description": "Conditional attribute for frequency at which a concession is applied. Required if type is `FIXED_AMOUNT` or `FIXED_PERCENTAGE`. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "amount": {
+          "description": "Conditional attribute for the amount of discount for the concession- required if type is `FIXED_AMOUNT`.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "percentage": {
+          "description": "Conditional attribute for the percentage of discount of concession - required if type is `FIXED_PERCENTAGE`.",
+          "type": "string",
+          "x-cds-type": "RateString"
+        },
+        "appliedTo": {
+          "default": [
+            "USAGE"
+          ],
+          "description": "Array of ENUMs to specify what the concession applies to. Multiple ENUM values can be provided. If absent, `USAGE` is assumed.",
+          "items": {
+            "enum": [
+              "INVOICE",
+              "USAGE",
+              "SERVICE_CHARGE",
+              "CONTROLLED_LOAD"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "displayName",
+        "type"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "additionalInfo",
+        "discountFrequency",
+        "amount",
+        "percentage"
+      ]
+    },
+    "EnergyConcessionsResponse_data": {
+      "properties": {
+        "concessions": {
+          "description": "Array may be empty if no concessions exist.",
+          "items": {
+            "$ref": "#/$defs/EnergyConcession"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "concessions"
+      ],
+      "type": "object"
+    },
+    "Links": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object"
+    },
+    "Meta": {
+      "type": "object"
+    }
+  }
+}

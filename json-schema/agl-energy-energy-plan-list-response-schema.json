@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-plan-list-response-schema.json",
+  "title": "EnergyPlanListResponse",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-plans-api-openapi.yml#/components/schemas/EnergyPlanListResponse",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyPlanListResponse_data"
+    },
+    "links": {
+      "$ref": "#/$defs/LinksPaginated"
+    },
+    "meta": {
+      "$ref": "#/$defs/MetaPaginated"
+    }
+  },
+  "required": [
+    "data",
+    "links",
+    "meta"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyPlan": {
+      "properties": {
+        "planId": {
+          "$ref": "#/$defs/EnergyPlanId"
+        },
+        "effectiveFrom": {
+          "description": "The date and time from which this plan is effective (i.e. is available for origination). Used to enable the articulation of products to the regime before they are available for customers to originate.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "effectiveTo": {
+          "description": "The date and time at which this plan will be retired and will no longer be offered. Used to enable the managed deprecation of plans.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "lastUpdated": {
+          "description": "The last date and time that the information for this plan was changed (or the creation date for the plan if it has never been altered).",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "displayName": {
+          "description": "The display name of the plan.",
+          "type": "string"
+        },
+        "description": {
+          "description": "A description of the plan.",
+          "type": "string"
+        },
+        "type": {
+          "description": "The type of the plan.",
+          "enum": [
+            "STANDING",
+            "MARKET",
+            "REGULATED"
+          ],
+          "type": "string"
+        },
+        "fuelType": {
+          "description": "The fuel types covered by the plan.",
+          "enum": [
+            "ELECTRICITY",
+            "GAS",
+            "DUAL"
+          ],
+          "type": "string"
+        },
+        "brand": {
+          "description": "The ID of the brand under which this plan is offered.",
+          "type": "string",
+          "x-cds-type": "ASCIIString"
+        },
+        "brandName": {
+          "description": "The display name of the brand under which this plan is offered.",
+          "type": "string"
+        },
+        "applicationUri": {
+          "description": "A link to an application web page where this plan can be applied for.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "additionalInformation": {
+          "$ref": "#/$defs/EnergyPlan_additionalInformation"
+        },
+        "customerType": {
+          "description": "The type of customer that the plan is offered to. If absent then the plan is available to all customers.",
+          "enum": [
+            "RESIDENTIAL",
+            "BUSINESS"
+          ],
+          "type": "string"
+        },
+        "geography": {
+          "$ref": "#/$defs/EnergyPlan_geography"
+        }
+      },
+      "required": [
+        "brand",
+        "brandName",
+        "fuelType",
+        "lastUpdated",
+        "planId",
+        "type"
+      ],
+      "type": "object"
+    },
+    "EnergyPlanId": {
+      "description": "The unique identifier for the Energy plan.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "EnergyPlanListResponse_data": {
+      "properties": {
+        "plans": {
+          "description": "Array of plans.",
+          "items": {
+            "$ref": "#/$defs/EnergyPlan"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "plans"
+      ],
+      "type": "object"
+    },
+    "EnergyPlan_additionalInformation": {
+      "description": "Object that contains links to additional information on specific topics.",
+      "properties": {
+        "overviewUri": {
+          "description": "A link to a general overview of the plan.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "termsUri": {
+          "description": "A link to terms and conditions for the plan.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "eligibilityUri": {
+          "description": "A link to detail on eligibility criteria for the plan.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "pricingUri": {
+          "description": "A link to detail on pricing for the plan.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "bundleUri": {
+          "description": "A link to detail on bundles that this plan can be a part of.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "type": "object"
+    },
+    "EnergyPlan_geography": {
+      "description": "Describes the geographical area that the plan is available for. If absent then it is assumed the plan is not geographically limited.",
+      "properties": {
+        "excludedPostcodes": {
+          "description": "Array of valid Australian postcodes that are specifically excluded from the plan. Each element is a single four digit postcode (e.g., `3000`) or a range of postcodes defined by two four digit postcodes and a hyphen (e.g., `3000-3999`).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "includedPostcodes": {
+          "description": "Array of valid Australian postcodes that are included from the plan. If absent defaults to all non-excluded postcodes. Each element is a single four digit postcode (e.g., `3000`) or a range of postcodes defined by two four digit postcodes and a hyphen (e.g., `3000-3999`).",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "distributors": {
+          "description": "Array of distributors for the plan. Must have at least one entry.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "distributors"
+      ],
+      "type": "object"
+    },
+    "LinksPaginated": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "first": {
+          "description": "URI to the first page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "prev": {
+          "description": "URI to the previous page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "next": {
+          "description": "URI to the next page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "last": {
+          "description": "URI to the last page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "first",
+        "prev",
+        "next",
+        "last"
+      ]
+    },
+    "MetaPaginated": {
+      "properties": {
+        "totalRecords": {
+          "description": "The total number of records in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        },
+        "totalPages": {
+          "description": "The total number of pages in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        }
+      },
+      "required": [
+        "totalPages",
+        "totalRecords"
+      ],
+      "type": "object"
+    }
+  }
+}

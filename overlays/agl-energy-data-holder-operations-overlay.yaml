@@ -1,0 +1,53 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for AGL Energy — CDR Common Data Holder Operations API
+  version: 1.0.0
+extends: openapi/agl-energy-data-holder-operations-api-openapi.yml
+x-generated: '2026-10-20'
+x-method: generated
+x-source: API Evangelist enrichment pipeline. Carries forward the facts from the earlier cds-energy/cds-common overlays
+  (2026-07-27) onto the per-API split contracts, with live anonymous probes re-run on 2026-10-20 (public.cdr.agl.com.au
+  discovery/status and discovery/outages 200; cdr.energymadeeasy.gov.au/agl energy/plans 200). The original openapi
+  file is not mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: AGL Energy
+    x-apievangelist-slug: agl-energy
+    x-apievangelist-review: review.yml
+    x-apievangelist-note: CDR Common Data Holder Operations API is part of the Data Standards Body's shared CDR
+      Common API v1.36.0, not an AGL-authored specification. AGL serves both discovery operations anonymously at
+      its CDR public base URI.
+    x-apievangelist-artifacts:
+      authentication: authentication/agl-energy-authentication.yml
+      conventions: conventions/agl-energy-conventions.yml
+      conformance: conformance/agl-energy-conformance.yml
+      agentic_access: agentic-access/agl-energy-agentic-access.yml
+      mcp: mcp/agl-energy-mcp.yml
+      skills: skills/_index.yml
+- target: $.servers
+  update:
+  - url: https://public.cdr.agl.com.au/cds-au/v1
+    description: AGL's own CDR public base URI, listed on the ACCC CDR Register for brand "AGL". Serves only the
+      two CDR Common discovery operations anonymously; returns HTTP 404 for every other path.
+    x-apievangelist-auth: none
+    x-apievangelist-operated-by: AGL Energy
+    x-apievangelist-verified: '2026-10-20'
+- target: $.paths['/discovery/status'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-verified:
+      url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+      status: 200
+      date: '2026-10-20'
+      requiredHeader: 'x-v: 1'
+    x-apievangelist-role: AGL's machine-readable status signal; AGL publishes no human status page.
+- target: $.paths['/discovery/outages'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-verified:
+      url: https://public.cdr.agl.com.au/cds-au/v1/discovery/outages
+      status: 200
+      date: '2026-10-20'
+      requiredHeader: 'x-v: 1'
+    x-apievangelist-role: AGL-authored scheduled maintenance notices for the CDR consent flow.

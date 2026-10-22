@@ -1,0 +1,427 @@
+generated: '2026-10-20'
+method: derived
+generator: derive-vocabulary.py
+source:
+- openapi/agl-energy-data-holder-customers-api-openapi.yml
+- openapi/agl-energy-data-holder-operations-api-openapi.yml
+- openapi/agl-energy-distributed-energy-resources-api-openapi.yml
+- openapi/agl-energy-electricity-service-points-api-openapi.yml
+- openapi/agl-energy-electricity-usage-api-openapi.yml
+vocabulary:
+  name: AGL Energy Domain Vocabulary
+  description: 'Terms declared by AGL Energy''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
+    Derived, not authored.'
+  version: '2026-10-20'
+  terms:
+  - term: Data Holder Customers
+    definition: Data Holder Customer endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml
+  - term: Data Holder Operations
+    definition: Data Holder Operations endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml
+  - term: Distributed Energy Resources
+    definition: Distributed Energy Resource endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml
+  - term: Electricity Service Points
+    definition: Electricity Service Point endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml
+  - term: Electricity Usage
+    definition: Electricity Usage endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml
+  - term: Energy Account Balances
+    definition: Energy Account Balance endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml
+  - term: Energy Account Billing
+    definition: Energy Account Billing endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml
+  - term: Energy Accounts
+    definition: Energy Account endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-energy-accounts-api-openapi.yml
+  - term: Energy Plans
+    definition: Energy Plan endpoints
+    tags:
+    - Resource Group
+    source: openapi/agl-energy-energy-plans-api-openapi.yml
+  - term: CommonPhysicalAddress
+    definition: 'Object declared by the contract with fields: addressUType, simple, paf.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPhysicalAddress
+  - term: ErrorV2_meta
+    definition: Additional data for customised error codes.
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ErrorV2_meta
+  - term: CommonPhoneNumber
+    definition: 'Object declared by the contract with fields: isPreferred, purpose, countryCode, areaCode, number, extension, fullNumber.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPhoneNumber
+  - term: CommonSimpleAddress
+    definition: Required if _addressUType_ is set to `simple`.
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonSimpleAddress
+  - term: ResponseCommonCustomer_data
+    definition: 'Object declared by the contract with fields: customerUType, person, organisation.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseCommonCustomer_data
+  - term: CommonPersonDetailV2_allOf
+    definition: 'Object declared by the contract with fields: phoneNumbers, emailAddresses, physicalAddresses.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPersonDetailV2_allOf
+  - term: CommonOrganisation
+    definition: 'Object declared by the contract with fields: lastUpdateTime, agentFirstName, agentLastName, agentRole, businessName, legalName,
+      shortName, abn, acn, isACNCRegistered, industryCode, industryCodeVersion. (3 more)'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonOrganisation
+  - term: ErrorV2
+    definition: 'Object declared by the contract with fields: code, title, detail, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ErrorV2
+  - term: CommonPAFAddress
+    definition: Australian address formatted according to the file format defined by the [PAF file format](https://auspost.com.au/content/dam/auspost_corp/media/documents/australia-post-data-guide.pdf).
+      Required if _addressUType_ is set to `paf`.
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPAFAddress
+  - term: ResponseCommonCustomerDetailV2
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseCommonCustomerDetailV2
+  - term: CommonPerson
+    definition: 'Object declared by the contract with fields: lastUpdateTime, firstName, lastName, middleNames, prefix, suffix, occupationCode,
+      occupationCodeVersion.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPerson
+  - term: CommonOrganisationDetailV2_allOf
+    definition: 'Object declared by the contract with fields: physicalAddresses.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonOrganisationDetailV2_allOf
+  - term: CommonPhysicalAddressWithPurpose_allOf
+    definition: 'Object declared by the contract with fields: purpose.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonPhysicalAddressWithPurpose_allOf
+  - term: ResponseCommonCustomer
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseCommonCustomer
+  - term: ResponseErrorListV2
+    definition: 'Object declared by the contract with fields: errors.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseErrorListV2
+  - term: ResponseCommonCustomerDetailV2_data
+    definition: 'Object declared by the contract with fields: customerUType, person, organisation.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseCommonCustomerDetailV2_data
+  - term: CommonEmailAddress
+    definition: 'Object declared by the contract with fields: isPreferred, purpose, address.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/CommonEmailAddress
+  - term: Links
+    definition: 'Object declared by the contract with fields: self.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/Links
+  - term: ResponseDiscoveryOutagesList
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/ResponseDiscoveryOutagesList
+  - term: DiscoveryOutage
+    definition: 'Object declared by the contract with fields: outageTime, duration, isPartial, explanation.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/DiscoveryOutage
+  - term: ResponseCommonDiscoveryStatus_data
+    definition: 'Object declared by the contract with fields: status, explanation, detectionTime, expectedResolutionTime, updateTime.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/ResponseCommonDiscoveryStatus_data
+  - term: ResponseCommonDiscoveryStatus
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/ResponseCommonDiscoveryStatus
+  - term: ResponseDiscoveryOutagesList_data
+    definition: 'Object declared by the contract with fields: outages.'
+    tags:
+    - Object
+    source: openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/ResponseDiscoveryOutagesList_data
+  - term: PrimaryResponseErrorListV1
+    definition: 'Object declared by the contract with fields: errors.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/PrimaryResponseErrorListV1
+  - term: EnergyDerListResponse_data
+    definition: 'Object declared by the contract with fields: derRecords.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerListResponse_data
+  - term: EnergyDerRecord_protectionMode
+    definition: Required only when the _hasCentralProtectionControl_ flag is set to `true`. One or more of the object fields will be provided
+      to describe the protection modes in place.
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerRecord_protectionMode
+  - term: EnergyDerDetailResponse
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerDetailResponse
+  - term: LinksPaginated
+    definition: 'Object declared by the contract with fields: self, first, prev, next, last.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/LinksPaginated
+  - term: EnergyServicePointId
+    definition: A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyServicePointId
+  - term: PrimaryErrorV1_allOf
+    definition: 'Object declared by the contract with fields: isSecondaryDataHolderError.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/PrimaryErrorV1_allOf
+  - term: EnergyDerRecord_derDevices
+    definition: 'Object declared by the contract with fields: deviceIdentifier, count, manufacturer, modelNumber, status, type, subtype, nominalRatedCapacity,
+      nominalStorageCapacity.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerRecord_derDevices
+  - term: EnergyDerRecord_acConnections
+    definition: 'Object declared by the contract with fields: connectionIdentifier, count, equipmentType, manufacturerName, inverterSeries, inverterModelNumber,
+      commissioningDate, status, inverterDeviceCapacity, derDevices.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerRecord_acConnections
+  - term: EnergyDerRecord
+    definition: 'Object declared by the contract with fields: servicePointId, approvedCapacity, availablePhasesCount, installedPhasesCount, islandableInstallation,
+      hasCentralProtectionControl, protectionMode, acConnections.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerRecord
+  - term: RequestServicePointIdListV1_data
+    definition: 'Object declared by the contract with fields: servicePointIds.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/RequestServicePointIdListV1_data
+  - term: RequestServicePointIdListV1
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/RequestServicePointIdListV1
+  - term: EnergyDerListResponse
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/EnergyDerListResponse
+  - term: MetaPaginated
+    definition: 'Object declared by the contract with fields: totalRecords, totalPages.'
+    tags:
+    - Object
+    source: openapi/agl-energy-distributed-energy-resources-api-openapi.yml#/components/schemas/MetaPaginated
+  - term: EnergyServicePointDetailV2_allOf_relatedParticipants
+    definition: 'Object declared by the contract with fields: party, role.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf_relatedParticipants
+  - term: EnergyServicePointDetailResponseV2
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailResponseV2
+  - term: EnergyServicePointDetailV2_allOf_registers
+    definition: 'Object declared by the contract with fields: registerId, registerSuffix, averagedDailyLoad, registerConsumptionType, networkTariffCode,
+      unitOfMeasure, timeOfDay, multiplier, controlledLoad, consumptionType.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf_registers
+  - term: EnergyServicePointV2_consumerProfile
+    definition: 'Object declared by the contract with fields: classification, threshold.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointV2_consumerProfile
+  - term: EnergyServicePointListResponseV2
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointListResponseV2
+  - term: EnergyServicePointDetailV2_allOf
+    definition: 'Object declared by the contract with fields: distributionLossFactor, relatedParticipants, location, meters.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf
+  - term: EnergyServicePointDetailV2_allOf_specifications
+    definition: Technical characteristics of the meter.
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf_specifications
+  - term: EnergyServicePointListResponseV2_data
+    definition: 'Object declared by the contract with fields: servicePoints.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointListResponseV2_data
+  - term: EnergyServicePointDetailV2_allOf_meters
+    definition: 'Object declared by the contract with fields: meterId, specifications, registers.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf_meters
+  - term: EnergyServicePointDetailV2_allOf_distributionLossFactor
+    definition: 'Object declared by the contract with fields: code, description, lossValue.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointDetailV2_allOf_distributionLossFactor
+  - term: EnergyServicePointV2
+    definition: 'Object declared by the contract with fields: servicePointId, nationalMeteringId, servicePointClassification, servicePointStatus,
+      jurisdictionCode, isGenerator, validFromDate, lastUpdateDateTime, lastConsumerChangeDate, consumerProfile.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-service-points-api-openapi.yml#/components/schemas/EnergyServicePointV2
+  - term: EnergyUsageListResponse_data
+    definition: 'Object declared by the contract with fields: reads.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageListResponse_data
+  - term: EnergyUsageRead_basicRead
+    definition: Mandatory if _readUType_ is set to `basicRead`.
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageRead_basicRead
+  - term: EnergyUsageRead_intervalRead
+    definition: Mandatory if _readUType_ is set to `intervalRead`.
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageRead_intervalRead
+  - term: EnergyUsageRead_intervalRead_readQualities
+    definition: 'Object declared by the contract with fields: startInterval, endInterval, quality.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageRead_intervalRead_readQualities
+  - term: EnergyUsageRead
+    definition: 'Object declared by the contract with fields: servicePointId, registerId, registerSuffix, meterId, controlledLoad, readStartDate,
+      readEndDate, unitOfMeasure, readUType, basicRead, intervalRead.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageRead
+  - term: EnergyUsageListResponse
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-electricity-usage-api-openapi.yml#/components/schemas/EnergyUsageListResponse
+  - term: EnergyAccountId
+    definition: A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyAccountId
+  - term: EnergyBalanceListResponse
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceListResponse
+  - term: EnergyBalanceListResponse_data
+    definition: 'Object declared by the contract with fields: balances.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceListResponse_data
+  - term: RequestAccountIdListV1_data
+    definition: 'Object declared by the contract with fields: accountIds.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/RequestAccountIdListV1_data
+  - term: EnergyBalanceListResponse_data_balances
+    definition: 'Object declared by the contract with fields: accountId, balance.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceListResponse_data_balances
+  - term: EnergyBalanceResponse
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceResponse
+  - term: EnergyBalanceResponse_data
+    definition: 'Object declared by the contract with fields: balance.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/EnergyBalanceResponse_data
+  - term: RequestAccountIdListV1
+    definition: 'Object declared by the contract with fields: data, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-balances-api-openapi.yml#/components/schemas/RequestAccountIdListV1
+  - term: EnergyInvoice
+    definition: 'Object declared by the contract with fields: accountId, invoiceNumber, issueDate, dueDate, period, invoiceAmount, gstAmount,
+      payOnTimeDiscount, balanceAtIssue, servicePoints, gas, electricity. (2 more)'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyInvoice
+  - term: EnergyBillingOnceOffTransaction
+    definition: 'Object declared by the contract with fields: servicePointId, invoiceNumber, amount, description.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingOnceOffTransaction
+  - term: EnergyBillingListResponseV3
+    definition: 'Object declared by the contract with fields: data, links, meta.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingListResponseV3
+  - term: EnergyInvoiceAccountCharges
+    definition: Object contains account level charges and credits related to electricity usage.
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyInvoiceAccountCharges
+  - term: EnergyBillingPaymentTransaction
+    definition: 'Object declared by the contract with fields: amount, method.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingPaymentTransaction
+  - term: EnergyInvoice_payOnTimeDiscount
+    definition: A discount for on time payment.
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyInvoice_payOnTimeDiscount
+  - term: EnergyInvoiceListResponse_data
+    definition: 'Object declared by the contract with fields: invoices.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyInvoiceListResponse_data
+  - term: EnergyBillingListResponseV3_data
+    definition: 'Object declared by the contract with fields: transactions.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingListResponseV3_data
+  - term: EnergyBillingDemandTransactionV3
+    definition: 'Object declared by the contract with fields: servicePointId, invoiceNumber, timeOfUseType, description, isEstimate, startDate,
+      endDate, measureUnit, rate, amount, calculationFactors, adjustments.'
+    tags:
+    - Object
+    source: openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyBillingDemandTransactionV3

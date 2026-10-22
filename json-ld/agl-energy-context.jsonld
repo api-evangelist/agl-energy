@@ -1,0 +1,1329 @@
+{
+  "@context": {
+    "@vocab": "https://agl.com.au/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "agl": "https://agl.com.au/schema#",
+    "CommonPAFAddress": "agl:CommonPAFAddress",
+    "dpid": {
+      "@id": "agl:dpid",
+      "@type": "xsd:string"
+    },
+    "thoroughfareNumber1": {
+      "@id": "agl:thoroughfareNumber1",
+      "@type": "xsd:integer"
+    },
+    "thoroughfareNumber1Suffix": {
+      "@id": "agl:thoroughfareNumber1Suffix",
+      "@type": "xsd:string"
+    },
+    "thoroughfareNumber2": {
+      "@id": "agl:thoroughfareNumber2",
+      "@type": "xsd:integer"
+    },
+    "thoroughfareNumber2Suffix": {
+      "@id": "agl:thoroughfareNumber2Suffix",
+      "@type": "xsd:string"
+    },
+    "flatUnitType": {
+      "@id": "agl:flatUnitType",
+      "@type": "xsd:string"
+    },
+    "flatUnitNumber": {
+      "@id": "agl:flatUnitNumber",
+      "@type": "xsd:string"
+    },
+    "floorLevelType": {
+      "@id": "agl:floorLevelType",
+      "@type": "xsd:string"
+    },
+    "floorLevelNumber": {
+      "@id": "agl:floorLevelNumber",
+      "@type": "xsd:string"
+    },
+    "lotNumber": {
+      "@id": "agl:lotNumber",
+      "@type": "xsd:string"
+    },
+    "buildingName1": {
+      "@id": "agl:buildingName1",
+      "@type": "xsd:string"
+    },
+    "buildingName2": {
+      "@id": "agl:buildingName2",
+      "@type": "xsd:string"
+    },
+    "streetName": {
+      "@id": "agl:streetName",
+      "@type": "xsd:string"
+    },
+    "streetType": {
+      "@id": "agl:streetType",
+      "@type": "xsd:string"
+    },
+    "streetSuffix": {
+      "@id": "agl:streetSuffix",
+      "@type": "xsd:string"
+    },
+    "postalDeliveryType": {
+      "@id": "agl:postalDeliveryType",
+      "@type": "xsd:string"
+    },
+    "postalDeliveryNumber": {
+      "@id": "agl:postalDeliveryNumber",
+      "@type": "xsd:integer"
+    },
+    "postalDeliveryNumberPrefix": {
+      "@id": "agl:postalDeliveryNumberPrefix",
+      "@type": "xsd:string"
+    },
+    "postalDeliveryNumberSuffix": {
+      "@id": "agl:postalDeliveryNumberSuffix",
+      "@type": "xsd:string"
+    },
+    "localityName": {
+      "@id": "agl:localityName",
+      "@type": "xsd:string"
+    },
+    "postcode": {
+      "@id": "agl:postcode",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "agl:state",
+      "@type": "xsd:string"
+    },
+    "ErrorV2": "agl:ErrorV2",
+    "code": {
+      "@id": "agl:code",
+      "@type": "xsd:string"
+    },
+    "title": {
+      "@id": "agl:title",
+      "@type": "xsd:string"
+    },
+    "detail": {
+      "@id": "agl:detail",
+      "@type": "xsd:string"
+    },
+    "meta": {
+      "@id": "agl:meta",
+      "@type": "@id"
+    },
+    "CommonPhysicalAddressWithPurpose_allOf": "agl:CommonPhysicalAddressWithPurpose_allOf",
+    "purpose": {
+      "@id": "agl:purpose",
+      "@type": "xsd:string"
+    },
+    "CommonOrganisationDetailV2_allOf": "agl:CommonOrganisationDetailV2_allOf",
+    "physicalAddresses": {
+      "@id": "agl:physicalAddresses",
+      "@container": "@list"
+    },
+    "ResponseCommonCustomer_data": "agl:ResponseCommonCustomer_data",
+    "customerUType": {
+      "@id": "agl:customerUType",
+      "@type": "xsd:string"
+    },
+    "person": {
+      "@id": "agl:person",
+      "@type": "@id"
+    },
+    "organisation": {
+      "@id": "agl:organisation",
+      "@type": "@id"
+    },
+    "CommonPersonDetailV2_allOf": "agl:CommonPersonDetailV2_allOf",
+    "phoneNumbers": {
+      "@id": "agl:phoneNumbers",
+      "@container": "@list"
+    },
+    "emailAddresses": {
+      "@id": "agl:emailAddresses",
+      "@container": "@list"
+    },
+    "ResponseCommonCustomerDetailV2": "agl:ResponseCommonCustomerDetailV2",
+    "data": {
+      "@id": "agl:data",
+      "@type": "@id"
+    },
+    "links": {
+      "@id": "agl:links",
+      "@type": "@id"
+    },
+    "ResponseErrorListV2": "agl:ResponseErrorListV2",
+    "errors": {
+      "@id": "agl:errors",
+      "@container": "@list"
+    },
+    "CommonSimpleAddress": "agl:CommonSimpleAddress",
+    "mailingName": {
+      "@id": "agl:mailingName",
+      "@type": "xsd:string"
+    },
+    "addressLine1": {
+      "@id": "agl:addressLine1",
+      "@type": "xsd:string"
+    },
+    "addressLine2": {
+      "@id": "agl:addressLine2",
+      "@type": "xsd:string"
+    },
+    "addressLine3": {
+      "@id": "agl:addressLine3",
+      "@type": "xsd:string"
+    },
+    "city": {
+      "@id": "agl:city",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "agl:country",
+      "@type": "xsd:string"
+    },
+    "Links": "agl:Links",
+    "self": {
+      "@id": "agl:self",
+      "@type": "xsd:string"
+    },
+    "CommonPerson": "agl:CommonPerson",
+    "lastUpdateTime": {
+      "@id": "agl:lastUpdateTime",
+      "@type": "xsd:string"
+    },
+    "firstName": {
+      "@id": "agl:firstName",
+      "@type": "xsd:string"
+    },
+    "lastName": {
+      "@id": "agl:lastName",
+      "@type": "xsd:string"
+    },
+    "middleNames": {
+      "@id": "agl:middleNames",
+      "@container": "@list"
+    },
+    "prefix": {
+      "@id": "agl:prefix",
+      "@type": "xsd:string"
+    },
+    "suffix": {
+      "@id": "agl:suffix",
+      "@type": "xsd:string"
+    },
+    "occupationCode": {
+      "@id": "agl:occupationCode",
+      "@type": "xsd:string"
+    },
+    "occupationCodeVersion": {
+      "@id": "agl:occupationCodeVersion",
+      "@type": "xsd:string"
+    },
+    "CommonEmailAddress": "agl:CommonEmailAddress",
+    "isPreferred": {
+      "@id": "agl:isPreferred",
+      "@type": "xsd:boolean"
+    },
+    "address": {
+      "@id": "agl:address",
+      "@type": "xsd:string"
+    },
+    "ResponseCommonCustomerDetailV2_data": "agl:ResponseCommonCustomerDetailV2_data",
+    "ResponseCommonCustomer": "agl:ResponseCommonCustomer",
+    "ErrorV2_meta": "agl:ErrorV2_meta",
+    "urn": {
+      "@id": "agl:urn",
+      "@type": "xsd:string"
+    },
+    "CommonPhoneNumber": "agl:CommonPhoneNumber",
+    "countryCode": {
+      "@id": "agl:countryCode",
+      "@type": "xsd:string"
+    },
+    "areaCode": {
+      "@id": "agl:areaCode",
+      "@type": "xsd:string"
+    },
+    "number": {
+      "@id": "agl:number",
+      "@type": "xsd:string"
+    },
+    "extension": {
+      "@id": "agl:extension",
+      "@type": "xsd:string"
+    },
+    "fullNumber": {
+      "@id": "agl:fullNumber",
+      "@type": "xsd:string"
+    },
+    "CommonPhysicalAddress": "agl:CommonPhysicalAddress",
+    "addressUType": {
+      "@id": "agl:addressUType",
+      "@type": "xsd:string"
+    },
+    "simple": {
+      "@id": "agl:simple",
+      "@type": "@id"
+    },
+    "paf": {
+      "@id": "agl:paf",
+      "@type": "@id"
+    },
+    "CommonOrganisation": "agl:CommonOrganisation",
+    "agentFirstName": {
+      "@id": "agl:agentFirstName",
+      "@type": "xsd:string"
+    },
+    "agentLastName": {
+      "@id": "agl:agentLastName",
+      "@type": "xsd:string"
+    },
+    "agentRole": {
+      "@id": "agl:agentRole",
+      "@type": "xsd:string"
+    },
+    "businessName": {
+      "@id": "agl:businessName",
+      "@type": "xsd:string"
+    },
+    "legalName": {
+      "@id": "agl:legalName",
+      "@type": "xsd:string"
+    },
+    "shortName": {
+      "@id": "agl:shortName",
+      "@type": "xsd:string"
+    },
+    "abn": {
+      "@id": "agl:abn",
+      "@type": "xsd:string"
+    },
+    "acn": {
+      "@id": "agl:acn",
+      "@type": "xsd:string"
+    },
+    "isACNCRegistered": {
+      "@id": "agl:isACNCRegistered",
+      "@type": "xsd:boolean"
+    },
+    "industryCode": {
+      "@id": "agl:industryCode",
+      "@type": "xsd:string"
+    },
+    "industryCodeVersion": {
+      "@id": "agl:industryCodeVersion",
+      "@type": "xsd:string"
+    },
+    "organisationType": {
+      "@id": "agl:organisationType",
+      "@type": "xsd:string"
+    },
+    "registeredCountry": {
+      "@id": "agl:registeredCountry",
+      "@type": "xsd:string"
+    },
+    "establishmentDate": {
+      "@id": "agl:establishmentDate",
+      "@type": "xsd:string"
+    },
+    "ResponseCommonDiscoveryStatus_data": "agl:ResponseCommonDiscoveryStatus_data",
+    "status": {
+      "@id": "agl:status",
+      "@type": "xsd:string"
+    },
+    "explanation": {
+      "@id": "agl:explanation",
+      "@type": "xsd:string"
+    },
+    "detectionTime": {
+      "@id": "agl:detectionTime",
+      "@type": "xsd:string"
+    },
+    "expectedResolutionTime": {
+      "@id": "agl:expectedResolutionTime",
+      "@type": "xsd:string"
+    },
+    "updateTime": {
+      "@id": "agl:updateTime",
+      "@type": "xsd:string"
+    },
+    "ResponseDiscoveryOutagesList": "agl:ResponseDiscoveryOutagesList",
+    "ResponseDiscoveryOutagesList_data": "agl:ResponseDiscoveryOutagesList_data",
+    "outages": {
+      "@id": "agl:outages",
+      "@container": "@list"
+    },
+    "DiscoveryOutage": "agl:DiscoveryOutage",
+    "outageTime": {
+      "@id": "agl:outageTime",
+      "@type": "xsd:string"
+    },
+    "duration": {
+      "@id": "agl:duration",
+      "@type": "xsd:string"
+    },
+    "isPartial": {
+      "@id": "agl:isPartial",
+      "@type": "xsd:boolean"
+    },
+    "ResponseCommonDiscoveryStatus": "agl:ResponseCommonDiscoveryStatus",
+    "LinksPaginated": "agl:LinksPaginated",
+    "first": {
+      "@id": "agl:first",
+      "@type": "xsd:string"
+    },
+    "prev": {
+      "@id": "agl:prev",
+      "@type": "xsd:string"
+    },
+    "next": {
+      "@id": "agl:next",
+      "@type": "xsd:string"
+    },
+    "last": {
+      "@id": "agl:last",
+      "@type": "xsd:string"
+    },
+    "MetaPaginated": "agl:MetaPaginated",
+    "totalRecords": {
+      "@id": "agl:totalRecords",
+      "@type": "xsd:integer"
+    },
+    "totalPages": {
+      "@id": "agl:totalPages",
+      "@type": "xsd:integer"
+    },
+    "RequestServicePointIdListV1_data": "agl:RequestServicePointIdListV1_data",
+    "servicePointIds": {
+      "@id": "agl:servicePointIds",
+      "@container": "@list"
+    },
+    "PrimaryErrorV1_allOf": "agl:PrimaryErrorV1_allOf",
+    "isSecondaryDataHolderError": {
+      "@id": "agl:isSecondaryDataHolderError",
+      "@type": "xsd:boolean"
+    },
+    "EnergyDerRecord_derDevices": "agl:EnergyDerRecord_derDevices",
+    "deviceIdentifier": {
+      "@id": "agl:deviceIdentifier",
+      "@type": "xsd:decimal"
+    },
+    "count": {
+      "@id": "agl:count",
+      "@type": "xsd:integer"
+    },
+    "manufacturer": {
+      "@id": "agl:manufacturer",
+      "@type": "xsd:string"
+    },
+    "modelNumber": {
+      "@id": "agl:modelNumber",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "agl:type",
+      "@type": "xsd:string"
+    },
+    "subtype": {
+      "@id": "agl:subtype",
+      "@type": "xsd:string"
+    },
+    "nominalRatedCapacity": {
+      "@id": "agl:nominalRatedCapacity",
+      "@type": "xsd:decimal"
+    },
+    "nominalStorageCapacity": {
+      "@id": "agl:nominalStorageCapacity",
+      "@type": "xsd:decimal"
+    },
+    "PrimaryResponseErrorListV1": "agl:PrimaryResponseErrorListV1",
+    "EnergyDerRecord_acConnections": "agl:EnergyDerRecord_acConnections",
+    "connectionIdentifier": {
+      "@id": "agl:connectionIdentifier",
+      "@type": "xsd:decimal"
+    },
+    "equipmentType": {
+      "@id": "agl:equipmentType",
+      "@type": "xsd:string"
+    },
+    "manufacturerName": {
+      "@id": "agl:manufacturerName",
+      "@type": "xsd:string"
+    },
+    "inverterSeries": {
+      "@id": "agl:inverterSeries",
+      "@type": "xsd:string"
+    },
+    "inverterModelNumber": {
+      "@id": "agl:inverterModelNumber",
+      "@type": "xsd:string"
+    },
+    "commissioningDate": {
+      "@id": "agl:commissioningDate",
+      "@type": "xsd:string"
+    },
+    "inverterDeviceCapacity": {
+      "@id": "agl:inverterDeviceCapacity",
+      "@type": "xsd:decimal"
+    },
+    "derDevices": {
+      "@id": "agl:derDevices",
+      "@container": "@list"
+    },
+    "EnergyDerDetailResponse": "agl:EnergyDerDetailResponse",
+    "EnergyDerRecord_protectionMode": "agl:EnergyDerRecord_protectionMode",
+    "exportLimitKva": {
+      "@id": "agl:exportLimitKva",
+      "@type": "xsd:decimal"
+    },
+    "underFrequencyProtection": {
+      "@id": "agl:underFrequencyProtection",
+      "@type": "xsd:decimal"
+    },
+    "underFrequencyProtectionDelay": {
+      "@id": "agl:underFrequencyProtectionDelay",
+      "@type": "xsd:decimal"
+    },
+    "overFrequencyProtection": {
+      "@id": "agl:overFrequencyProtection",
+      "@type": "xsd:decimal"
+    },
+    "overFrequencyProtectionDelay": {
+      "@id": "agl:overFrequencyProtectionDelay",
+      "@type": "xsd:decimal"
+    },
+    "underVoltageProtection": {
+      "@id": "agl:underVoltageProtection",
+      "@type": "xsd:decimal"
+    },
+    "underVoltageProtectionDelay": {
+      "@id": "agl:underVoltageProtectionDelay",
+      "@type": "xsd:decimal"
+    },
+    "overVoltageProtection": {
+      "@id": "agl:overVoltageProtection",
+      "@type": "xsd:decimal"
+    },
+    "overVoltageProtectionDelay": {
+      "@id": "agl:overVoltageProtectionDelay",
+      "@type": "xsd:decimal"
+    },
+    "sustainedOverVoltage": {
+      "@id": "agl:sustainedOverVoltage",
+      "@type": "xsd:decimal"
+    },
+    "sustainedOverVoltageDelay": {
+      "@id": "agl:sustainedOverVoltageDelay",
+      "@type": "xsd:decimal"
+    },
+    "frequencyRateOfChange": {
+      "@id": "agl:frequencyRateOfChange",
+      "@type": "xsd:decimal"
+    },
+    "voltageVectorShift": {
+      "@id": "agl:voltageVectorShift",
+      "@type": "xsd:decimal"
+    },
+    "interTripScheme": {
+      "@id": "agl:interTripScheme",
+      "@type": "xsd:string"
+    },
+    "neutralVoltageDisplacement": {
+      "@id": "agl:neutralVoltageDisplacement",
+      "@type": "xsd:decimal"
+    },
+    "EnergyDerRecord": "agl:EnergyDerRecord",
+    "servicePointId": {
+      "@id": "agl:servicePointId"
+    },
+    "approvedCapacity": {
+      "@id": "agl:approvedCapacity",
+      "@type": "xsd:decimal"
+    },
+    "availablePhasesCount": {
+      "@id": "agl:availablePhasesCount",
+      "@type": "xsd:integer"
+    },
+    "installedPhasesCount": {
+      "@id": "agl:installedPhasesCount",
+      "@type": "xsd:integer"
+    },
+    "islandableInstallation": {
+      "@id": "agl:islandableInstallation",
+      "@type": "xsd:boolean"
+    },
+    "hasCentralProtectionControl": {
+      "@id": "agl:hasCentralProtectionControl",
+      "@type": "xsd:boolean"
+    },
+    "protectionMode": {
+      "@id": "agl:protectionMode",
+      "@type": "@id"
+    },
+    "acConnections": {
+      "@id": "agl:acConnections",
+      "@container": "@list"
+    },
+    "EnergyDerListResponse_data": "agl:EnergyDerListResponse_data",
+    "derRecords": {
+      "@id": "agl:derRecords",
+      "@container": "@list"
+    },
+    "EnergyDerListResponse": "agl:EnergyDerListResponse",
+    "RequestServicePointIdListV1": "agl:RequestServicePointIdListV1",
+    "EnergyServicePointListResponseV2": "agl:EnergyServicePointListResponseV2",
+    "EnergyServicePointDetailResponseV2": "agl:EnergyServicePointDetailResponseV2",
+    "EnergyServicePointDetailV2_allOf_specifications": "agl:EnergyServicePointDetailV2_allOf_specifications",
+    "installationType": {
+      "@id": "agl:installationType",
+      "@type": "xsd:string"
+    },
+    "model": {
+      "@id": "agl:model",
+      "@type": "xsd:string"
+    },
+    "readType": {
+      "@id": "agl:readType",
+      "@type": "xsd:string"
+    },
+    "nextScheduledReadDate": {
+      "@id": "agl:nextScheduledReadDate",
+      "@type": "xsd:string"
+    },
+    "EnergyServicePointListResponseV2_data": "agl:EnergyServicePointListResponseV2_data",
+    "servicePoints": {
+      "@id": "agl:servicePoints",
+      "@container": "@list"
+    },
+    "EnergyServicePointDetailV2_allOf_meters": "agl:EnergyServicePointDetailV2_allOf_meters",
+    "meterId": {
+      "@id": "agl:meterId",
+      "@type": "xsd:string"
+    },
+    "specifications": {
+      "@id": "agl:specifications",
+      "@type": "@id"
+    },
+    "registers": {
+      "@id": "agl:registers",
+      "@container": "@list"
+    },
+    "EnergyServicePointDetailV2_allOf_relatedParticipants": "agl:EnergyServicePointDetailV2_allOf_relatedParticipants",
+    "party": {
+      "@id": "agl:party",
+      "@type": "xsd:string"
+    },
+    "role": {
+      "@id": "agl:role",
+      "@type": "xsd:string"
+    },
+    "EnergyServicePointDetailV2_allOf_registers": "agl:EnergyServicePointDetailV2_allOf_registers",
+    "registerId": {
+      "@id": "agl:registerId",
+      "@type": "xsd:string"
+    },
+    "registerSuffix": {
+      "@id": "agl:registerSuffix",
+      "@type": "xsd:string"
+    },
+    "averagedDailyLoad": {
+      "@id": "agl:averagedDailyLoad",
+      "@type": "xsd:decimal"
+    },
+    "registerConsumptionType": {
+      "@id": "agl:registerConsumptionType",
+      "@type": "xsd:string"
+    },
+    "networkTariffCode": {
+      "@id": "agl:networkTariffCode",
+      "@type": "xsd:string"
+    },
+    "unitOfMeasure": {
+      "@id": "agl:unitOfMeasure",
+      "@type": "xsd:string"
+    },
+    "timeOfDay": {
+      "@id": "agl:timeOfDay",
+      "@type": "xsd:string"
+    },
+    "multiplier": {
+      "@id": "agl:multiplier",
+      "@type": "xsd:decimal"
+    },
+    "controlledLoad": {
+      "@id": "agl:controlledLoad",
+      "@type": "xsd:boolean"
+    },
+    "consumptionType": {
+      "@id": "agl:consumptionType",
+      "@type": "xsd:string"
+    },
+    "EnergyServicePointV2": "agl:EnergyServicePointV2",
+    "nationalMeteringId": {
+      "@id": "agl:nationalMeteringId",
+      "@type": "xsd:string"
+    },
+    "servicePointClassification": {
+      "@id": "agl:servicePointClassification",
+      "@type": "xsd:string"
+    },
+    "servicePointStatus": {
+      "@id": "agl:servicePointStatus",
+      "@type": "xsd:string"
+    },
+    "jurisdictionCode": {
+      "@id": "agl:jurisdictionCode",
+      "@type": "xsd:string"
+    },
+    "isGenerator": {
+      "@id": "agl:isGenerator",
+      "@type": "xsd:boolean"
+    },
+    "validFromDate": {
+      "@id": "agl:validFromDate",
+      "@type": "xsd:string"
+    },
+    "lastUpdateDateTime": {
+      "@id": "agl:lastUpdateDateTime",
+      "@type": "xsd:string"
+    },
+    "lastConsumerChangeDate": {
+      "@id": "agl:lastConsumerChangeDate",
+      "@type": "xsd:string"
+    },
+    "consumerProfile": {
+      "@id": "agl:consumerProfile",
+      "@type": "@id"
+    },
+    "EnergyServicePointV2_consumerProfile": "agl:EnergyServicePointV2_consumerProfile",
+    "classification": {
+      "@id": "agl:classification",
+      "@type": "xsd:string"
+    },
+    "threshold": {
+      "@id": "agl:threshold",
+      "@type": "xsd:string"
+    },
+    "EnergyServicePointDetailV2_allOf_distributionLossFactor": "agl:EnergyServicePointDetailV2_allOf_distributionLossFactor",
+    "description": {
+      "@id": "agl:description",
+      "@type": "xsd:string"
+    },
+    "lossValue": {
+      "@id": "agl:lossValue",
+      "@type": "xsd:string"
+    },
+    "EnergyServicePointDetailV2_allOf": "agl:EnergyServicePointDetailV2_allOf",
+    "distributionLossFactor": {
+      "@id": "agl:distributionLossFactor",
+      "@type": "@id"
+    },
+    "relatedParticipants": {
+      "@id": "agl:relatedParticipants",
+      "@container": "@list"
+    },
+    "location": {
+      "@id": "agl:location"
+    },
+    "meters": {
+      "@id": "agl:meters",
+      "@container": "@list"
+    },
+    "EnergyUsageRead_intervalRead": "agl:EnergyUsageRead_intervalRead",
+    "readIntervalLength": {
+      "@id": "agl:readIntervalLength",
+      "@type": "xsd:integer"
+    },
+    "aggregateValue": {
+      "@id": "agl:aggregateValue",
+      "@type": "xsd:decimal"
+    },
+    "intervalReads": {
+      "@id": "agl:intervalReads",
+      "@container": "@list"
+    },
+    "readQualities": {
+      "@id": "agl:readQualities",
+      "@container": "@list"
+    },
+    "EnergyUsageRead_intervalRead_readQualities": "agl:EnergyUsageRead_intervalRead_readQualities",
+    "startInterval": {
+      "@id": "agl:startInterval",
+      "@type": "xsd:integer"
+    },
+    "endInterval": {
+      "@id": "agl:endInterval",
+      "@type": "xsd:integer"
+    },
+    "quality": {
+      "@id": "agl:quality",
+      "@type": "xsd:string"
+    },
+    "EnergyUsageListResponse": "agl:EnergyUsageListResponse",
+    "EnergyUsageRead_basicRead": "agl:EnergyUsageRead_basicRead",
+    "value": {
+      "@id": "agl:value",
+      "@type": "xsd:decimal"
+    },
+    "EnergyUsageRead": "agl:EnergyUsageRead",
+    "readStartDate": {
+      "@id": "agl:readStartDate",
+      "@type": "xsd:string"
+    },
+    "readEndDate": {
+      "@id": "agl:readEndDate",
+      "@type": "xsd:string"
+    },
+    "readUType": {
+      "@id": "agl:readUType",
+      "@type": "xsd:string"
+    },
+    "basicRead": {
+      "@id": "agl:basicRead",
+      "@type": "@id"
+    },
+    "intervalRead": {
+      "@id": "agl:intervalRead",
+      "@type": "@id"
+    },
+    "EnergyUsageListResponse_data": "agl:EnergyUsageListResponse_data",
+    "reads": {
+      "@id": "agl:reads",
+      "@container": "@list"
+    },
+    "RequestAccountIdListV1": "agl:RequestAccountIdListV1",
+    "EnergyBalanceResponse": "agl:EnergyBalanceResponse",
+    "EnergyBalanceResponse_data": "agl:EnergyBalanceResponse_data",
+    "balance": {
+      "@id": "agl:balance",
+      "@type": "xsd:string"
+    },
+    "EnergyBalanceListResponse_data_balances": "agl:EnergyBalanceListResponse_data_balances",
+    "accountId": {
+      "@id": "agl:accountId"
+    },
+    "EnergyBalanceListResponse_data": "agl:EnergyBalanceListResponse_data",
+    "balances": {
+      "@id": "agl:balances",
+      "@container": "@list"
+    },
+    "RequestAccountIdListV1_data": "agl:RequestAccountIdListV1_data",
+    "accountIds": {
+      "@id": "agl:accountIds",
+      "@container": "@list"
+    },
+    "EnergyBalanceListResponse": "agl:EnergyBalanceListResponse",
+    "EnergyInvoiceListResponse_data": "agl:EnergyInvoiceListResponse_data",
+    "invoices": {
+      "@id": "agl:invoices",
+      "@container": "@list"
+    },
+    "EnergyInvoiceAccountCharges": "agl:EnergyInvoiceAccountCharges",
+    "totalCharges": {
+      "@id": "agl:totalCharges",
+      "@type": "xsd:string"
+    },
+    "totalDiscounts": {
+      "@id": "agl:totalDiscounts",
+      "@type": "xsd:string"
+    },
+    "totalGst": {
+      "@id": "agl:totalGst",
+      "@type": "xsd:string"
+    },
+    "EnergyBillingOtherTransaction": "agl:EnergyBillingOtherTransaction",
+    "invoiceNumber": {
+      "@id": "agl:invoiceNumber",
+      "@type": "xsd:string"
+    },
+    "startDate": {
+      "@id": "agl:startDate",
+      "@type": "xsd:string"
+    },
+    "endDate": {
+      "@id": "agl:endDate",
+      "@type": "xsd:string"
+    },
+    "amount": {
+      "@id": "agl:amount",
+      "@type": "xsd:string"
+    },
+    "calculationFactors": {
+      "@id": "agl:calculationFactors",
+      "@container": "@list"
+    },
+    "adjustments": {
+      "@id": "agl:adjustments",
+      "@container": "@list"
+    },
+    "EnergyInvoiceListResponse": "agl:EnergyInvoiceListResponse",
+    "EnergyBillingUsageTransactionV2_adjustments": "agl:EnergyBillingUsageTransactionV2_adjustments",
+    "EnergyInvoiceGasUsageCharges": "agl:EnergyInvoiceGasUsageCharges",
+    "totalUsageCharges": {
+      "@id": "agl:totalUsageCharges",
+      "@type": "xsd:string"
+    },
+    "totalGenerationCredits": {
+      "@id": "agl:totalGenerationCredits",
+      "@type": "xsd:string"
+    },
+    "totalOnceOffCharges": {
+      "@id": "agl:totalOnceOffCharges",
+      "@type": "xsd:string"
+    },
+    "totalOnceOffDiscounts": {
+      "@id": "agl:totalOnceOffDiscounts",
+      "@type": "xsd:string"
+    },
+    "otherCharges": {
+      "@id": "agl:otherCharges",
+      "@container": "@list"
+    },
+    "EnergyBillingUsageTransactionV2_calculationFactors": "agl:EnergyBillingUsageTransactionV2_calculationFactors",
+    "EnergyInvoice": "agl:EnergyInvoice",
+    "issueDate": {
+      "@id": "agl:issueDate",
+      "@type": "xsd:string"
+    },
+    "dueDate": {
+      "@id": "agl:dueDate",
+      "@type": "xsd:string"
+    },
+    "period": {
+      "@id": "agl:period",
+      "@type": "@id"
+    },
+    "invoiceAmount": {
+      "@id": "agl:invoiceAmount",
+      "@type": "xsd:string"
+    },
+    "gstAmount": {
+      "@id": "agl:gstAmount",
+      "@type": "xsd:string"
+    },
+    "payOnTimeDiscount": {
+      "@id": "agl:payOnTimeDiscount",
+      "@type": "@id"
+    },
+    "balanceAtIssue": {
+      "@id": "agl:balanceAtIssue",
+      "@type": "xsd:string"
+    },
+    "gas": {
+      "@id": "agl:gas"
+    },
+    "electricity": {
+      "@id": "agl:electricity"
+    },
+    "accountCharges": {
+      "@id": "agl:accountCharges",
+      "@type": "@id"
+    },
+    "paymentStatus": {
+      "@id": "agl:paymentStatus",
+      "@type": "xsd:string"
+    },
+    "MeasureUnitEnum": "agl:MeasureUnitEnum",
+    "EnergyBillingListResponseV3_data": "agl:EnergyBillingListResponseV3_data",
+    "transactions": {
+      "@id": "agl:transactions",
+      "@container": "@list"
+    },
+    "EnergyInvoice_payOnTimeDiscount": "agl:EnergyInvoice_payOnTimeDiscount",
+    "discountAmount": {
+      "@id": "agl:discountAmount",
+      "@type": "xsd:string"
+    },
+    "date": {
+      "@id": "agl:date",
+      "@type": "xsd:string"
+    },
+    "EnergyBillingTransactionV3": "agl:EnergyBillingTransactionV3",
+    "executionDateTime": {
+      "@id": "agl:executionDateTime",
+      "@type": "xsd:string"
+    },
+    "gst": {
+      "@id": "agl:gst",
+      "@type": "xsd:string"
+    },
+    "transactionUType": {
+      "@id": "agl:transactionUType",
+      "@type": "xsd:string"
+    },
+    "usage": {
+      "@id": "agl:usage"
+    },
+    "demand": {
+      "@id": "agl:demand"
+    },
+    "onceOff": {
+      "@id": "agl:onceOff"
+    },
+    "payment": {
+      "@id": "agl:payment"
+    },
+    "EnergyBillingListResponseV3": "agl:EnergyBillingListResponseV3",
+    "EnergyBillingDemandTransactionV3": "agl:EnergyBillingDemandTransactionV3",
+    "timeOfUseType": {
+      "@id": "agl:timeOfUseType",
+      "@type": "xsd:string"
+    },
+    "isEstimate": {
+      "@id": "agl:isEstimate",
+      "@type": "xsd:boolean"
+    },
+    "measureUnit": {
+      "@id": "agl:measureUnit",
+      "@type": "xsd:string"
+    },
+    "rate": {
+      "@id": "agl:rate",
+      "@type": "xsd:decimal"
+    },
+    "EnergyInvoiceElectricityUsageCharges": "agl:EnergyInvoiceElectricityUsageCharges",
+    "EnergyBillingUsageTransactionV2": "agl:EnergyBillingUsageTransactionV2",
+    "EnergyInvoiceGasUsageCharges_otherCharges": "agl:EnergyInvoiceGasUsageCharges_otherCharges",
+    "EnergyInvoice_period": "agl:EnergyInvoice_period",
+    "EnergyBillingOnceOffTransaction": "agl:EnergyBillingOnceOffTransaction",
+    "EnergyBillingPaymentTransaction": "agl:EnergyBillingPaymentTransaction",
+    "method": {
+      "@id": "agl:method",
+      "@type": "xsd:string"
+    },
+    "EnergyPaymentSchedule_digitalWallet": "agl:EnergyPaymentSchedule_digitalWallet",
+    "name": {
+      "@id": "agl:name",
+      "@type": "xsd:string"
+    },
+    "identifier": {
+      "@id": "agl:identifier",
+      "@type": "xsd:string"
+    },
+    "provider": {
+      "@id": "agl:provider",
+      "@type": "xsd:string"
+    },
+    "paymentFrequency": {
+      "@id": "agl:paymentFrequency",
+      "@type": "xsd:string"
+    },
+    "calculationType": {
+      "@id": "agl:calculationType",
+      "@type": "xsd:string"
+    },
+    "EnergyDaysEnum": "agl:EnergyDaysEnum",
+    "EnergyPlanSolarFeedInTariffV3_timeVariations": "agl:EnergyPlanSolarFeedInTariffV3_timeVariations",
+    "days": {
+      "@id": "agl:days",
+      "@container": "@list"
+    },
+    "startTime": {
+      "@id": "agl:startTime",
+      "@type": "xsd:string"
+    },
+    "endTime": {
+      "@id": "agl:endTime",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanGreenPowerCharges_tiers": "agl:EnergyPlanGreenPowerCharges_tiers",
+    "percentGreen": {
+      "@id": "agl:percentGreen",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanTariffPeriodV2_timeOfUseRates": "agl:EnergyPlanTariffPeriodV2_timeOfUseRates",
+    "displayName": {
+      "@id": "agl:displayName",
+      "@type": "xsd:string"
+    },
+    "rates": {
+      "@id": "agl:rates",
+      "@container": "@list"
+    },
+    "timeOfUse": {
+      "@id": "agl:timeOfUse",
+      "@container": "@list"
+    },
+    "EnergyPaymentScheduleResponse": "agl:EnergyPaymentScheduleResponse",
+    "EnergyAccountDetailResponseV4": "agl:EnergyAccountDetailResponseV4",
+    "EnergyPlanSolarFeedInTariffV3": "agl:EnergyPlanSolarFeedInTariffV3",
+    "scheme": {
+      "@id": "agl:scheme",
+      "@type": "xsd:string"
+    },
+    "payerType": {
+      "@id": "agl:payerType",
+      "@type": "xsd:string"
+    },
+    "tariffUType": {
+      "@id": "agl:tariffUType",
+      "@type": "xsd:string"
+    },
+    "singleTariff": {
+      "@id": "agl:singleTariff",
+      "@type": "@id"
+    },
+    "timeVaryingTariffs": {
+      "@id": "agl:timeVaryingTariffs",
+      "@container": "@list"
+    },
+    "EnergyAccountListResponseV2_data": "agl:EnergyAccountListResponseV2_data",
+    "accounts": {
+      "@id": "agl:accounts",
+      "@container": "@list"
+    },
+    "EnergyAccountListResponseV2": "agl:EnergyAccountListResponseV2",
+    "EnergyAccountDetailV4_allOf_planDetail": "agl:EnergyAccountDetailV4_allOf_planDetail",
+    "fuelType": {
+      "@id": "agl:fuelType",
+      "@type": "xsd:string"
+    },
+    "isContingentPlan": {
+      "@id": "agl:isContingentPlan",
+      "@type": "xsd:boolean"
+    },
+    "meteringCharges": {
+      "@id": "agl:meteringCharges",
+      "@container": "@list"
+    },
+    "gasContract": {
+      "@id": "agl:gasContract"
+    },
+    "electricityContract": {
+      "@id": "agl:electricityContract"
+    },
+    "EnergyPaymentSchedule": "agl:EnergyPaymentSchedule",
+    "paymentScheduleUType": {
+      "@id": "agl:paymentScheduleUType",
+      "@type": "xsd:string"
+    },
+    "cardDebit": {
+      "@id": "agl:cardDebit",
+      "@type": "@id"
+    },
+    "directDebit": {
+      "@id": "agl:directDebit",
+      "@type": "@id"
+    },
+    "digitalWallet": {
+      "@id": "agl:digitalWallet",
+      "@type": "@id"
+    },
+    "manualPayment": {
+      "@id": "agl:manualPayment",
+      "@type": "@id"
+    },
+    "EnergyAccountDetailV4_allOf_authorisedContacts": "agl:EnergyAccountDetailV4_allOf_authorisedContacts",
+    "EnergyPlanGreenPowerCharges": "agl:EnergyPlanGreenPowerCharges",
+    "tiers": {
+      "@id": "agl:tiers",
+      "@container": "@list"
+    },
+    "EnergyPlanDiscounts_percentOverThreshold": "agl:EnergyPlanDiscounts_percentOverThreshold",
+    "usageAmount": {
+      "@id": "agl:usageAmount",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanDetailV3_allOf_meteringCharges": "agl:EnergyPlanDetailV3_allOf_meteringCharges",
+    "minimumValue": {
+      "@id": "agl:minimumValue",
+      "@type": "xsd:string"
+    },
+    "maximumValue": {
+      "@id": "agl:maximumValue",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanDiscounts_percentOfUse": "agl:EnergyPlanDiscounts_percentOfUse",
+    "EnergyPlanSolarFeedInTariffV3_singleTariff": "agl:EnergyPlanSolarFeedInTariffV3_singleTariff",
+    "EnergyConcessionsResponse_data": "agl:EnergyConcessionsResponse_data",
+    "concessions": {
+      "@id": "agl:concessions",
+      "@container": "@list"
+    },
+    "EnergyConcession": "agl:EnergyConcession",
+    "additionalInfo": {
+      "@id": "agl:additionalInfo",
+      "@type": "xsd:string"
+    },
+    "additionalInfoUri": {
+      "@id": "agl:additionalInfoUri",
+      "@type": "xsd:string"
+    },
+    "discountFrequency": {
+      "@id": "agl:discountFrequency",
+      "@type": "xsd:string"
+    },
+    "percentage": {
+      "@id": "agl:percentage",
+      "@type": "xsd:string"
+    },
+    "appliedTo": {
+      "@id": "agl:appliedTo",
+      "@container": "@list"
+    },
+    "EnergyPlanDiscounts_fixedAmount": "agl:EnergyPlanDiscounts_fixedAmount",
+    "EnergyPlanControlledLoadV2_singleRate_rates": "agl:EnergyPlanControlledLoadV2_singleRate_rates",
+    "unitPrice": {
+      "@id": "agl:unitPrice",
+      "@type": "xsd:string"
+    },
+    "volume": {
+      "@id": "agl:volume",
+      "@type": "xsd:decimal"
+    },
+    "EnergyPlanTariffPeriodV2_bandedDailySupplyCharges": "agl:EnergyPlanTariffPeriodV2_bandedDailySupplyCharges",
+    "EnergyPlanControlledLoadV2_timeOfUseRates": "agl:EnergyPlanControlledLoadV2_timeOfUseRates",
+    "dailySupplyCharge": {
+      "@id": "agl:dailySupplyCharge",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanContractV3_intrinsicGreenPower": "agl:EnergyPlanContractV3_intrinsicGreenPower",
+    "greenPercentage": {
+      "@id": "agl:greenPercentage",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanContractV3": "agl:EnergyPlanContractV3",
+    "additionalFeeInformation": {
+      "@id": "agl:additionalFeeInformation",
+      "@type": "xsd:string"
+    },
+    "pricingModel": {
+      "@id": "agl:pricingModel",
+      "@type": "xsd:string"
+    },
+    "timeZone": {
+      "@id": "agl:timeZone",
+      "@type": "xsd:string"
+    },
+    "isFixed": {
+      "@id": "agl:isFixed",
+      "@type": "xsd:boolean"
+    },
+    "variation": {
+      "@id": "agl:variation",
+      "@type": "xsd:string"
+    },
+    "onExpiryDescription": {
+      "@id": "agl:onExpiryDescription",
+      "@type": "xsd:string"
+    },
+    "paymentOption": {
+      "@id": "agl:paymentOption",
+      "@container": "@list"
+    },
+    "intrinsicGreenPower": {
+      "@id": "agl:intrinsicGreenPower",
+      "@type": "@id"
+    },
+    "incentives": {
+      "@id": "agl:incentives",
+      "@container": "@list"
+    },
+    "discounts": {
+      "@id": "agl:discounts",
+      "@container": "@list"
+    },
+    "greenPowerCharges": {
+      "@id": "agl:greenPowerCharges",
+      "@container": "@list"
+    },
+    "eligibility": {
+      "@id": "agl:eligibility",
+      "@container": "@list"
+    },
+    "fees": {
+      "@id": "agl:fees",
+      "@container": "@list"
+    },
+    "solarFeedInTariff": {
+      "@id": "agl:solarFeedInTariff",
+      "@container": "@list"
+    },
+    "tariffPeriod": {
+      "@id": "agl:tariffPeriod",
+      "@container": "@list"
+    },
+    "EnergyPlanSolarFeedInTariffV3_timeVaryingTariffs": "agl:EnergyPlanSolarFeedInTariffV3_timeVaryingTariffs",
+    "timeVariations": {
+      "@id": "agl:timeVariations",
+      "@container": "@list"
+    },
+    "EnergyConcessionsResponse": "agl:EnergyConcessionsResponse",
+    "EnergyPlanControlledLoadV2_singleRate": "agl:EnergyPlanControlledLoadV2_singleRate",
+    "EnergyPaymentSchedule_directDebit": "agl:EnergyPaymentSchedule_directDebit",
+    "isTokenised": {
+      "@id": "agl:isTokenised",
+      "@type": "xsd:boolean"
+    },
+    "bsb": {
+      "@id": "agl:bsb",
+      "@type": "xsd:string"
+    },
+    "accountNumber": {
+      "@id": "agl:accountNumber",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanControlledLoadV2_timeOfUse": "agl:EnergyPlanControlledLoadV2_timeOfUse",
+    "EnergyPlanFees": "agl:EnergyPlanFees",
+    "term": {
+      "@id": "agl:term",
+      "@type": "xsd:string"
+    },
+    "EnergyAccountV2_allOf": "agl:EnergyAccountV2_allOf",
+    "plans": {
+      "@id": "agl:plans",
+      "@container": "@list"
+    },
+    "EnergyPlanControlledLoadV2": "agl:EnergyPlanControlledLoadV2",
+    "rateBlockUType": {
+      "@id": "agl:rateBlockUType",
+      "@type": "xsd:string"
+    },
+    "singleRate": {
+      "@id": "agl:singleRate",
+      "@type": "@id"
+    },
+    "timeOfUseRates": {
+      "@id": "agl:timeOfUseRates",
+      "@container": "@list"
+    },
+    "EnergyPlanTariffPeriodV2_singleRate": "agl:EnergyPlanTariffPeriodV2_singleRate",
+    "generalUnitPrice": {
+      "@id": "agl:generalUnitPrice",
+      "@type": "xsd:string"
+    },
+    "EnergyPaymentSchedule_manualPayment": "agl:EnergyPaymentSchedule_manualPayment",
+    "billFrequency": {
+      "@id": "agl:billFrequency",
+      "@type": "xsd:string"
+    },
+    "EnergyAccountDetailV4_allOf": "agl:EnergyAccountDetailV4_allOf",
+    "EnergyPlanIncentives": "agl:EnergyPlanIncentives",
+    "category": {
+      "@id": "agl:category",
+      "@type": "xsd:string"
+    },
+    "EnergyAccountBaseV2": "agl:EnergyAccountBaseV2",
+    "openStatus": {
+      "@id": "agl:openStatus",
+      "@type": "xsd:string"
+    },
+    "creationDate": {
+      "@id": "agl:creationDate",
+      "@type": "xsd:string"
+    },
+    "EnergyPlanSolarFeedInTariffV3_singleTariff_rates": "agl:EnergyPlanSolarFeedInTariffV3_singleTariff_rates"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "AGL Energy API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects AGL Energy's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-20) from openapi/agl-energy-data-holder-customers-api-openapi.yml, openapi/agl-energy-data-holder-operations-api-openapi.yml, openapi/agl-energy-distributed-energy-resources-api-openapi.yml.",
+  "dcterms:created": "2026-10-20",
+  "dcterms:source": [
+    "openapi/agl-energy-data-holder-customers-api-openapi.yml",
+    "openapi/agl-energy-data-holder-operations-api-openapi.yml",
+    "openapi/agl-energy-distributed-energy-resources-api-openapi.yml",
+    "openapi/agl-energy-electricity-service-points-api-openapi.yml",
+    "openapi/agl-energy-electricity-usage-api-openapi.yml"
+  ]
+}

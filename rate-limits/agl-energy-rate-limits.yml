@@ -1,0 +1,53 @@
+name: AGL Energy rate limits
+generated: '2026-10-20'
+method: searched
+source: https://consumerdatastandardsaustralia.github.io/standards/
+note: >-
+  AGL publishes no rate-limit page of its own (www.agl.com.au answers 403 bot-challenge and there is no
+  developer portal). As a designated CDR energy data holder (public base URI https://public.cdr.agl.com.au)
+  AGL is bound by the Consumer Data Standards non-functional requirements, which set the traffic thresholds
+  above which a data holder may throttle or reject calls. These are the thresholds recorded here; they are
+  regulator-set, not AGL-authored. A live GET of /cds-au/v1/discovery/status on 2026-10-20 returned 200 with
+  no X-RateLimit-* / RateLimit-* headers. Exhaustion is signalled with 429 and a Retry-After header.
+limit_count: 6
+status_on_exhaustion: 429
+headers:
+- name: Retry-After
+  limit_text: The holder should include this header along with responses with the HTTP status code of 429 Too many requests
+limits:
+- name: Customer Present per-customer TPS
+  limit_text: 10 TPS per customer
+  max: 10
+  window: 1 second
+  scope: per-customer
+- name: Customer Present per-software-product TPS
+  limit_text: 50 TPS per Data Recipient Software Product
+  max: 50
+  window: 1 second
+  scope: per-data-recipient-software-product
+- name: Unattended sessions per day (low traffic periods)
+  limit_text: 20 sessions per day, per customer, per Data Recipient Software Product
+  max: 20
+  window: 1 day
+  scope: per-customer-per-software-product
+- name: Unattended calls per session
+  limit_text: 100 total calls per session
+  max: 100
+  scope: per-session
+- name: Unattended TPS per session
+  limit_text: 5TPS per session
+  max: 5
+  window: 1 second
+  scope: per-session
+- name: Public (unauthenticated) traffic
+  limit_text: 300 TPS total across all consumers (additive to secure traffic)
+  max: 300
+  window: 1 second
+  scope: all-consumers
+  endpoint: /cds-au/v1/discovery/status, /cds-au/v1/discovery/outages, /cds-au/v1/energy/plans
+- name: Secure traffic aggregate peak (tiered by active authorisations)
+  limit_text: For Data Holders with more than 60,000 active authorisations, 450 peak TPS total across all consumers
+  max: 450
+  window: 1 second
+  scope: data-holder-total
+  note: Tiers run from 150 peak TPS (0 to 10,000 active authorisations) to 450; AGL's authorisation count is not published, so its tier is unknown.

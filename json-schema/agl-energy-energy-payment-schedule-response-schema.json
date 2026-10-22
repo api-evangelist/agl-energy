@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-payment-schedule-response-schema.json",
+  "title": "EnergyPaymentScheduleResponse",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-accounts-api-openapi.yml#/components/schemas/EnergyPaymentScheduleResponse",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyPaymentScheduleResponse_data"
+    },
+    "links": {
+      "$ref": "#/$defs/Links"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "required": [
+    "data",
+    "links"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyPaymentSchedule": {
+      "properties": {
+        "amount": {
+          "description": "Optional payment amount indicating that a constant payment amount is scheduled to be paid (used in bill smoothing scenarios).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "paymentScheduleUType": {
+          "description": "The type of object present in this response.",
+          "enum": [
+            "cardDebit",
+            "directDebit",
+            "manualPayment",
+            "digitalWallet"
+          ],
+          "type": "string"
+        },
+        "cardDebit": {
+          "$ref": "#/$defs/EnergyPaymentSchedule_cardDebit"
+        },
+        "directDebit": {
+          "$ref": "#/$defs/EnergyPaymentSchedule_directDebit"
+        },
+        "digitalWallet": {
+          "$ref": "#/$defs/EnergyPaymentSchedule_digitalWallet"
+        },
+        "manualPayment": {
+          "$ref": "#/$defs/EnergyPaymentSchedule_manualPayment"
+        }
+      },
+      "required": [
+        "paymentScheduleUType"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "cardDebit",
+        "directDebit",
+        "manualPayment",
+        "digitalWallet"
+      ]
+    },
+    "EnergyPaymentScheduleResponse_data": {
+      "properties": {
+        "paymentSchedules": {
+          "description": "Array may be empty if no payment schedules exist.",
+          "items": {
+            "$ref": "#/$defs/EnergyPaymentSchedule"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "paymentSchedules"
+      ],
+      "type": "object"
+    },
+    "EnergyPaymentSchedule_cardDebit": {
+      "description": "Represents a regular credit card payment schedule. Mandatory if _paymentScheduleUType_ is set to `cardDebit`.",
+      "properties": {
+        "cardScheme": {
+          "description": "The type of credit card held on file.",
+          "enum": [
+            "VISA",
+            "MASTERCARD",
+            "AMEX",
+            "DINERS",
+            "OTHER",
+            "UNKNOWN"
+          ],
+          "type": "string"
+        },
+        "paymentFrequency": {
+          "description": "The frequency that payments will occur. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "calculationType": {
+          "description": "The mechanism by which the payment amount is calculated. Explanation of values are as follows:<br/><ul><li>`STATIC`: Indicates a consistent, static amount, per payment</li><li>`BALANCE`: Indicates that the outstanding balance for the account is paid per period</li><li>`CALCULATED`: Indicates that the payment amount is variable and calculated using a pre-defined algorithm.</li></ul>",
+          "enum": [
+            "STATIC",
+            "BALANCE",
+            "CALCULATED"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "calculationType",
+        "cardScheme",
+        "paymentFrequency"
+      ],
+      "type": "object"
+    },
+    "EnergyPaymentSchedule_digitalWallet": {
+      "description": "Represents a regular payment from a digital wallet. Mandatory if _paymentScheduleUType_ is set to `digitalWallet`.",
+      "properties": {
+        "name": {
+          "description": "The display name of the wallet as given by the customer, else a default value defined by the data holder.",
+          "type": "string"
+        },
+        "identifier": {
+          "description": "The identifier of the digital wallet (dependent on type).",
+          "type": "string"
+        },
+        "type": {
+          "description": "The type of the digital wallet identifier.",
+          "enum": [
+            "EMAIL",
+            "CONTACT_NAME",
+            "TELEPHONE"
+          ],
+          "type": "string"
+        },
+        "provider": {
+          "description": "The provider of the digital wallet.",
+          "enum": [
+            "PAYPAL_AU",
+            "OTHER"
+          ],
+          "type": "string"
+        },
+        "paymentFrequency": {
+          "description": "The frequency that payments will occur. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "calculationType": {
+          "description": "The mechanism by which the payment amount is calculated. Explanation of values are as follows:<br/><ul><li>`STATIC`: Indicates a consistent, static amount, per payment</li><li>`BALANCE`: Indicates that the outstanding balance for the account is paid per period</li><li>`CALCULATED`: Indicates that the payment amount is variable and calculated using a pre-defined algorithm.</li></ul>",
+          "enum": [
+            "STATIC",
+            "BALANCE",
+            "CALCULATED"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "calculationType",
+        "identifier",
+        "name",
+        "paymentFrequency",
+        "provider",
+        "type"
+      ],
+      "type": "object"
+    },
+    "EnergyPaymentSchedule_directDebit": {
+      "description": "Represents a regular direct debit from a specified bank account. Mandatory if _paymentScheduleUType_ is set to `directDebit`.",
+      "properties": {
+        "isTokenised": {
+          "default": false,
+          "description": "Flag indicating that the account details are tokenised, or held in a closed system, and is not accessible through any other channels. `false` if absent.",
+          "type": "boolean"
+        },
+        "bsb": {
+          "description": "The unmasked BSB for the account to be debited. Is expected to be formatted as digits only with leading zeros included and no punctuation or spaces. Is required if _isTokenised_ is absent or `false`.",
+          "type": "string"
+        },
+        "accountNumber": {
+          "description": "The unmasked account number for the account to be debited. Is expected to be formatted as digits only with leading zeros included and no punctuation or spaces. Is required if _isTokenised_ is absent or `false`.",
+          "type": "string"
+        },
+        "paymentFrequency": {
+          "description": "The frequency that payments will occur. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "calculationType": {
+          "description": "The mechanism by which the payment amount is calculated. Explanation of values are as follows:<br/><ul><li>`STATIC`: Indicates a consistent, static amount, per payment</li><li>`BALANCE`: Indicates that the outstanding balance for the account is paid per period</li><li>`CALCULATED`: Indicates that the payment amount is variable and calculated using a pre-defined algorithm.</li></ul>",
+          "enum": [
+            "STATIC",
+            "BALANCE",
+            "CALCULATED"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "calculationType",
+        "paymentFrequency"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "bsb",
+        "accountNumber"
+      ]
+    },
+    "EnergyPaymentSchedule_manualPayment": {
+      "description": "Represents a manual payment schedule where the customer pays in response to a delivered statement. Mandatory if _paymentScheduleUType_ is set to `manualPayment`.",
+      "properties": {
+        "billFrequency": {
+          "description": "The frequency with which a bill will be issued. Formatted according to [ISO 8601 Durations](https://en.wikipedia.org/wiki/ISO_8601#Durations) (excludes recurrence syntax).",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        }
+      },
+      "required": [
+        "billFrequency"
+      ],
+      "type": "object"
+    },
+    "Links": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object"
+    },
+    "Meta": {
+      "type": "object"
+    }
+  }
+}

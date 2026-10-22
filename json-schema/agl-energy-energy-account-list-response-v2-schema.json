@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-account-list-response-v2-schema.json",
+  "title": "EnergyAccountListResponseV2",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-accounts-api-openapi.yml#/components/schemas/EnergyAccountListResponseV2",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyAccountListResponseV2_data"
+    },
+    "links": {
+      "$ref": "#/$defs/LinksPaginated"
+    },
+    "meta": {
+      "$ref": "#/$defs/MetaPaginated"
+    }
+  },
+  "required": [
+    "data",
+    "links",
+    "meta"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyAccountBaseV2": {
+      "properties": {
+        "accountId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyAccountId"
+            }
+          ],
+          "description": "Unique identifier for the account."
+        },
+        "accountNumber": {
+          "description": "Optional identifier of the account as defined by the data holder. This must be the value presented on physical statements (if it exists) and must not be used for the value of _accountId_.",
+          "type": "string"
+        },
+        "displayName": {
+          "description": "An optional display name for the account if one exists or can be derived. The content of this field is at the discretion of the data holder.",
+          "type": "string"
+        },
+        "openStatus": {
+          "default": "OPEN",
+          "description": "Open or closed status for the account. If not present then `OPEN` is assumed.",
+          "enum": [
+            "CLOSED",
+            "OPEN"
+          ],
+          "type": "string"
+        },
+        "creationDate": {
+          "description": "The date that the account was created or opened. Mandatory if _openStatus_ is `OPEN`.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        }
+      },
+      "required": [
+        "accountId"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "creationDate"
+      ]
+    },
+    "EnergyAccountId": {
+      "description": "A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "EnergyAccountListResponseV2_data": {
+      "properties": {
+        "accounts": {
+          "description": "Array of accounts.",
+          "items": {
+            "$ref": "#/$defs/EnergyAccountV2"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "accounts"
+      ],
+      "type": "object"
+    },
+    "EnergyAccountV2": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/EnergyAccountBaseV2"
+        },
+        {
+          "$ref": "#/$defs/EnergyAccountV2_allOf"
+        }
+      ]
+    },
+    "EnergyAccountV2_allOf": {
+      "description": "The array of plans containing service points and associated plan details.",
+      "properties": {
+        "plans": {
+          "description": "The array of plans containing service points and associated plan details.",
+          "items": {
+            "$ref": "#/$defs/EnergyAccountV2_allOf_plans"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "plans"
+      ],
+      "type": "object"
+    },
+    "EnergyAccountV2_allOf_planOverview": {
+      "description": "Mandatory if _openStatus_ is `OPEN`.",
+      "properties": {
+        "displayName": {
+          "description": "The name of the plan if one exists.",
+          "type": "string"
+        },
+        "startDate": {
+          "description": "The start date of the applicability of this plan.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "endDate": {
+          "description": "The end date of the applicability of this plan.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        }
+      },
+      "required": [
+        "startDate"
+      ],
+      "type": "object"
+    },
+    "EnergyAccountV2_allOf_plans": {
+      "properties": {
+        "nickname": {
+          "description": "Optional display name for the plan provided by the customer to help differentiate multiple plans.",
+          "type": "string"
+        },
+        "servicePointIds": {
+          "description": "An array of _servicePointId_ values, representing NMIs, that this plan is linked to. If there are no service points allocated to this plan then an empty array would be expected.",
+          "items": {
+            "$ref": "#/$defs/EnergyServicePointId"
+          },
+          "type": "array"
+        },
+        "planOverview": {
+          "$ref": "#/$defs/EnergyAccountV2_allOf_planOverview"
+        }
+      },
+      "required": [
+        "servicePointIds"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "planOverview"
+      ]
+    },
+    "EnergyServicePointId": {
+      "description": "A unique identifier for an Energy service point, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "LinksPaginated": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "first": {
+          "description": "URI to the first page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "prev": {
+          "description": "URI to the previous page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "next": {
+          "description": "URI to the next page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "last": {
+          "description": "URI to the last page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "first",
+        "prev",
+        "next",
+        "last"
+      ]
+    },
+    "MetaPaginated": {
+      "properties": {
+        "totalRecords": {
+          "description": "The total number of records in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        },
+        "totalPages": {
+          "description": "The total number of pages in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        }
+      },
+      "required": [
+        "totalPages",
+        "totalRecords"
+      ],
+      "type": "object"
+    }
+  }
+}

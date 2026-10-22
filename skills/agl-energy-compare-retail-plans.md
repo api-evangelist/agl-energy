@@ -1,11 +1,12 @@
 ---
-name: Compare AGL retail energy plans and tariffs
+name: agl-energy-compare-retail-plans
+title: "Compare AGL retail energy plans and tariffs"
 description: >-
   Pull AGL's full retail plan catalogue as Consumer Data Right Product Reference
   Data and drill into the tariff structure of any plan — rates, supply charges,
   solar feed-in, discounts, fees and eligibility. Completely anonymous: no key,
   no accreditation, no consumer consent.
-api: openapi/agl-energy-cds-energy-openapi.json
+api: openapi/agl-energy-energy-plans-api-openapi.yml
 base_url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
 auth: none
 operations:
@@ -17,8 +18,8 @@ method: generated
 
 # Compare AGL retail energy plans
 
-This is the only genuinely open dataset carrying AGL's name — 1,343 plans as of
-2026-07-27. The critical thing to get right before you write a line of code:
+This is the only genuinely open dataset carrying AGL's name — 1,311 plans as of
+2026-10-20 (1,343 on 2026-07-27). The critical thing to get right before you write a line of code:
 **AGL does not serve this**. In CDR banking every ADI serves its own Product
 Reference Data from its own domain. In CDR energy the Australian Energy Regulator
 hosts every retailer's PRD centrally, under a per-brand path. AGL's own CDR base
@@ -37,8 +38,8 @@ URI returns HTTP 404 for `/cds-au/v1/energy/plans`.
    `REGULATED`, `ALL`), `fuelType` (`ELECTRICITY`, `GAS`, `DUAL`, `ALL`),
    `effective` (`CURRENT`, `FUTURE`, `ALL`), `updated-since`, `brand`, plus
    `page` and `page-size`.
-   Read `meta.totalRecords` and `meta.totalPages` first — 1,343 records at the
-   default page size of 25 is 54 pages. Set `page-size` up to the CDS maximum of
+   Read `meta.totalRecords` and `meta.totalPages` first — 1,311 records at the
+   default page size of 25 is 53 pages. Set `page-size` up to the CDS maximum of
    `1000` to cut round trips.
 
 2. **Page through.** Follow `links.next` until it is absent. Do not compute your

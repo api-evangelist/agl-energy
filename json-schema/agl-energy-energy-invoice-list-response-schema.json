@@ -1,0 +1,393 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-energy-invoice-list-response-schema.json",
+  "title": "EnergyInvoiceListResponse",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-energy-account-billing-api-openapi.yml#/components/schemas/EnergyInvoiceListResponse",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/EnergyInvoiceListResponse_data"
+    },
+    "links": {
+      "$ref": "#/$defs/LinksPaginated"
+    },
+    "meta": {
+      "$ref": "#/$defs/MetaPaginated"
+    }
+  },
+  "required": [
+    "data",
+    "links",
+    "meta"
+  ],
+  "type": "object",
+  "$defs": {
+    "EnergyAccountId": {
+      "description": "A unique identifier for an Energy account, generated according to [CDR ID Permanence](#id-permanence) requirements.",
+      "type": "string",
+      "x-cds-type": "ASCIIString"
+    },
+    "EnergyInvoice": {
+      "properties": {
+        "accountId": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyAccountId"
+            }
+          ],
+          "description": "Unique identifier for the account."
+        },
+        "invoiceNumber": {
+          "description": "The number assigned to this invoice by the energy Retailer.",
+          "type": "string"
+        },
+        "issueDate": {
+          "description": "The date that the invoice was actually issued (as opposed to generated or calculated).",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "dueDate": {
+          "description": "The date that the invoice is due to be paid.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "period": {
+          "$ref": "#/$defs/EnergyInvoice_period"
+        },
+        "invoiceAmount": {
+          "description": "The net amount due for this invoice regardless of previous balance.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "gstAmount": {
+          "default": "0.00",
+          "description": "The total GST amount for this invoice. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "payOnTimeDiscount": {
+          "$ref": "#/$defs/EnergyInvoice_payOnTimeDiscount"
+        },
+        "balanceAtIssue": {
+          "description": "The account balance at the time the invoice was issued.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "servicePoints": {
+          "description": "Array of service point IDs to which this invoice applies. May be empty if the invoice contains no electricity usage related charges.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "gas": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyInvoiceGasUsageCharges"
+            }
+          ],
+          "description": "Object containing charges and credits related to gas usage."
+        },
+        "electricity": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/EnergyInvoiceElectricityUsageCharges"
+            }
+          ],
+          "description": "Object containing charges and credits related to electricity usage."
+        },
+        "accountCharges": {
+          "$ref": "#/$defs/EnergyInvoiceAccountCharges"
+        },
+        "paymentStatus": {
+          "description": "Indicator of the payment status for the invoice.",
+          "enum": [
+            "PAID",
+            "PARTIALLY_PAID",
+            "NOT_PAID"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "accountId",
+        "balanceAtIssue",
+        "invoiceNumber",
+        "issueDate",
+        "paymentStatus",
+        "servicePoints"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "period"
+      ]
+    },
+    "EnergyInvoiceAccountCharges": {
+      "description": "Object contains account level charges and credits related to electricity usage.",
+      "properties": {
+        "totalCharges": {
+          "description": "The aggregate total of account level charges for the period covered by the invoice.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalDiscounts": {
+          "description": "The aggregate total of account level discounts or credits for the period covered by the invoice.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalGst": {
+          "default": "0.00",
+          "description": "The total GST for all account level charges. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        }
+      },
+      "required": [
+        "totalCharges",
+        "totalDiscounts"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoiceElectricityUsageCharges": {
+      "properties": {
+        "totalUsageCharges": {
+          "description": "The aggregate total of usage charges for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalGenerationCredits": {
+          "description": "The aggregate total of generation credits for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalOnceOffCharges": {
+          "description": "The aggregate total of any once off charges arising from electricity usage for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalOnceOffDiscounts": {
+          "description": "The aggregate total of any once off discounts or credits arising from electricity usage for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "otherCharges": {
+          "description": "Optional array of charges that may be part of the invoice (for e.g., environmental charges for C&I consumers) (exclusive of GST).",
+          "items": {
+            "$ref": "#/$defs/EnergyInvoiceGasUsageCharges_otherCharges"
+          },
+          "type": "array"
+        },
+        "totalGst": {
+          "default": "0.00",
+          "description": "The total GST for all electricity usage charges. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        }
+      },
+      "required": [
+        "totalGenerationCredits",
+        "totalOnceOffCharges",
+        "totalOnceOffDiscounts",
+        "totalUsageCharges"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoiceGasUsageCharges": {
+      "properties": {
+        "totalUsageCharges": {
+          "description": "The aggregate total of usage charges for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalGenerationCredits": {
+          "description": "The aggregate total of generation credits for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalOnceOffCharges": {
+          "description": "The aggregate total of any once off charges arising from gas usage for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "totalOnceOffDiscounts": {
+          "description": "The aggregate total of any once off discounts or credits arising from gas usage for the period covered by the invoice (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "otherCharges": {
+          "description": "Optional array of charges that may be part of the invoice (for e.g., environmental charges for C&I consumers) (exclusive of GST).",
+          "items": {
+            "$ref": "#/$defs/EnergyInvoiceGasUsageCharges_otherCharges"
+          },
+          "type": "array"
+        },
+        "totalGst": {
+          "default": "0.00",
+          "description": "The total GST for all gas usage charges. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        }
+      },
+      "required": [
+        "totalGenerationCredits",
+        "totalOnceOffCharges",
+        "totalOnceOffDiscounts",
+        "totalUsageCharges"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoiceGasUsageCharges_otherCharges": {
+      "properties": {
+        "type": {
+          "default": "OTHER",
+          "description": "Type of charge. Assumed to be `OTHER` if absent.",
+          "enum": [
+            "ENVIRONMENTAL",
+            "REGULATED",
+            "NETWORK",
+            "METERING",
+            "RETAIL_SERVICE",
+            "RCTI",
+            "OTHER"
+          ],
+          "type": "string"
+        },
+        "amount": {
+          "description": "The aggregate total of charges for this item (exclusive of GST).",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "description": {
+          "description": "A free text description of the type of charge.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "description"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoiceListResponse_data": {
+      "properties": {
+        "invoices": {
+          "description": "Array of invoices sorted by issue date in descending order.",
+          "items": {
+            "$ref": "#/$defs/EnergyInvoice"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "invoices"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoice_payOnTimeDiscount": {
+      "description": "A discount for on time payment.",
+      "properties": {
+        "discountAmount": {
+          "description": "The amount that will be discounted if the invoice is paid by the date specified.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "gstAmount": {
+          "default": "0.00",
+          "description": "The GST amount that will be discounted if the invoice is paid by the date specified. If absent then zero is assumed.",
+          "type": "string",
+          "x-cds-type": "AmountString"
+        },
+        "date": {
+          "description": "The date by which the invoice must be paid to receive the pay on time discount.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        }
+      },
+      "required": [
+        "date",
+        "discountAmount"
+      ],
+      "type": "object"
+    },
+    "EnergyInvoice_period": {
+      "description": "Object containing the start and end date for the period covered by the invoice. Mandatory if any usage or demand based charges are included in the invoice.",
+      "properties": {
+        "startDate": {
+          "description": "The start date of the period covered by this invoice.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        },
+        "endDate": {
+          "description": "The end date of the period covered by this invoice.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        }
+      },
+      "required": [
+        "endDate",
+        "startDate"
+      ],
+      "type": "object"
+    },
+    "LinksPaginated": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "first": {
+          "description": "URI to the first page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "prev": {
+          "description": "URI to the previous page of this set. Mandatory if this response is not the first page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "next": {
+          "description": "URI to the next page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        },
+        "last": {
+          "description": "URI to the last page of this set. Mandatory if this response is not the last page.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "first",
+        "prev",
+        "next",
+        "last"
+      ]
+    },
+    "MetaPaginated": {
+      "properties": {
+        "totalRecords": {
+          "description": "The total number of records in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        },
+        "totalPages": {
+          "description": "The total number of pages in the full set. See [pagination](#pagination).",
+          "type": "integer",
+          "x-cds-type": "NaturalNumber"
+        }
+      },
+      "required": [
+        "totalPages",
+        "totalRecords"
+      ],
+      "type": "object"
+    }
+  }
+}

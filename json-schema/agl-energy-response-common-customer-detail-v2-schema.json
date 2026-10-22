@@ -1,0 +1,568 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-response-common-customer-detail-v2-schema.json",
+  "title": "ResponseCommonCustomerDetailV2",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-data-holder-customers-api-openapi.yml#/components/schemas/ResponseCommonCustomerDetailV2",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/ResponseCommonCustomerDetailV2_data"
+    },
+    "links": {
+      "$ref": "#/$defs/Links"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "required": [
+    "data",
+    "links"
+  ],
+  "type": "object",
+  "$defs": {
+    "CommonEmailAddress": {
+      "properties": {
+        "isPreferred": {
+          "description": "May be `true` for one and only one email record in the collection. Denotes the default email address.",
+          "type": "boolean"
+        },
+        "purpose": {
+          "description": "The purpose for the email, as specified by the customer.",
+          "enum": [
+            "HOME",
+            "OTHER",
+            "UNSPECIFIED",
+            "WORK"
+          ],
+          "type": "string"
+        },
+        "address": {
+          "description": "A correctly formatted email address, as defined by the addr-spec format in **[[RFC5322]](#nref-RFC5322)**.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        }
+      },
+      "required": [
+        "address",
+        "purpose"
+      ],
+      "type": "object"
+    },
+    "CommonOrganisation": {
+      "properties": {
+        "lastUpdateTime": {
+          "description": "The date and time that this record was last updated by the customer. If no update has occurred then this date should reflect the initial creation date for the data.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "agentFirstName": {
+          "description": "The first name of the individual providing access on behalf of the organisation. For people with single names this field need not be present. The single name should be in the _lastName_ field.",
+          "type": "string"
+        },
+        "agentLastName": {
+          "description": "The last name of the individual providing access on behalf of the organisation. For people with single names, the single name should be in this field.",
+          "type": "string"
+        },
+        "agentRole": {
+          "description": "The role of the individual identified as the agent who is providing authorisation. Expected to be used for display. Default to \"Unspecified\" if the role is not known.",
+          "type": "string"
+        },
+        "businessName": {
+          "description": "Name of the organisation.",
+          "type": "string"
+        },
+        "legalName": {
+          "description": "Legal name, if different to the business name.",
+          "type": "string"
+        },
+        "shortName": {
+          "description": "Short name used for communication, if different to the business name.",
+          "type": "string"
+        },
+        "abn": {
+          "description": "Australian Business Number for the organisation.",
+          "type": "string"
+        },
+        "acn": {
+          "description": "Australian Company Number for the organisation. Required only if an ACN is applicable for the organisation type.",
+          "type": "string"
+        },
+        "isACNCRegistered": {
+          "description": "`true` if registered with the ACNC. `false` if not. Absent or `null` if not confirmed.",
+          "type": "boolean"
+        },
+        "industryCode": {
+          "description": "A valid [ANZSIC](http://www.abs.gov.au/ANZSIC) code for the organisation. If the industry code held by the data holder is not one of the supported [ANZSIC](http://www.abs.gov.au/ANZSIC) versions, then it must not be supplied.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "industryCodeVersion": {
+          "default": "ANZSIC_1292.0_2006_V2.0",
+          "description": "The applicable [ANZSIC](http://www.abs.gov.au/ANZSIC) release version of the industry code provided. Should only be supplied if _industryCode_ is also supplied. If _industryCode_ is supplied but _industryCodeVersion_ is absent, default is `ANZSIC_1292.0_2006_V2.0`.",
+          "enum": [
+            "ANZSIC_1292.0_2006_V1.0",
+            "ANZSIC_1292.0_2006_V2.0"
+          ],
+          "type": "string"
+        },
+        "organisationType": {
+          "description": "Legal organisation type.",
+          "enum": [
+            "COMPANY",
+            "GOVERNMENT_ENTITY",
+            "OTHER",
+            "PARTNERSHIP",
+            "SOLE_TRADER",
+            "TRUST"
+          ],
+          "type": "string"
+        },
+        "registeredCountry": {
+          "default": "AUS",
+          "description": "Enumeration with values from [ISO 3166 Alpha-3](https://www.iso.org/iso-3166-country-codes.html) country codes. Assumed to be `AUS` if absent.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "establishmentDate": {
+          "description": "The date the organisation described was established.",
+          "type": "string",
+          "x-cds-type": "DateString"
+        }
+      },
+      "required": [
+        "agentLastName",
+        "agentRole",
+        "businessName",
+        "organisationType"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "industryCodeVersion"
+      ]
+    },
+    "CommonOrganisationDetailV2": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CommonOrganisation"
+        },
+        {
+          "$ref": "#/$defs/CommonOrganisationDetailV2_allOf"
+        }
+      ]
+    },
+    "CommonOrganisationDetailV2_allOf": {
+      "properties": {
+        "physicalAddresses": {
+          "description": "Array is mandatory but may be empty if no valid addresses are held. One and only one address may have the purpose of `REGISTERED`. Zero or one, and no more than one, record may have the purpose of `MAIL`. If zero then the `REGISTERED` address is to be used for mail.",
+          "items": {
+            "$ref": "#/$defs/CommonPhysicalAddressWithPurpose"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "physicalAddresses"
+      ],
+      "type": "object"
+    },
+    "CommonPAFAddress": {
+      "description": "Australian address formatted according to the file format defined by the [PAF file format](https://auspost.com.au/content/dam/auspost_corp/media/documents/australia-post-data-guide.pdf). Required if _addressUType_ is set to `paf`.",
+      "properties": {
+        "dpid": {
+          "description": "Unique identifier for an address as defined by Australia Post. Also known as Delivery Point Identifier.",
+          "type": "string"
+        },
+        "thoroughfareNumber1": {
+          "description": "Thoroughfare number for a property (first number in a property ranged address).",
+          "type": "integer",
+          "x-cds-type": "PositiveInteger"
+        },
+        "thoroughfareNumber1Suffix": {
+          "description": "Suffix for the thoroughfare number. Only relevant if _thoroughfareNumber1_ is populated.",
+          "type": "string"
+        },
+        "thoroughfareNumber2": {
+          "description": "Second thoroughfare number (only used if the property has a ranged address e.g., 23-25).",
+          "type": "integer",
+          "x-cds-type": "PositiveInteger"
+        },
+        "thoroughfareNumber2Suffix": {
+          "description": "Suffix for the second thoroughfare number. Only relevant if _thoroughfareNumber2_ is populated.",
+          "type": "string"
+        },
+        "flatUnitType": {
+          "description": "Type of flat or unit for the address.",
+          "type": "string"
+        },
+        "flatUnitNumber": {
+          "description": "Unit number (including suffix, if applicable).",
+          "type": "string"
+        },
+        "floorLevelType": {
+          "description": "Type of floor or level for the address.",
+          "type": "string"
+        },
+        "floorLevelNumber": {
+          "description": "Floor or level number (including alpha characters).",
+          "type": "string"
+        },
+        "lotNumber": {
+          "description": "Allotment number for the address.",
+          "type": "string"
+        },
+        "buildingName1": {
+          "description": "Building/Property name 1.",
+          "type": "string"
+        },
+        "buildingName2": {
+          "description": "Building/Property name 2.",
+          "type": "string"
+        },
+        "streetName": {
+          "description": "The name of the street.",
+          "type": "string"
+        },
+        "streetType": {
+          "description": "The street type. Valid enumeration defined by Australia Post PAF code file.",
+          "type": "string"
+        },
+        "streetSuffix": {
+          "description": "The street type suffix. Valid enumeration defined by Australia Post PAF code file.",
+          "type": "string"
+        },
+        "postalDeliveryType": {
+          "description": "Postal delivery type. (e.g., PO BOX). Valid enumeration defined by Australia Post PAF code file.",
+          "type": "string"
+        },
+        "postalDeliveryNumber": {
+          "description": "Postal delivery number if the address is a postal delivery type.",
+          "type": "integer",
+          "x-cds-type": "PositiveInteger"
+        },
+        "postalDeliveryNumberPrefix": {
+          "description": "Postal delivery number prefix related to the postal delivery number.",
+          "type": "string"
+        },
+        "postalDeliveryNumberSuffix": {
+          "description": "Postal delivery number suffix related to the postal delivery number.",
+          "type": "string"
+        },
+        "localityName": {
+          "description": "Full name of locality.",
+          "type": "string"
+        },
+        "postcode": {
+          "description": "Postcode for the locality.",
+          "type": "string"
+        },
+        "state": {
+          "description": "State in which the address belongs. Valid enumeration defined by Australia Post PAF code file [State Type Abbreviation](https://auspost.com.au/content/dam/auspost_corp/media/documents/australia-post-data-guide.pdf). `NSW`, `QLD`, `VIC`, `NT`, `WA`, `SA`, `TAS`, `ACT`, `AAT`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "localityName",
+        "postcode",
+        "state"
+      ],
+      "type": "object"
+    },
+    "CommonPerson": {
+      "properties": {
+        "lastUpdateTime": {
+          "description": "The date and time that this record was last updated by the customer. If no update has occurred then this date should reflect the initial creation date for the data.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "firstName": {
+          "description": "For people with single names this field need not be present. The single name should be in the _lastName_ field. Where a data holder cannot determine first and middle names from a collection of given names, a single string representing all given names **MAY** be provided.",
+          "type": "string"
+        },
+        "lastName": {
+          "description": "For people with single names, the single name should be in this field.",
+          "type": "string"
+        },
+        "middleNames": {
+          "description": "Field is mandatory but array may be empty.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "prefix": {
+          "description": "Also known as title or salutation. The prefix to the name (e.g., Mr, Mrs, Ms, Miss, Sir, etc.)",
+          "type": "string"
+        },
+        "suffix": {
+          "description": "Used for a trailing suffix to the name (e.g., Jr.)",
+          "type": "string"
+        },
+        "occupationCode": {
+          "description": "Value is a valid **[[ANZSCO]](#iref-ANZSCO)** Standard Occupation classification code. If the occupation code held by the data holder is not one of the supported **[[ANZSCO]](#iref-ANZSCO)** versions, then it must not be supplied.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        },
+        "occupationCodeVersion": {
+          "default": "ANZSCO_1220.0_2013_V1.2",
+          "description": "The applicable **[[ANZSCO]](#iref-ANZSCO)** release version of the occupation code provided. Mandatory if an _occupationCode_ is supplied. If _occupationCode_ is supplied but _occupationCodeVersion_ is absent, default is `ANZSCO_1220.0_2013_V1.2`.",
+          "enum": [
+            "ANZSCO_1220.0_2006_V1.0",
+            "ANZSCO_1220.0_2006_V1.1",
+            "ANZSCO_1220.0_2013_V1.2",
+            "ANZSCO_1220.0_2013_V1.3"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "lastName",
+        "middleNames"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "occupationCodeVersion"
+      ]
+    },
+    "CommonPersonDetailV2": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CommonPerson"
+        },
+        {
+          "$ref": "#/$defs/CommonPersonDetailV2_allOf"
+        }
+      ]
+    },
+    "CommonPersonDetailV2_allOf": {
+      "properties": {
+        "phoneNumbers": {
+          "description": "Array is mandatory but may be empty if no phone numbers are held.",
+          "items": {
+            "$ref": "#/$defs/CommonPhoneNumber"
+          },
+          "type": "array"
+        },
+        "emailAddresses": {
+          "description": "May be empty.",
+          "items": {
+            "$ref": "#/$defs/CommonEmailAddress"
+          },
+          "type": "array"
+        },
+        "physicalAddresses": {
+          "description": "Array is mandatory but may be empty if no valid addresses are held. One and only one address may have the purpose of `REGISTERED`. Zero or one, and no more than one, record may have the purpose of `MAIL`. If zero then the `REGISTERED` address is to be used for mail.",
+          "items": {
+            "$ref": "#/$defs/CommonPhysicalAddressWithPurpose"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "emailAddresses",
+        "phoneNumbers",
+        "physicalAddresses"
+      ],
+      "type": "object"
+    },
+    "CommonPhoneNumber": {
+      "properties": {
+        "isPreferred": {
+          "default": false,
+          "description": "May be `true` for one and only one entry to indicate the preferred phone number. Assumed to be `false` if not present.",
+          "type": "boolean"
+        },
+        "purpose": {
+          "description": "The purpose of the number as specified by the customer.",
+          "enum": [
+            "HOME",
+            "INTERNATIONAL",
+            "MOBILE",
+            "OTHER",
+            "UNSPECIFIED",
+            "WORK"
+          ],
+          "type": "string"
+        },
+        "countryCode": {
+          "default": "+61",
+          "description": "If absent, assumed to be Australia (`+61`). The `+` should be included.",
+          "type": "string"
+        },
+        "areaCode": {
+          "description": "Required for non Mobile Phones, if field is present and refers to Australian code - the leading `0` should be omitted.",
+          "type": "string"
+        },
+        "number": {
+          "description": "The actual phone number, with leading zeros as appropriate.",
+          "type": "string"
+        },
+        "extension": {
+          "description": "An extension number (if applicable).",
+          "type": "string"
+        },
+        "fullNumber": {
+          "description": "Fully formatted phone number with country code, area code, number and extension incorporated. Formatted according to section 5.1.4. of **[[RFC3966]](#iref-RFC3966)**.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        }
+      },
+      "required": [
+        "fullNumber",
+        "number",
+        "purpose"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "areaCode"
+      ]
+    },
+    "CommonPhysicalAddress": {
+      "properties": {
+        "addressUType": {
+          "description": "The type of address object present.",
+          "enum": [
+            "paf",
+            "simple"
+          ],
+          "type": "string"
+        },
+        "simple": {
+          "$ref": "#/$defs/CommonSimpleAddress"
+        },
+        "paf": {
+          "$ref": "#/$defs/CommonPAFAddress"
+        }
+      },
+      "required": [
+        "addressUType"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "simple",
+        "paf"
+      ]
+    },
+    "CommonPhysicalAddressWithPurpose": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CommonPhysicalAddress"
+        },
+        {
+          "$ref": "#/$defs/CommonPhysicalAddressWithPurpose_allOf"
+        }
+      ]
+    },
+    "CommonPhysicalAddressWithPurpose_allOf": {
+      "properties": {
+        "purpose": {
+          "description": "Enumeration of values indicating the purpose of the physical address.",
+          "enum": [
+            "MAIL",
+            "OTHER",
+            "PHYSICAL",
+            "REGISTERED",
+            "WORK"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "purpose"
+      ],
+      "type": "object"
+    },
+    "CommonSimpleAddress": {
+      "description": "Required if _addressUType_ is set to `simple`.",
+      "properties": {
+        "mailingName": {
+          "description": "Name of the individual or business formatted for inclusion in an address used for physical mail.",
+          "type": "string"
+        },
+        "addressLine1": {
+          "description": "First line of the standard address object.",
+          "type": "string"
+        },
+        "addressLine2": {
+          "description": "Second line of the standard address object.",
+          "type": "string"
+        },
+        "addressLine3": {
+          "description": "Third line of the standard address object.",
+          "type": "string"
+        },
+        "postcode": {
+          "description": "Mandatory for Australian addresses.",
+          "type": "string"
+        },
+        "city": {
+          "description": "Name of the city or locality.",
+          "type": "string"
+        },
+        "state": {
+          "description": "Free text if the country is not Australia. If country is Australia then must be one of the values defined by the [State Type Abbreviation](https://auspost.com.au/content/dam/auspost_corp/media/documents/australia-post-data-guide.pdf) in the PAF file format. `NSW`, `QLD`, `VIC`, `NT`, `WA`, `SA`, `TAS`, `ACT`, `AAT`.",
+          "type": "string"
+        },
+        "country": {
+          "default": "AUS",
+          "description": "A valid [ISO 3166 Alpha-3](https://www.iso.org/iso-3166-country-codes.html) country code. Australia (`AUS`) is assumed if country is not present.",
+          "type": "string",
+          "x-cds-type": "ExternalRef"
+        }
+      },
+      "required": [
+        "addressLine1",
+        "city",
+        "state"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "postcode"
+      ]
+    },
+    "Links": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object"
+    },
+    "Meta": {
+      "type": "object"
+    },
+    "ResponseCommonCustomerDetailV2_data": {
+      "properties": {
+        "customerUType": {
+          "description": "The type of customer object that is present.",
+          "enum": [
+            "organisation",
+            "person"
+          ],
+          "type": "string"
+        },
+        "person": {
+          "$ref": "#/$defs/CommonPersonDetailV2"
+        },
+        "organisation": {
+          "$ref": "#/$defs/CommonOrganisationDetailV2"
+        }
+      },
+      "required": [
+        "customerUType"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "person",
+        "organisation"
+      ]
+    }
+  }
+}

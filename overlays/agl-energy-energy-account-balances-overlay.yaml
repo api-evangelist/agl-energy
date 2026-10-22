@@ -1,0 +1,40 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for AGL Energy — CDR Energy Energy Account Balances API
+  version: 1.0.0
+extends: openapi/agl-energy-energy-account-balances-api-openapi.yml
+x-generated: '2026-10-20'
+x-method: generated
+x-source: API Evangelist enrichment pipeline. Carries forward the facts from the earlier cds-energy/cds-common overlays
+  (2026-07-27) onto the per-API split contracts, with live anonymous probes re-run on 2026-10-20 (public.cdr.agl.com.au
+  discovery/status and discovery/outages 200; cdr.energymadeeasy.gov.au/agl energy/plans 200). The original openapi
+  file is not mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: AGL Energy
+    x-apievangelist-slug: agl-energy
+    x-apievangelist-review: review.yml
+    x-apievangelist-note: 'CDR Energy Energy Account Balances API is part of the Data Standards Body''s shared CDR
+      v1.36.0 contracts. AGL implements it as a designated energy data holder. Every operation is consumer-authorised:
+      only Accredited Data Recipients can reach it (mTLS, FAPI, live consumer consent). AGL publishes no authenticated
+      resource-server base URL, and the public base URI answers 404 for these paths.'
+    x-apievangelist-artifacts:
+      authentication: authentication/agl-energy-authentication.yml
+      conventions: conventions/agl-energy-conventions.yml
+      conformance: conformance/agl-energy-conformance.yml
+      agentic_access: agentic-access/agl-energy-agentic-access.yml
+      mcp: mcp/agl-energy-mcp.yml
+      skills: skills/_index.yml
+- target: $.paths['/energy/accounts/{accountId}/balance'].get
+  update:
+    x-apievangelist-access: adr-consent
+    x-apievangelist-scope: energy:billing:read
+- target: $.paths['/energy/accounts/balances'].get
+  update:
+    x-apievangelist-access: adr-consent
+    x-apievangelist-scope: energy:billing:read
+- target: $.paths['/energy/accounts/balances'].post
+  update:
+    x-apievangelist-access: adr-consent
+    x-apievangelist-scope: energy:billing:read

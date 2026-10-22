@@ -1,0 +1,19 @@
+name: AGL Energy pricing
+generated: '2026-10-20'
+method: none
+audience: unclear
+pricing_basis: none
+published: false
+delivery:
+  model: managed
+plan_count: 0
+plans: []
+note: >-
+  AGL publishes no API pricing or plans. Its only API surface is the Consumer Data Right data-holder
+  implementation (https://public.cdr.agl.com.au), which is a regulatory obligation carrying no fee to
+  accredited data recipients; no developer programme or price list exists. AGL's retail energy plans
+  (served through the CDR Get Generic Plans endpoint) are consumer tariffs, not API pricing.
+  www.agl.com.au answered 403 (bot-challenge) to the pre-flight probe, so no pricing page could be read.
+checked:
+- https://www.agl.com.au/ (403)
+- https://consumerdatastandardsaustralia.github.io/standards/

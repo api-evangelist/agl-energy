@@ -1,3 +1,19 @@
+generated: '2026-10-20'
+method: searched
+source:
+- https://zapier.com/apps/agl-energy/integrations
+- https://n8n.io/integrations/agl-energy/
+- https://composio.dev/toolkits/agl-energy
+- https://monid.ai/tools/agl-energy
+checked:
+- https://api.arcadia.com/plug/providers/public
+- https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+- https://composio.dev/toolkits/agl-energy
+- https://monid.ai/tools/agl-energy
+- https://n8n.io/integrations/agl-energy/
+- https://zapier.com/apps/agl-energy/integrations
+summary: null
+marketplace_apps: []
 edges:
 - partner_name: Arcadia
   partner: arcadia-power
@@ -41,8 +57,4 @@ edges:
     api_families: null
     detected_by: sweep-standard-registers.py
     detected: '2026-10-14'
-generated: '2026-10-12'
-method: searched
-checked:
-- https://api.arcadia.com/plug/providers/public
-- https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+templates: []

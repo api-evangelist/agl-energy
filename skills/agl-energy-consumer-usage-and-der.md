@@ -1,11 +1,16 @@
 ---
-name: Read a consenting consumer's AGL electricity usage and DER
+name: agl-energy-consumer-usage-and-der
+title: "Read a consenting consumer's AGL electricity usage and DER"
 description: >-
   Walk a consented AGL customer's service points, meter reads and distributed
   energy resource register — the flow behind any solar/battery analytics, VPP
   onboarding or switching recommendation. Requires CDR accreditation, mutual TLS
   and a live consumer consent; there is no anonymous path and no sandbox.
-api: openapi/agl-energy-cds-energy-openapi.json
+api: openapi/agl-energy-electricity-usage-api-openapi.yml
+apis:
+  - openapi/agl-energy-distributed-energy-resources-api-openapi.yml
+  - openapi/agl-energy-electricity-service-points-api-openapi.yml
+  - openapi/agl-energy-electricity-usage-api-openapi.yml
 base_url: null
 auth: adr-consent
 scopes:

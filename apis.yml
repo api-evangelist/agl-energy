@@ -1,7 +1,11 @@
 aid: agl-energy
+
 url: https://raw.githubusercontent.com/api-evangelist/agl-energy/refs/heads/main/apis.yml
+
 name: AGL Energy
+
 kind: company
+
 deliveryModel:
   model: saas
   open_source: false
@@ -14,6 +18,7 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+
 accessModel:
   pricing: unknown
   onboarding: self-serve
@@ -27,7 +32,9 @@ accessModel:
   - security
   generated: '2026-09-02'
   method: derived
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+
+image: https://agl.com.au/content/dam/digital/agl/images/logos/agl/agl-vertical-gradient.svg
+
 tags:
 - Energy
 - Australia
@@ -42,41 +49,110 @@ tags:
 - DER
 - Renewables
 - Energy Markets
+
 created: '2026-07-27'
-modified: '2026-09-16'
+
+modified: '2026-10-20'
+
 specificationVersion: '0.23'
-x-enrichment:
-  round: '2026-07-27'
-  note: 'No WellKnown pointer is emitted: every /.well-known/ probe across every AGL and AER host returned
-    404 or 403 (see well-known/agl-energy-well-known.yml). No SDKs/Packages pointer: AGL ships no client
-    libraries in any registry and its GitHub org holds one unrelated repository. No Idempotency pointer:
-    the whole surface is read-only and the Consumer Data Standards define no idempotency key. No Compliance
-    pointer: AGL publishes no trust centre or certification programme. No AsyncAPI/Webhooks pointer: there
-    is no event surface — the CDR is pull-only. Absence recorded rather than papered over.'
-description: 'AGL Energy Limited (ASX:AGL) is Australia''s oldest listed company — founded in Sydney in
-  1837 as the Australian Gas Light Company — and one of the country''s largest integrated energy businesses,
-  retailing electricity, gas, broadband and mobile to roughly four million customer accounts while owning
-  the nation''s largest electricity generation portfolio (Bayswater and Loy Yang A coal, gas peakers,
-  hydro, wind, utility-scale solar and grid-scale batteries). It sits at both ends of the Australian value
-  chain: generator and wholesale market participant in the NEM, and the retailer of record that holds
-  the customer relationship, the billing account and the metering data. Its API posture is entirely a
-  product of regulation, not of product strategy. AGL publishes no public developer portal and no self-serve
-  API programme — apideveloper.agl.com.au resolves through Akamai but returns HTTP 403 to every anonymous
-  client, and agl.com.au itself is bot-blocked at 403. What AGL does expose is the Consumer Data Right:
-  it is a designated CDR energy data holder, listed on the CDR Register under brand "AGL" with public
-  base URI https://public.cdr.agl.com.au, and that surface is real and verified — GET /cds-au/v1/discovery/status
-  and /cds-au/v1/discovery/outages both return HTTP 200 with conformant Consumer Data Standards envelopes,
-  and AGL''s own outage notices describe scheduled downtime of the "AGL CDR Consent flow". Its energy
-  plan Product Reference Data is genuinely open and anonymous — 1,343 plans at https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
-  — but that endpoint is operated centrally by the Australian Energy Regulator, not by AGL, which is the
-  structural difference from CDR banking where every bank serves its own PRD. Consumer usage, billing,
-  service point, DER and account data is available only to Accredited Data Recipients, over mTLS, under
-  a consumer authorisation, with the base URI distributed through the CDR Register rather than published.
-  AGL is therefore open on product data, closed to everyone but accredited recipients on consumer data,
-  and silent everywhere else — it publishes no open grid or market data of its own. It is also migrating
-  around four million customer services onto the Kaluza platform under a A$150m, 20 percent stake taken
-  in 2024, so the retail data layer behind these mandated endpoints is being rebuilt on a third-party
-  energy operating system.'
+
+description: 'AGL Energy Limited (ASX:AGL) is Australia''s oldest listed company — founded in Sydney in 1837 as the Australian Gas Light Company
+  — and one of the country''s largest integrated energy businesses, retailing electricity, gas, broadband and mobile to roughly four million customer
+  accounts while owning the nation''s largest electricity generation portfolio (Bayswater and Loy Yang A coal, gas peakers, hydro, wind, utility-scale
+  solar and grid-scale batteries). It sits at both ends of the Australian value chain: generator and wholesale market participant in the NEM,
+  and the retailer of record that holds the customer relationship, the billing account and the metering data. Its API posture is entirely a product
+  of regulation, not of product strategy. AGL publishes no public developer portal and no self-serve API programme — apideveloper.agl.com.au resolves
+  through Akamai but returns HTTP 403 to every anonymous client, and agl.com.au itself is bot-blocked at 403. What AGL does expose is the Consumer
+  Data Right: it is a designated CDR energy data holder, listed on the CDR Register under brand "AGL" with public base URI https://public.cdr.agl.com.au,
+  and that surface is real and verified — GET /cds-au/v1/discovery/status and /cds-au/v1/discovery/outages both return HTTP 200 with conformant
+  Consumer Data Standards envelopes, and AGL''s own outage notices describe scheduled downtime of the "AGL CDR Consent flow". Its energy plan
+  Product Reference Data is genuinely open and anonymous — 1,343 plans at https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans — but that
+  endpoint is operated centrally by the Australian Energy Regulator, not by AGL, which is the structural difference from CDR banking where every
+  bank serves its own PRD. Consumer usage, billing, service point, DER and account data is available only to Accredited Data Recipients, over
+  mTLS, under a consumer authorisation, with the base URI distributed through the CDR Register rather than published. AGL is therefore open on
+  product data, closed to everyone but accredited recipients on consumer data, and silent everywhere else — it publishes no open grid or market
+  data of its own. It is also migrating around four million customer services onto the Kaluza platform under a A$150m, 20 percent stake taken
+  in 2024, so the retail data layer behind these mandated endpoints is being rebuilt on a third-party energy operating system.'
+
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
+
+common:
+- type: RateLimits
+  url: rate-limits/agl-energy-rate-limits.yml
+- type: Spectral
+  url: rules/agl-energy-rules.yml
+- type: JSONLD
+  url: json-ld/agl-energy-context.jsonld
+- type: Vocabulary
+  url: vocabulary/agl-energy-vocabulary.yml
+- type: Overlay
+  url: overlays/agl-energy-data-holder-customers-overlay.yaml
+- type: Hosts
+  url: hosts/agl-energy-hosts.yml
+- type: IntegrationEdges
+  url: integrations/agl-energy-integration-edges.yml
+- type: Vendors
+  url: vendors/agl-energy-vendors.yml
+- type: DomainSecurity
+  url: security/agl-energy-domain-security.yml
+- type: AgenticAccess
+  url: agentic-access/agl-energy-agentic-access.yml
+- type: Authentication
+  url: authentication/agl-energy-authentication.yml
+- type: OAuthScopes
+  url: scopes/agl-energy-scopes.yml
+- type: Conventions
+  url: conventions/agl-energy-conventions.yml
+- type: ErrorCatalog
+  url: errors/agl-energy-problem-types.yml
+- type: DataModel
+  url: data-model/agl-energy-data-model.yml
+- type: Lifecycle
+  url: lifecycle/agl-energy-lifecycle.yml
+- type: StatusPage
+  url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+- type: Deprecation
+  url: https://consumerdatastandardsaustralia.github.io/standards/#endpoint-version-schedule
+- type: ChangeLog
+  url: changelog/agl-energy-changelog.yml
+- type: Conformance
+  url: conformance/agl-energy-conformance.yml
+- type: X-MCPServerCandidate
+  url: mcp/agl-energy-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published
+    API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting
+    the artifact-type surfaces with a server that does not exist.'
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/agl-energy-llms.txt
+- type: VulnerabilityDisclosure
+  url: security/agl-energy-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.agl.com.au/terms-conditions/responsible-disclosure-policy
+- type: APIReference
+  url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
+- type: Website
+  url: https://www.agl.com.au/
+- type: Documentation
+  url: https://www.agl.com.au/consumer-data-right-policy
+- type: PrivacyPolicy
+  url: https://www.agl.com.au/privacy-policy
+- type: TermsOfService
+  url: https://www.agl.com.au/terms-conditions/online-services
+- type: Support
+  url: https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right
+- type: Forum
+  url: https://neighbourhood.agl.com.au/
+- type: GitHubOrganization
+  url: https://github.com/AGLEnergy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/agl-energy
+- type: Registration
+  url: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+
 apis:
 - aid: agl-energy:agl-energy-data-holder-customers-api
   name: AGL Energy Data Holder Customers API
@@ -108,6 +184,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-response-common-customer-detail-v2-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-response-common-customer-schema.json
 - aid: agl-energy:agl-energy-data-holder-operations-api
   name: AGL Energy Data Holder Operations API
   description: Data Holder Operations endpoints
@@ -138,6 +218,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-response-common-discovery-status-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-response-discovery-outages-list-schema.json
 - aid: agl-energy:agl-energy-distributed-energy-resources-api
   name: AGL Energy Distributed Energy Resources API
   description: Distributed Energy Resource endpoints
@@ -168,6 +252,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-der-list-response-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-der-detail-response-schema.json
 - aid: agl-energy:agl-energy-electricity-service-points-api
   name: AGL Energy Electricity Service Points API
   description: Electricity Service Point endpoints
@@ -198,6 +286,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-service-point-list-response-v2-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-service-point-detail-response-v2-schema.json
 - aid: agl-energy:agl-energy-electricity-usage-api
   name: AGL Energy Electricity Usage API
   description: Electricity Usage endpoints
@@ -228,6 +320,8 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-usage-list-response-schema.json
 - aid: agl-energy:agl-energy-energy-account-balances-api
   name: AGL Energy Account Balances API
   description: Energy Account Balance endpoints
@@ -258,6 +352,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-balance-list-response-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-balance-response-schema.json
 - aid: agl-energy:agl-energy-energy-account-billing-api
   name: AGL Energy Account Billing API
   description: Energy Account Billing endpoints
@@ -288,6 +386,10 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-billing-list-response-v3-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-invoice-list-response-schema.json
 - aid: agl-energy:agl-energy-energy-accounts-api
   name: AGL Energy Accounts API
   description: Energy Account endpoints
@@ -318,11 +420,19 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-account-list-response-v2-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-payment-schedule-response-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-concessions-response-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-account-detail-response-v4-schema.json
 - aid: agl-energy:agl-energy-energy-plans-api
   name: AGL Energy Plans API
   description: Energy Plan endpoints
   humanURL: https://consumerdatastandardsaustralia.github.io/standards/
-  baseURL: https://public.cdr.agl.com.au/cds-au/v1
+  baseURL: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
   tags:
   - Energy Plans
   properties:
@@ -348,69 +458,33 @@ apis:
     url: https://www.aer.gov.au/energy-product-reference-data
   - type: APIReference
     url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans
-common:
-- type: Overlay
-  url: overlays/agl-energy-cds-energy-overlay.yaml
-- type: Overlay
-  url: overlays/agl-energy-cds-common-overlay.yaml
-- type: DomainSecurity
-  url: security/agl-energy-domain-security.yml
-- type: AgenticAccess
-  url: agentic-access/agl-energy-agentic-access.yml
-- type: Authentication
-  url: authentication/agl-energy-authentication.yml
-- type: OAuthScopes
-  url: scopes/agl-energy-scopes.yml
-- type: Conventions
-  url: conventions/agl-energy-conventions.yml
-- type: ErrorCatalog
-  url: errors/agl-energy-problem-types.yml
-- type: DataModel
-  url: data-model/agl-energy-data-model.yml
-- type: Lifecycle
-  url: lifecycle/agl-energy-lifecycle.yml
-- type: StatusPage
-  url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
-- type: Deprecation
-  url: https://consumerdatastandardsaustralia.github.io/standards/#endpoint-version-schedule
-- type: ChangeLog
-  url: changelog/agl-energy-changelog.yml
-- type: Conformance
-  url: conformance/agl-energy-conformance.yml
-- type: X-MCPServerCandidate
-  url: mcp/agl-energy-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
-    — a tool list derived from the published API contracts, not an existing server. The scorer already
-    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
-    surfaces with a server that does not exist.'
-- type: AgentSkill
-  url: skills/_index.yml
-- type: LLMsTxt
-  url: llms/agl-energy-llms.txt
-- type: VulnerabilityDisclosure
-  url: security/agl-energy-vulnerability-disclosure.yml
-- type: Security
-  url: https://www.agl.com.au/terms-conditions/responsible-disclosure-policy
-- type: APIReference
-  url: https://consumerdatastandardsaustralia.github.io/standards/#energy-apis
-- type: Website
-  url: https://www.agl.com.au/
-- type: Documentation
-  url: https://www.agl.com.au/consumer-data-right-policy
-- type: PrivacyPolicy
-  url: https://www.agl.com.au/privacy-policy
-- type: TermsOfService
-  url: https://www.agl.com.au/terms-conditions/online-services
-- type: Support
-  url: https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right
-- type: Forum
-  url: https://neighbourhood.agl.com.au/
-- type: GitHubOrganization
-  url: https://github.com/AGLEnergy
-- type: LinkedIn
-  url: https://www.linkedin.com/company/agl-energy
-- type: Registration
-  url: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
-maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-plan-list-response-schema.json
+  - type: JSONSchema
+    url: json-schema/agl-energy-energy-plan-response-v3-schema.json
+
+x-coverage:
+  state: blocked
+  reason: bot-challenge
+  detail: Identity pass 2026-10-20. www.agl.com.au answers HTTP 403 (Akamai Access Denied) to a browser User-Agent, so no on-site link-property
+    pointers could be read or added; existing agl.com.au pointers are kept as live-behind-edge-policy (403, not dead). Identity is confirmed from
+    the CDR Register, which lists brand "AGL" with publicBaseUri https://public.cdr.agl.com.au and logoUri on agl.com.au (now used as image).
+    CDR endpoints answer 200 with an x-v header; cdr.gov.au and aer.gov.au pointers timed out from this sandbox and were left in place, unconfirmed.
+  evidence:
+  - url: https://www.agl.com.au/
+    status: 403
+  - url: https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary
+    status: 200
+  - url: https://public.cdr.agl.com.au/cds-au/v1/discovery/status
+    status: 200
+  - url: https://github.com/AGLEnergy
+    status: 200
+  - url: https://neighbourhood.agl.com.au/
+    status: 200
+  generated: '2026-10-20'
+x-enrichment:
+  date: '2026-10-20'
+  status: enriched
+  artifacts_added: 37
+  pass: modular-v1
+  engine: identity=anthropic,contract=anthropic,surfaces=anthropic,docs=anthropic,regulatory=anthropic

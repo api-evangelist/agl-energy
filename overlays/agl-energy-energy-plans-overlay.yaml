@@ -1,0 +1,48 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for AGL Energy — CDR Energy Energy Plans API
+  version: 1.0.0
+extends: openapi/agl-energy-energy-plans-api-openapi.yml
+x-generated: '2026-10-20'
+x-method: generated
+x-source: API Evangelist enrichment pipeline. Carries forward the facts from the earlier cds-energy/cds-common overlays
+  (2026-07-27) onto the per-API split contracts, with live anonymous probes re-run on 2026-10-20 (public.cdr.agl.com.au
+  discovery/status and discovery/outages 200; cdr.energymadeeasy.gov.au/agl energy/plans 200). The original openapi
+  file is not mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: AGL Energy
+    x-apievangelist-slug: agl-energy
+    x-apievangelist-review: review.yml
+    x-apievangelist-note: CDR Energy Energy Plans API is part of the Data Standards Body's shared CDR Energy API
+      v1.36.0. For AGL, these anonymous Product Reference Data operations are served centrally by the Australian
+      Energy Regulator, not by AGL.
+    x-apievangelist-artifacts:
+      authentication: authentication/agl-energy-authentication.yml
+      conventions: conventions/agl-energy-conventions.yml
+      conformance: conformance/agl-energy-conformance.yml
+      agentic_access: agentic-access/agl-energy-agentic-access.yml
+      mcp: mcp/agl-energy-mcp.yml
+      skills: skills/_index.yml
+- target: $.servers
+  update:
+  - url: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+    description: AER-operated Product Reference Data host serving AGL's plans anonymously. Only /energy/plans and
+      /energy/plans/{planId} resolve here. Verified HTTP 200 on 2026-10-20 (meta.totalRecords 1311).
+    x-apievangelist-auth: none
+    x-apievangelist-operated-by: Australian Energy Regulator
+    x-apievangelist-verified: '2026-10-20'
+- target: $.paths['/energy/plans'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-host: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1
+    x-apievangelist-verified:
+      status: 200
+      date: '2026-10-20'
+      requiredHeader: 'x-v: 1'
+      totalRecords: 1311
+- target: $.paths['/energy/plans/{planId}'].get
+  update:
+    x-apievangelist-access: public
+    x-apievangelist-host: https://cdr.energymadeeasy.gov.au/agl/cds-au/v1

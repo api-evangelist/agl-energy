@@ -1,11 +1,17 @@
 ---
-name: Review a consenting consumer's AGL accounts, bills and concessions
+name: agl-energy-account-billing-review
+title: "Review a consenting consumer's AGL accounts, bills and concessions"
 description: >-
   Walk a consented AGL customer's energy accounts through balance, invoices,
   billing transactions, payment schedule and concessions — the flow behind bill
   analysis, hardship detection, concession-eligibility checks and switching
   advice. Requires CDR accreditation and a live consumer consent.
-api: openapi/agl-energy-cds-energy-openapi.json
+api: openapi/agl-energy-energy-accounts-api-openapi.yml
+apis:
+  - openapi/agl-energy-data-holder-customers-api-openapi.yml
+  - openapi/agl-energy-energy-account-balances-api-openapi.yml
+  - openapi/agl-energy-energy-account-billing-api-openapi.yml
+  - openapi/agl-energy-energy-accounts-api-openapi.yml
 base_url: null
 auth: adr-consent
 scopes:

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/agl-energy/main/json-schema/agl-energy-response-common-discovery-status-schema.json",
+  "title": "ResponseCommonDiscoveryStatus",
+  "x-generated": "2026-10-20",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/agl-energy-data-holder-operations-api-openapi.yml#/components/schemas/ResponseCommonDiscoveryStatus",
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/ResponseCommonDiscoveryStatus_data"
+    },
+    "links": {
+      "$ref": "#/$defs/Links"
+    },
+    "meta": {
+      "$ref": "#/$defs/Meta"
+    }
+  },
+  "required": [
+    "data",
+    "links"
+  ],
+  "type": "object",
+  "$defs": {
+    "Links": {
+      "properties": {
+        "self": {
+          "description": "Fully qualified link that generated the current response document.",
+          "type": "string",
+          "x-cds-type": "URIString"
+        }
+      },
+      "required": [
+        "self"
+      ],
+      "type": "object"
+    },
+    "Meta": {
+      "type": "object"
+    },
+    "ResponseCommonDiscoveryStatus_data": {
+      "properties": {
+        "status": {
+          "description": "Enumeration with values: <ul><li>`OK`: (implementation is fully functional).<li>`PARTIAL_FAILURE`: (one or more endpoints are unexpectedly unavailable).<li>`UNAVAILABLE`: (the full implementation is unexpectedly unavailable).<li>`SCHEDULED_OUTAGE`: (an advertised outage is in effect).</ul>",
+          "enum": [
+            "OK",
+            "PARTIAL_FAILURE",
+            "SCHEDULED_OUTAGE",
+            "UNAVAILABLE"
+          ],
+          "type": "string"
+        },
+        "explanation": {
+          "description": "Provides an explanation of the current outage that can be displayed to an end customer. Mandatory if the status property is any value other than `OK`.",
+          "type": "string"
+        },
+        "detectionTime": {
+          "description": "The date and time that the current outage was detected. Should only be present if the status property is `PARTIAL_FAILURE` or `UNAVAILABLE`.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "expectedResolutionTime": {
+          "description": "The date and time that full service is expected to resume (if known). Should not be present if the status property has a value of `OK`.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        },
+        "updateTime": {
+          "description": "The date and time that this status was last updated by the Data Holder.",
+          "type": "string",
+          "x-cds-type": "DateTimeString"
+        }
+      },
+      "required": [
+        "status",
+        "updateTime"
+      ],
+      "type": "object",
+      "x-conditional": [
+        "explanation"
+      ]
+    }
+  }
+}
