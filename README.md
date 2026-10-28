@@ -1,4 +1,4 @@
-# AGL Energy (agl-energy)
+# AGL Energy
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,131 +64,188 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-AGL Energy Limited (ASX:AGL) is Australia's oldest listed company — founded in Sydney in 1837 as the Australian Gas Light Company — and one of the country's largest integrated energy businesses, retailing electricity, gas, broadband and mobile to roughly four million customer accounts while owning the nation's largest electricity generation portfolio. Its API posture is entirely a product of regulation: AGL publishes no public developer portal and no first-party OpenAPI, but it is a designated Consumer Data Right energy data holder and that mandate is genuinely, verifiably live.
+AGL Energy Limited (ASX:AGL) is Australia's oldest listed company — founded in Sydney in 1837 as the Australian Gas Light Company — and one of the country's largest integrated energy businesses, retailing electricity, gas, broadband and mobile to roughly four million customer accounts while owning the nation's largest electricity generation portfolio (Bayswater and Loy Yang A coal, gas peakers, hydro, wind, utility-scale solar and grid-scale batteries). It sits at both ends of the Australian value chain: generator and wholesale market participant in the NEM, and the retailer of record that holds the customer relationship, the billing account and the metering data. Its API posture is entirely a product of regulation, not of product strategy. AGL publishes no public developer portal and no self-serve API programme — apideveloper.agl.com.au resolves through Akamai but returns HTTP 403 to every anonymous client, and agl.com.au itself is bot-blocked at 403. What AGL does expose is the Consumer Data Right: it is a designated CDR energy data holder, listed on the CDR Register under brand "AGL" with public base URI https://public.cdr.agl.com.au, and that surface is real and verified — GET /cds-au/v1/discovery/status and /cds-au/v1/discovery/outages both return HTTP 200 with conformant Consumer Data Standards envelopes, and AGL's own outage notices describe scheduled downtime of the "AGL CDR Consent flow". Its energy plan Product Reference Data is genuinely open and anonymous — 1,343 plans at https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans — but that endpoint is operated centrally by the Australian Energy Regulator, not by AGL, which is the structural difference from CDR banking where every bank serves its own PRD. Consumer usage, billing, service point, DER and account data is available only to Accredited Data Recipients, over mTLS, under a consumer authorisation, with the base URI distributed through the CDR Register rather than published. AGL is therefore open on product data, closed to everyone but accredited recipients on consumer data, and silent everywhere else — it publishes no open grid or market data of its own. It is also migrating around four million customer services onto the Kaluza platform under a A$150m, 20 percent stake taken in 2024, so the retail data layer behind these mandated endpoints is being rebuilt on a third-party energy operating system.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/agl-energy/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/agl-energy/refs/heads/main/apis.yml)
+**Areas:** Energy · Australia · Utilities · Electricity · Gas · Energy Retailer · Consumer Data Right · CDR · Smart Metering · Solar · DER · Renewables
 
-## Tags
+## AGL Energy on APIs.io
 
-- Energy
-- Australia
-- Utilities
-- Electricity
-- Gas
-- Energy Retailer
-- Consumer Data Right
-- CDR
-- Smart Metering
-- Solar
-- DER
-- Renewables
-- Energy Markets
+Everything profiled for AGL Energy is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/agl-energy/](https://apis.io/providers/agl-energy/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (9)
 
-- **Created:** 2026-07-27
-- **Modified:** 2026-07-27
+- [AGL Energy Data Holder Customers API](https://apis.io/apis/agl-energy/agl-energy-data-holder-customers-api/) — Data Holder Customer endpoints
+- [AGL Energy Data Holder Operations API](https://apis.io/apis/agl-energy/agl-energy-data-holder-operations-api/) — Data Holder Operations endpoints
+- [AGL Energy Distributed Energy Resources API](https://apis.io/apis/agl-energy/agl-energy-distributed-energy-resources-api/) — Distributed Energy Resource endpoints
+- [AGL Energy Electricity Service Points API](https://apis.io/apis/agl-energy/agl-energy-electricity-service-points-api/) — Electricity Service Point endpoints
+- [AGL Energy Electricity Usage API](https://apis.io/apis/agl-energy/agl-energy-electricity-usage-api/) — Electricity Usage endpoints
+- [AGL Energy Account Balances API](https://apis.io/apis/agl-energy/agl-energy-energy-account-balances-api/) — Energy Account Balance endpoints
+- [AGL Energy Account Billing API](https://apis.io/apis/agl-energy/agl-energy-energy-account-billing-api/) — Energy Account Billing endpoints
+- [AGL Energy Accounts API](https://apis.io/apis/agl-energy/agl-energy-energy-accounts-api/) — Energy Account endpoints
+- [AGL Energy Plans API](https://apis.io/apis/agl-energy/agl-energy-energy-plans-api/) — Energy Plan endpoints
 
-## Mandate Posture
+### Published properties
 
-| Question | Answer |
-| --- | --- |
-| Mandate regime | Consumer Data Right, extended from banking to energy (ACCC / Data Standards Body) |
-| Mandate status | **Live and implemented** — verified by anonymous HTTP calls, not by a compliance page |
-| Data standard | CDR Consumer Data Standards — Energy API v1.36.0 and Common API v1.36.0 |
-| Consumer data API | Yes — accredited-only, consumer-authorised, mTLS, base URI unpublished |
-| Open market data | No — AGL publishes no grid or market data of its own |
-| Open product data | Yes, but the AER hosts it, not AGL |
-| Access gate | Accredited Data Recipient status under the CDR |
-| Developer portal | None public. `apideveloper.agl.com.au` resolves but returns HTTP 403. |
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-AGL is the control case for whether a statutory data mandate is replicable. The same Act, regulator, standards body and security profile that produced Australia's byte-for-byte fifty-bank banking contract were transplanted into energy — and on AGL the transplant took. But the mandate replicated without the market replicating: AGL ships no developer programme, no SDK, no first-party specification, and one abandoned GitHub organization. Every machine-readable thing it publishes, it publishes because it was told to.
+#### MCP servers (1)
 
-## APIs
+Model Context Protocol servers that expose the API to agents.
 
-### AGL CDR Energy API
+- [agl-energy](https://apis.io/servers/agl-energy/agl-energy/)
 
-AGL's mandated Consumer Data Right energy data-sharing surface — service points, electricity usage, DER register detail, accounts, balances, invoices, billing, payment schedules and concessions. Consumer-authorised: only an Accredited Data Recipient holding CDR Register-issued certificates can call it, over mTLS, after the consumer completes AGL's consent flow. The base URI is distributed through the CDR Register rather than published.
+#### Agentic access (1)
 
-- **Human URL:** [https://consumerdatastandardsaustralia.github.io/standards/](https://consumerdatastandardsaustralia.github.io/standards/)
+Which operations an agent can call, which act, and which need a human in the loop.
 
-#### Tags
+- [Agl Energy Agentic Access](https://apis.io/agentic-access/agl-energy/agl-energy-agentic-access/)
 
-- Consumer Data Right
-- CDR
-- Energy
-- Usage
-- Billing
-- Accounts
-- DER
-- Australia
+#### JSON Schema (19)
 
-#### Properties
+The data models the API reads and writes.
 
-- [OpenAPI](openapi/agl-energy-cds-energy-openapi.json) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Documentation](https://consumerdatastandardsaustralia.github.io/standards/)
-- [Documentation](https://www.cdr.gov.au/rollout/cdr-energy-sector)
-- [Documentation](https://www.aemo.com.au/energy-systems/electricity/cdr-at-aemo/about-cdr)
+- [EnergyAccountDetailResponseV4](https://apis.io/schemas/agl-energy/agl-energy-energy-account-detail-response-v4/)
+- [EnergyAccountListResponseV2](https://apis.io/schemas/agl-energy/agl-energy-energy-account-list-response-v2/)
+- [EnergyBalanceListResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-balance-list-response/)
+- [EnergyBalanceResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-balance-response/)
+- [EnergyBillingListResponseV3](https://apis.io/schemas/agl-energy/agl-energy-energy-billing-list-response-v3/)
+- [EnergyConcessionsResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-concessions-response/)
+- [EnergyDerDetailResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-der-detail-response/)
+- [EnergyDerListResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-der-list-response/)
+- [EnergyInvoiceListResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-invoice-list-response/)
+- [EnergyPaymentScheduleResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-payment-schedule-response/)
+- [EnergyPlanListResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-plan-list-response/)
+- [EnergyPlanResponseV3](https://apis.io/schemas/agl-energy/agl-energy-energy-plan-response-v3/)
+- [EnergyServicePointDetailResponseV2](https://apis.io/schemas/agl-energy/agl-energy-energy-service-point-detail-response-v2/)
+- [EnergyServicePointListResponseV2](https://apis.io/schemas/agl-energy/agl-energy-energy-service-point-list-response-v2/)
+- [EnergyUsageListResponse](https://apis.io/schemas/agl-energy/agl-energy-energy-usage-list-response/)
+- [ResponseCommonCustomer](https://apis.io/schemas/agl-energy/agl-energy-response-common-customer/)
+- [ResponseCommonCustomerDetailV2](https://apis.io/schemas/agl-energy/agl-energy-response-common-customer-detail-v2/)
+- [ResponseCommonDiscoveryStatus](https://apis.io/schemas/agl-energy/agl-energy-response-common-discovery-status/)
+- [ResponseDiscoveryOutagesList](https://apis.io/schemas/agl-energy/agl-energy-response-discovery-outages-list/)
 
-### AGL CDR Discovery (Common) API
+#### JSON-LD (1)
 
-The unauthenticated half of AGL's CDR implementation, served from its CDR public base URI. `GET /cds-au/v1/discovery/status` returned HTTP 200 with `{"status":"OK","explanation":"All services operational"}` on 2026-07-27, and `GET /cds-au/v1/discovery/outages` returned six scheduled outage windows describing unavailability of the AGL CDR consent flow. These two endpoints are the only anonymously reachable API AGL itself operates.
+Linked-data contexts for the provider's vocabulary.
 
-- **Human URL:** [https://consumerdatastandardsaustralia.github.io/standards/](https://consumerdatastandardsaustralia.github.io/standards/)
-- **Base URL:** `https://public.cdr.agl.com.au/cds-au/v1`
+- [Agl Energy Context](https://apis.io/jsonld/agl-energy/agl-energy-context/)
 
-#### Tags
+#### Collections (2)
 
-- Consumer Data Right
-- CDR
-- Discovery
-- Status
-- Outages
-- Australia
+Postman and Open Collection request collections.
 
-#### Properties
+- [CDR Common API](https://apis.io/collections/agl-energy/open-agl-energy-cds-common/)
+- [CDR Energy API](https://apis.io/collections/agl-energy/open-agl-energy-cds-energy/)
 
-- [OpenAPI](openapi/agl-energy-cds-common-openapi.json) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Documentation](https://consumerdatastandardsaustralia.github.io/standards/)
+#### Overlays (9)
 
-### AGL Energy Product Reference Data (PRD) API
+OpenAPI overlays, including conversational phrasing for each operation.
 
-AGL's retail energy plans as anonymous, machine-readable CDR Product Reference Data — 1,343 plans across 135 pages, verified live on 2026-07-27 with `x-v: 1` and `Access-Control-Allow-Origin: *`. Critically, this endpoint is operated by the Australian Energy Regulator, not by AGL. AGL's own public base URI returns HTTP 404 for `/cds-au/v1/energy/plans`. In CDR banking every bank serves its own product API; in CDR energy the regulator serves everyone's.
+- [Agl Energy Data Holder Customers Overlay](https://apis.io/overlays/agl-energy/agl-energy-data-holder-customers-overlay/)
+- [Agl Energy Data Holder Operations Overlay](https://apis.io/overlays/agl-energy/agl-energy-data-holder-operations-overlay/)
+- [Agl Energy Distributed Energy Resources Overlay](https://apis.io/overlays/agl-energy/agl-energy-distributed-energy-resources-overlay/)
+- [Agl Energy Electricity Service Points Overlay](https://apis.io/overlays/agl-energy/agl-energy-electricity-service-points-overlay/)
+- [Agl Energy Electricity Usage Overlay](https://apis.io/overlays/agl-energy/agl-energy-electricity-usage-overlay/)
+- [Agl Energy Energy Account Balances Overlay](https://apis.io/overlays/agl-energy/agl-energy-energy-account-balances-overlay/)
+- [Agl Energy Energy Account Billing Overlay](https://apis.io/overlays/agl-energy/agl-energy-energy-account-billing-overlay/)
+- [Agl Energy Energy Accounts Overlay](https://apis.io/overlays/agl-energy/agl-energy-energy-accounts-overlay/)
+- [Agl Energy Energy Plans Overlay](https://apis.io/overlays/agl-energy/agl-energy-energy-plans-overlay/)
 
-- **Human URL:** [https://www.aer.gov.au/energy-product-reference-data](https://www.aer.gov.au/energy-product-reference-data)
-- **Base URL:** `https://cdr.energymadeeasy.gov.au/agl/cds-au/v1`
+#### Governance rules (1)
 
-#### Tags
+Spectral rulesets for the provider's contracts.
 
-- Consumer Data Right
-- CDR
-- Product Reference Data
-- Tariffs
-- Plans
-- Electricity
-- Gas
-- Australia
+- [AGL Energy API Rules](https://apis.io/rules/agl-energy/agl-energy-rules/)
 
-#### Properties
+#### Security (3)
 
-- [OpenAPI](openapi/agl-energy-cds-energy-openapi.json) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Documentation](https://www.aer.gov.au/energy-product-reference-data)
-- [API Reference](https://cdr.energymadeeasy.gov.au/agl/cds-au/v1/energy/plans)
+Authentication, trust centre, and vulnerability disclosure.
 
-## Common Properties
+- [Agl Energy Authentication](https://apis.io/security/agl-energy/agl-energy-authentication/)
+- [Agl Energy Domain Security](https://apis.io/security/agl-energy/agl-energy-domain-security/)
+- [Agl Energy Vulnerability Disclosure](https://apis.io/security/agl-energy/agl-energy-vulnerability-disclosure/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Agl Energy Scopes](https://apis.io/scopes/agl-energy/agl-energy-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Agl Energy Plans Pricing](https://apis.io/plans/agl-energy/agl-energy-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Agl Energy Rate Limits](https://apis.io/rate-limits/agl-energy/agl-energy-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.agl.com.au/)
-- [Consumer Data Right Policy](https://www.agl.com.au/consumer-data-right-policy)
-- [Manage Consumer Data Right](https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right)
-- [Community Forum](https://neighbourhood.agl.com.au/)
-- [GitHub Organization](https://github.com/AGLEnergy)
-- [LinkedIn](https://www.linkedin.com/company/agl-energy)
-- [CDR Register](https://api.cdr.gov.au/cdr-register/v1/all/data-holders/brands/summary)
+- [Documentation](https://www.agl.com.au/consumer-data-right-policy)
+- [API reference](https://consumerdatastandardsaustralia.github.io/standards/#energy-apis)
+- [Support](https://www.agl.com.au/help-support/account-setup-management/manage-consumer-data-right)
+- [Security](https://www.agl.com.au/terms-conditions/responsible-disclosure-policy)
+- [Terms of service](https://www.agl.com.au/terms-conditions/online-services)
+- [Privacy policy](https://www.agl.com.au/privacy-policy)
+- [GitHub](https://github.com/AGLEnergy)
+- [Status](https://public.cdr.agl.com.au/cds-au/v1/discovery/status)
 
-## Review
+## API Evangelist rating
 
-See [review.yml](review.yml) for the full mandate-versus-implementation record, every probed URL with its HTTP status, the consumer-data versus market-data split, the access gate, and the authentication model.
+**Kin Score 44.8** — developing · rubric 0.24.0 · scored 2026-10-20
 
-## Maintainers
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 26.0 |
+| Contract governance | 33.3 |
+| Operational transparency | 76.3 |
+| Developer ergonomics | 35.1 |
+| Access clarity | 34.2 |
 
-- Kin Lane — kin@apievangelist.com
+**Agent readiness 26.4** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 39.3** — Energy & Utilities
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/agl-energy/](https://apis.io/providers/agl-energy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for AGL Energy: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/agl-energy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
